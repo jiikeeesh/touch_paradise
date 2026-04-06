@@ -67,7 +67,7 @@ const About = () => {
                 { title: "Local Expertise", icon: UserCheck, desc: "Born and raised Sherpa guides." },
                 { title: "Eco-Conscious", icon: HeartPulse, desc: "Sustainable and responsible tourism." },
                 { title: "Custom Trips", icon: CheckCircle2, desc: "Personalized routes for all levels." },
-              ].map((item, index) => (
+              ].map((item) => (
                 <div key={item.title} className="flex gap-4">
                   <div className="flex-shrink-0 w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100">
                     <item.icon className="w-6 h-6" />

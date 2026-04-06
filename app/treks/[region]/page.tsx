@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Clock, Mountain, Signal, ArrowRight, ArrowLeft } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -123,12 +124,12 @@ export default async function RegionPage({ params }: Props) {
             Explore {treks.length} breathtaking trekking package
             {treks.length !== 1 ? "s" : ""} in the {regionName} region.
           </p>
-          <a
+          <Link
             href="/treks"
             className="inline-flex items-center gap-2 text-sm font-bold text-white bg-white/20 hover:bg-white/30 backdrop-blur-md px-6 py-3 rounded-full transition-all"
           >
             <ArrowLeft className="w-4 h-4" /> Back to Regions
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -141,12 +142,12 @@ export default async function RegionPage({ params }: Props) {
               <p className="text-slate-400 text-lg">
                 No treks available in this region yet.
               </p>
-              <a
+              <Link
                 href="/treks"
                 className="inline-flex items-center gap-2 mt-6 text-emerald-600 font-semibold hover:underline"
               >
                 <ArrowLeft className="w-4 h-4" /> View all regions
-              </a>
+              </Link>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -229,13 +230,13 @@ export default async function RegionPage({ params }: Props) {
                         )}
                       </div>
 
-                      <a
+                      <Link
                         href="/contact"
                         className="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white py-3 rounded-xl font-semibold text-sm hover:bg-emerald-700 transition-colors group/btn"
                       >
                         Book This Trek
                         <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 );

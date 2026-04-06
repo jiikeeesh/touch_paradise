@@ -34,7 +34,7 @@ const Hero = () => {
             </h1>
             <p className="text-xl md:text-2xl text-slate-200 mb-10 max-w-2xl leading-relaxed">
               Experience life-changing treks and expeditions across the Himalayas. 
-              Join Nepal's most trusted adventure agency for the journey of a lifetime.
+              Join Nepal&apos;s most trusted adventure agency for the journey of a lifetime.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">

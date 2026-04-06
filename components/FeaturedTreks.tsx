@@ -35,8 +35,18 @@ const fallbackTreks = [
   },
 ];
 
+interface Trek {
+  title: string;
+  description: string;
+  image: string;
+  duration: string;
+  difficulty: string;
+  altitude: string;
+  price: string;
+}
+
 const FeaturedTreks = () => {
-  const [displayTreks, setDisplayTreks] = useState<any[]>(fallbackTreks);
+  const [displayTreks, setDisplayTreks] = useState<Trek[]>(fallbackTreks);
 
   useEffect(() => {
     const fetchTreks = async () => {

@@ -110,7 +110,11 @@ const Lightbox = ({
   const togglePlay = () => {
     const el = videoRef.current;
     if (!el) return;
-    playing ? el.pause() : el.play();
+    if (playing) {
+      el.pause();
+    } else {
+      el.play();
+    }
     setPlaying(!playing);
   };
 

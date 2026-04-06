@@ -55,7 +55,7 @@ const Services = () => {
             Beyond the <span className="text-emerald-400">Regular</span>
           </h2>
           <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-            We don't just organize trips; we create experiences that stay with you forever. 
+            We don&apos;t just organize trips; we create experiences that stay with you forever. 
             Discover the full range of our professional adventure services.
           </p>
         </div>

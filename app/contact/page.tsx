@@ -156,7 +156,7 @@ export default function ContactPage() {
                 ) : (
                   <>
                     <h2 className="text-2xl font-bold text-slate-900 mb-2">Send Us a Message</h2>
-                    <p className="text-slate-500 mb-8">Fill in the form and we'll respond within 24 hours.</p>
+                    <p className="text-slate-500 mb-8">Fill in the form and we&apos;ll respond within 24 hours.</p>
 
                     {error && (
                       <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm font-medium border border-red-100">

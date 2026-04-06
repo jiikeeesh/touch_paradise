@@ -4,9 +4,12 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Play, ChevronLeft, ChevronRight, X, Trash2, Video as VideoIcon, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+interface Video {
+  id: string; title: string; location: string; duration: string; cover: string; src: string;
+}
 
 export default function AdminVideosClient() {
-  const [videos, setVideos] = useState<any[]>([]);
+  const [videos, setVideos] = useState<Video[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,8 +79,8 @@ export default function AdminVideosClient() {
         setIsModalOpen(false);
         fetchVideos();
       }
-    } catch (error: any) {
-      alert(error.message || "Failed to create video");
+    } catch (error: unknown) {
+      alert((error as Error).message || "Failed to create video");
       console.error("Failed to create video", error);
     }
     setAdding(false);

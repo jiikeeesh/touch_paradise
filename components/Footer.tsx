@@ -26,12 +26,6 @@ const SocialIcon = ({ d, label, href = "#", fill = false }: { d: string; label: 
 );
 
 const Footer = () => {
-  const socialIcons = [
-    { label: "Facebook", d: "M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" },
-    { label: "Instagram", d: "Rect 2 2 20 20 5, Path 16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z, M17.5 6.5h.01" }, // Simplified
-    { label: "Twitter", d: "M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" }
-  ];
-
   // Using simple paths for Instagram since complex ones are hard to embed as single path
   const instagramPath = "M17 2H7C4.24 2 2 4.24 2 7V17C2 19.76 4.24 22 7 22H17C19.76 22 22 19.76 22 17V7C22 4.24 19.76 2 17 2ZM12 18C8.69 18 6 15.31 6 12C6 8.69 8.69 6 12 6C15.31 6 18 8.69 18 12C18 15.31 15.31 18 12 18ZM17 7.5C16.45 7.5 16 7.05 16 6.5C16 5.95 16.45 5.5 17 5.5C17.55 5.5 18 5.95 18 6.5C18 7.05 17.55 7.5 17 7.5Z";
 

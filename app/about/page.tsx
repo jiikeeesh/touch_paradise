@@ -123,7 +123,7 @@ export default function AboutPage() {
               </p>
               <p className="text-slate-600 leading-relaxed mb-8">
                 Today, we operate from Balaju, Kathmandu (Reg. No: 66179/066/067) and are proud members of 
-                the Trekking Agencies' Association of Nepal (TAAN). Everything we do — from itinerary design 
+                the Trekking Agencies&apos; Association of Nepal (TAAN). Everything we do — from itinerary design 
                 to porter wages — reflects our deep love for Nepal and our guests.
               </p>
               <a
@@ -156,7 +156,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-slate-900 mb-4">What We Stand For</h2>
-            <p className="text-slate-500 max-w-xl mx-auto">Our values aren't just words — they guide every decision we make.</p>
+            <p className="text-slate-500 max-w-xl mx-auto">Our values aren&apos;t just words — they guide every decision we make.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {values.map((val) => (

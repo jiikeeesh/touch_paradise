@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const videos = await prisma.video.findMany({
       orderBy: { createdAt: "desc" },
