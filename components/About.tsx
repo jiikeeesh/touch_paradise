@@ -29,6 +29,8 @@ const About = () => {
                 alt="Happy Trekkers in Nepal"
                 width={800}
                 height={600}
+                priority
+                loading="eager"
                 className="object-cover"
               />
             </motion.div>
