@@ -2,25 +2,36 @@
 
 import Image from "next/image";
 import { Mail, Phone, MapPin, Clock, Send, Mountain } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import PageLayout from "@/components/PageLayout";
 import { submitContactMessage } from "@/app/actions/contact";
 
-const treks = [
-  "Everest Base Camp",
-  "Annapurna Circuit",
-  "Mardi Himal Trek",
-  "Langtang Valley",
-  "Gosaikunda Lake",
-  "Poon Hill Sunrise",
-  "Custom Trek",
-  "Other / Not Sure",
-];
+// Treks will be dynamically loaded
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [treksList, setTreksList] = useState<string[]>([
+    "Custom Trek",
+    "Other / Not Sure"
+  ]);
+
+  useEffect(() => {
+    const fetchTreks = async () => {
+      try {
+        const res = await fetch("/api/treks");
+        if (res.ok) {
+          const data = await res.json();
+          const titles = data.map((t: { title: string }) => t.title);
+          setTreksList([...titles, "Custom Trek", "Other / Not Sure"]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch treks", err);
+      }
+    };
+    fetchTreks();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -221,7 +232,7 @@ export default function ContactPage() {
                           className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-slate-900 bg-white transition"
                         >
                           <option value="">Select a trek...</option>
-                          {treks.map((t) => (
+                          {treksList.map((t) => (
                             <option key={t} value={t}>{t}</option>
                           ))}
                         </select>
