@@ -22,3 +22,30 @@ model ContactMessage {
   message   String
   createdAt DateTime @default(now())
 }
+
+model Region {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String
+  image       String   @default("")
+  createdAt   DateTime @default(now())
+  treks       Trek[]
+}
+
+model Trek {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  description String
+  difficulty  String
+  durationDays Int
+  price       Float
+  altitude    String   @default("")
+  season      String   @default("")
+  itinerary   String   @default("") // pipe-separated day entries
+  images      String   @default("") // pipe-separated image URLs
+  regionId    String
+  region      Region   @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}

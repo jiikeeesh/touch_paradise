@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import type { ContactMessage } from "@prisma/client";
-import { Mail, Phone, Calendar, User, Mountain, LogOut } from "lucide-react";
+import { Mail, Phone, Calendar, Mountain, LogOut } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
 
@@ -17,22 +17,37 @@ export default async function AdminPage() {
     <PageLayout>
       <div className="bg-slate-50 min-h-screen py-24">
         <div className="container mx-auto px-4 max-w-7xl">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
             <div>
               <h1 className="text-4xl font-bold text-slate-900 mb-2">Admin Dashboard</h1>
               <p className="text-slate-500">Manage your contact form requests</p>
             </div>
-            
+
             {/* Logout button form */}
             <form action={logout}>
-              <button 
+              <button
                 type="submit"
-                className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-red-600 transition"
+                className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-red-600 transition text-sm"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Logout</span>
               </button>
             </form>
+          </div>
+
+          {/* Section nav */}
+          <div className="flex gap-2 mb-8">
+            <span className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white shadow-sm border border-slate-200 text-emerald-700">
+              <Mail className="w-4 h-4" />
+              Messages
+            </span>
+            <a
+              href="/admin/treks"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
+            >
+              <Mountain className="w-4 h-4" />
+              Treks
+            </a>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">

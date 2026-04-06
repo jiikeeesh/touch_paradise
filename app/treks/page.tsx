@@ -1,30 +1,64 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Clock, Mountain, Signal, ArrowRight, Filter } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "All Treks | Touch Paradise — Nepal Trekking",
-  description: "Browse our full collection of premium trekking packages in Nepal. From beginner-friendly hikes to challenging Himalayan expeditions.",
+  description:
+    "Browse our full collection of premium trekking packages in Nepal. From beginner-friendly hikes to challenging Himalayan expeditions.",
 };
 
-import { allTreks } from "@/lib/data";
+interface RegionWithCount {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+  _count: { treks: number };
+}
 
-export default function TreksPage() {
-  const regions = Array.from(new Set(allTreks.map((t) => t.region)));
+async function getRegions(): Promise<RegionWithCount[]> {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"}/api/regions`, {
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error("Failed to fetch regions");
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+export default async function TreksPage() {
+  const regions = await getRegions();
 
   return (
     <PageLayout>
       {/* Page Header */}
       <section className="relative py-24 bg-slate-900 overflow-hidden">
         <div className="absolute inset-0">
-          <Image src="/hero.png" alt="Himalayan mountains" fill className="object-cover opacity-30" sizes="100vw" />
+          <Image
+            src="/hero.png"
+            alt="Himalayan mountains"
+            fill
+            priority
+            className="object-cover opacity-30"
+            sizes="100vw"
+          />
         </div>
         <div className="container mx-auto px-4 relative z-10 text-white text-center">
-          <p className="text-emerald-400 font-bold uppercase tracking-widest text-sm mb-4">Explore Nepal</p>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">Trekking Regions</h1>
+          <p className="text-emerald-400 font-bold uppercase tracking-widest text-sm mb-4">
+            Explore Nepal
+          </p>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+            Trekking Regions
+          </h1>
           <p className="text-slate-300 max-w-2xl mx-auto text-lg">
-            Choose a region to find handpicked routes for every level — from weekend hikes to epic multi-week expeditions.
+            Choose a region to find handpicked routes for every level — from
+            weekend hikes to epic multi-week expeditions.
           </p>
         </div>
       </section>
@@ -40,8 +74,12 @@ export default function TreksPage() {
               { label: "Years Running", value: "15+" },
             ].map((stat) => (
               <div key={stat.label} className="py-6 px-8 text-center">
-                <p className="text-3xl font-bold text-emerald-600 mb-1">{stat.value}</p>
-                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">{stat.label}</p>
+                <p className="text-3xl font-bold text-emerald-600 mb-1">
+                  {stat.value}
+                </p>
+                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">
+                  {stat.label}
+                </p>
               </div>
             ))}
           </div>
@@ -57,50 +95,54 @@ export default function TreksPage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {regions.map((region) => {
-              const regionTreks = allTreks.filter((t) => t.region === region);
-              // Use first trek image as region cover
-              const coverImage = regionTreks[0]?.image || "/hero.png";
-              return (
+          {regions.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-slate-400 text-lg">
+                No regions available yet. Check back soon!
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {regions.map((region) => (
                 <a
-                  href={`/treks/${region.toLowerCase()}`}
-                  key={region}
+                  href={`/treks/${region.slug}`}
+                  key={region.id}
                   className="group bg-white rounded-3xl overflow-hidden border border-slate-100 hover:shadow-xl hover:shadow-slate-200 transition-all block relative"
                 >
                   <div className="relative h-72 overflow-hidden">
                     <Image
-                      src={coverImage}
-                      alt={`${region} Region`}
+                      src={region.image || "/hero.png"}
+                      alt={`${region.name} Region`}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                    
+
                     <div className="absolute bottom-6 left-6 right-6">
                       <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">
-                        {region}
+                        {region.name}
                       </h3>
                       <p className="text-slate-200 text-sm flex items-center gap-2">
-                        <span>{regionTreks.length} Packages</span>
+                        <span>{region._count.treks} Packages</span>
                         <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all font-bold text-emerald-400" />
                       </p>
                     </div>
                   </div>
                 </a>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       {/* CTA Banner */}
       <section className="py-20 bg-emerald-600">
         <div className="container mx-auto px-4 text-center text-white">
-          <h2 className="text-4xl font-bold mb-4">Can't find the right trek?</h2>
+          <h2 className="text-4xl font-bold mb-4">Can&apos;t find the right trek?</h2>
           <p className="text-emerald-100 text-lg mb-8 max-w-xl mx-auto">
-            We design custom itineraries tailored exactly to your fitness level, timeframe, and budget.
+            We design custom itineraries tailored exactly to your fitness level,
+            timeframe, and budget.
           </p>
           <a
             href="/contact"
