@@ -13,10 +13,8 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/adapter-better-sqlite3": "^7.6.0",
     "@prisma/client": "^5.22.0",
-    "@types/better-sqlite3": "^7.6.13",
-    "better-sqlite3": "^12.8.0",
+    "@vercel/postgres": "^0.31.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.7.0",
     "next": "16.2.2",
