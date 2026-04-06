@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { Mail, Phone, MapPin, Clock, Send, Mountain } from "lucide-react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import PageLayout from "@/components/PageLayout";
+import { submitContactMessage } from "@/app/actions/contact";
 
 const treks = [
   "Everest Base Camp",
@@ -18,10 +19,22 @@ const treks = [
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError(null);
+    const formData = new FormData(e.currentTarget);
+    
+    startTransition(async () => {
+      const result = await submitContactMessage(formData);
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setSubmitted(true);
+      }
+    });
   };
 
   return (
@@ -145,12 +158,19 @@ export default function ContactPage() {
                     <h2 className="text-2xl font-bold text-slate-900 mb-2">Send Us a Message</h2>
                     <p className="text-slate-500 mb-8">Fill in the form and we'll respond within 24 hours.</p>
 
+                    {error && (
+                      <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm font-medium border border-red-100">
+                        {error}
+                      </div>
+                    )}
+
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                           <label htmlFor="firstName" className="block text-sm font-semibold text-slate-700 mb-2">First Name</label>
                           <input
                             id="firstName"
+                            name="firstName"
                             type="text"
                             required
                             placeholder="John"
@@ -161,6 +181,7 @@ export default function ContactPage() {
                           <label htmlFor="lastName" className="block text-sm font-semibold text-slate-700 mb-2">Last Name</label>
                           <input
                             id="lastName"
+                            name="lastName"
                             type="text"
                             required
                             placeholder="Doe"
@@ -173,6 +194,7 @@ export default function ContactPage() {
                         <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
                         <input
                           id="email"
+                          name="email"
                           type="email"
                           required
                           placeholder="you@example.com"
@@ -184,6 +206,7 @@ export default function ContactPage() {
                         <label htmlFor="phone" className="block text-sm font-semibold text-slate-700 mb-2">Phone / WhatsApp <span className="text-slate-400 font-normal">(optional)</span></label>
                         <input
                           id="phone"
+                          name="phone"
                           type="tel"
                           placeholder="+1 234 567 890"
                           className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-slate-900 placeholder-slate-400 transition"
@@ -194,6 +217,7 @@ export default function ContactPage() {
                         <label htmlFor="trek" className="block text-sm font-semibold text-slate-700 mb-2">Trek of Interest</label>
                         <select
                           id="trek"
+                          name="trek"
                           className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-slate-900 bg-white transition"
                         >
                           <option value="">Select a trek...</option>
@@ -207,6 +231,7 @@ export default function ContactPage() {
                         <label htmlFor="message" className="block text-sm font-semibold text-slate-700 mb-2">Message</label>
                         <textarea
                           id="message"
+                          name="message"
                           required
                           rows={5}
                           placeholder="Tell us about your travel dates, group size, and any special requirements..."
@@ -216,10 +241,11 @@ export default function ContactPage() {
 
                       <button
                         type="submit"
-                        className="w-full flex items-center justify-center gap-3 bg-emerald-600 text-white font-bold py-4 rounded-xl hover:bg-emerald-700 active:scale-95 transition-all shadow-lg shadow-emerald-200 text-lg"
+                        disabled={isPending}
+                        className="w-full flex items-center justify-center gap-3 bg-emerald-600 text-white font-bold py-4 rounded-xl hover:bg-emerald-700 active:scale-95 transition-all shadow-lg shadow-emerald-200 text-lg disabled:opacity-70 disabled:cursor-not-allowed"
                       >
-                        <Send className="w-5 h-5" />
-                        Send Message
+                        <Send className={`w-5 h-5 ${isPending ? 'animate-pulse' : ''}`} />
+                        {isPending ? "Sending..." : "Send Message"}
                       </button>
                     </form>
                   </>
