@@ -43,6 +43,8 @@ interface Trek {
   difficulty: string;
   altitude: string;
   price: string;
+  slug?: string;
+  regionSlug?: string;
 }
 
 const FeaturedTreks = () => {
@@ -57,11 +59,16 @@ const FeaturedTreks = () => {
           if (data && data.length > 0) {
             // Shuffle and pick 3 random treks
             const shuffled = [...data].sort(() => 0.5 - Math.random());
-            const selected = shuffled.slice(0, 3).map((trek) => ({
-              ...trek,
-              image: trek.images ? trek.images.split(",")[0].trim() : "/everest.png",
+            const selected = shuffled.slice(0, 3).map((trek: any) => ({
+              title: trek.title,
+              description: trek.description,
+              image: trek.images ? trek.images.split("|")[0].trim() : "/everest.png",
               duration: `${trek.durationDays || 1} Days`,
+              difficulty: trek.difficulty,
+              altitude: trek.altitude,
               price: `$${trek.price || 0}`,
+              slug: trek.slug,
+              regionSlug: trek.region?.slug
             }));
             // If the backend doesn't have 3, it'll just show what it has.
             setDisplayTreks(selected);
@@ -93,64 +100,71 @@ const FeaturedTreks = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {displayTreks.map((trek, index) => (
-            <motion.div
-              key={trek.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-              viewport={{ once: true }}
-              className="group bg-slate-50 rounded-3xl overflow-hidden border border-slate-100 hover:shadow-2xl hover:shadow-emerald-900/5 transition-all"
-            >
-              <div className="relative h-64 overflow-hidden">
-                <Image
-                  src={trek.image}
-                  alt={trek.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-xs font-bold text-slate-900 uppercase tracking-tighter">
-                  Starting from {trek.price}
-                </div>
-              </div>
-              
-              <div className="p-8">
-                <h3 className="text-2xl font-bold text-slate-900 mb-3 group-hover:text-emerald-600 transition-colors">
-                  {trek.title}
-                </h3>
-                <p className="text-slate-600 mb-6 line-clamp-2">
-                  {trek.description}
-                </p>
-                
-                <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200">
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-1.5 text-slate-400">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span className="text-[10px] uppercase font-bold tracking-wider">Duration</span>
+          {displayTreks.map((trek, index) => {
+            const trekLink = trek.slug && trek.regionSlug 
+              ? `/treks/${trek.regionSlug}/${trek.slug}`
+              : "/treks";
+
+            return (
+              <Link href={trekLink} key={trek.title} className="block">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  viewport={{ once: true }}
+                  className="group bg-slate-50 rounded-3xl overflow-hidden border border-slate-100 hover:shadow-2xl hover:shadow-emerald-900/5 transition-all h-full"
+                >
+                  <div className="relative h-64 overflow-hidden">
+                    <Image
+                      src={trek.image}
+                      alt={trek.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-xs font-bold text-slate-900 uppercase tracking-tighter">
+                      Starting from {trek.price}
                     </div>
-                    <span className="text-sm font-bold text-slate-800">{trek.duration}</span>
                   </div>
                   
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-1.5 text-slate-400">
-                      <Signal className="w-3.5 h-3.5" />
-                      <span className="text-[10px] uppercase font-bold tracking-wider">Level</span>
+                  <div className="p-8">
+                    <h3 className="text-2xl font-bold text-slate-900 mb-3 group-hover:text-emerald-600 transition-colors">
+                      {trek.title}
+                    </h3>
+                    <p className="text-slate-600 mb-6 line-clamp-2">
+                      {trek.description}
+                    </p>
+                    
+                    <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-1.5 text-slate-400">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span className="text-[10px] uppercase font-bold tracking-wider">Duration</span>
+                        </div>
+                        <span className="text-sm font-bold text-slate-800">{trek.duration}</span>
+                      </div>
+                      
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-1.5 text-slate-400">
+                          <Signal className="w-3.5 h-3.5" />
+                          <span className="text-[10px] uppercase font-bold tracking-wider">Level</span>
+                        </div>
+                        <span className="text-sm font-bold text-slate-800">{trek.difficulty}</span>
+                      </div>
+                      
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-1.5 text-slate-400">
+                          <Mountain className="w-3.5 h-3.5" />
+                          <span className="text-[10px] uppercase font-bold tracking-wider">Alt.</span>
+                        </div>
+                        <span className="text-sm font-bold text-slate-800">{trek.altitude}</span>
+                      </div>
                     </div>
-                    <span className="text-sm font-bold text-slate-800">{trek.difficulty}</span>
                   </div>
-                  
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-1.5 text-slate-400">
-                      <Mountain className="w-3.5 h-3.5" />
-                      <span className="text-[10px] uppercase font-bold tracking-wider">Alt.</span>
-                    </div>
-                    <span className="text-sm font-bold text-slate-800">{trek.altitude}</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+                </motion.div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

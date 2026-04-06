@@ -231,10 +231,10 @@ export default async function RegionPage({ params }: Props) {
                       </div>
 
                       <Link
-                        href="/contact"
+                        href={`/treks/${trek.region.slug}/${trek.slug}`}
                         className="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white py-3 rounded-xl font-semibold text-sm hover:bg-emerald-700 transition-colors group/btn"
                       >
-                        Book This Trek
+                        View Trek & Book
                         <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                       </Link>
                     </div>
