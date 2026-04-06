@@ -131,7 +131,7 @@ const Navbar = () => {
                   className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-5 py-3 rounded-xl text-base font-semibold w-full shadow-lg"
                 >
                   <Phone className="w-5 h-5" />
-                  +977 9841259682
+                  Call Now
                 </Link>
               </div>
             </div>
