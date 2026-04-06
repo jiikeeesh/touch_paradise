@@ -1,4 +1,9 @@
+/**
+ * @deprecated Use the database via Prisma for trek data. 
+ * This file should only contain static UI constants.
+ */
 export const allTreks = [
+
   {
     title: "Everest Base Camp",
     description: "The world's most iconic trek. Walk in the footsteps of legends through Sherpa villages to the base of the highest mountain on Earth.",

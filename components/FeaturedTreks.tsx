@@ -5,33 +5,39 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Clock, Mountain, Signal, ArrowUpRight } from "lucide-react";
-const fallbackTreks = [
+const fallbackTreks: Trek[] = [
   {
     title: "Everest Base Camp",
-    description: "The ultimate trek to the base of the world's highest peak. A journey of high altitude and Sherpa culture.",
+    description: "The world's most iconic trek. Walk in the footsteps of legends through Sherpa villages to the base of the highest mountain on Earth.",
     image: "/everest.png",
     duration: "14 Days",
     difficulty: "Hard",
     altitude: "5,364m",
     price: "$1,450",
+    slug: "everest-base-camp",
+    regionSlug: "khumbu",
   },
   {
     title: "Annapurna Circuit",
-    description: "Dazzling variety of scenery and culture, from lush valleys to the high Thorong La Pass.",
+    description: "Circumnavigate the Annapurna massif through diverse landscapes — lush subtropical forests to arid Tibetan plateau.",
     image: "/annapurna.png",
     duration: "12 Days",
     difficulty: "Moderate",
     altitude: "5,416m",
     price: "$1,200",
+    slug: "annapurna-circuit",
+    regionSlug: "annapurna",
   },
   {
     title: "Mardi Himal Trek",
-    description: "A hidden gem offering stunning views of Machhapuchhre (Fishtail) away from the crowds.",
+    description: "A secret off-the-beaten-path gem offering jaw-dropping views of Machhapuchhre and the Annapurna range.",
     image: "/mardi.png",
     duration: "7 Days",
     difficulty: "Moderate",
     altitude: "4,500m",
     price: "$750",
+    slug: "mardi-himal-trek",
+    regionSlug: "annapurna",
   },
 ];
 
@@ -43,9 +49,10 @@ interface Trek {
   difficulty: string;
   altitude: string;
   price: string;
-  slug?: string;
-  regionSlug?: string;
+  slug: string;
+  regionSlug: string;
 }
+
 
 const FeaturedTreks = () => {
   const [displayTreks, setDisplayTreks] = useState<Trek[]>(fallbackTreks);
