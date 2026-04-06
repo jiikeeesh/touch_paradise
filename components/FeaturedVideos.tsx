@@ -14,7 +14,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Video {
-  id: number;
+  id: string;
   title: string;
   location: string;
   duration: string;
@@ -22,10 +22,9 @@ interface Video {
   src: string;
 }
 
-// Replace `src` values with your real .mp4 portrait video files in /public/videos/
-const videos: Video[] = [
+const initialVideos: Video[] = [
   {
-    id: 1,
+    id: "1",
     title: "Sunrise at Everest Base Camp",
     location: "Khumbu, Nepal",
     duration: "1:24",
@@ -33,7 +32,7 @@ const videos: Video[] = [
     src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
   },
   {
-    id: 2,
+    id: "2",
     title: "Annapurna Circuit Highlights",
     location: "Annapurna, Nepal",
     duration: "2:10",
@@ -41,7 +40,7 @@ const videos: Video[] = [
     src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
   },
   {
-    id: 3,
+    id: "3",
     title: "Mardi Himal Ridge Walk",
     location: "Pokhara, Nepal",
     duration: "1:45",
@@ -49,7 +48,7 @@ const videos: Video[] = [
     src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
   },
   {
-    id: 4,
+    id: "4",
     title: "Langtang Valley Morning",
     location: "Langtang, Nepal",
     duration: "0:58",
@@ -57,7 +56,7 @@ const videos: Video[] = [
     src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
   },
   {
-    id: 5,
+    id: "5",
     title: "Gosaikunda Sacred Lake",
     location: "Rasuwa, Nepal",
     duration: "1:30",
@@ -238,14 +237,7 @@ const Lightbox = ({
 
       {/* Dot indicators */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-        {videos.map((v) => (
-          <div
-            key={v.id}
-            className={`w-1.5 h-1.5 rounded-full transition-all ${
-              v.id === video.id ? "bg-emerald-400 w-5" : "bg-white/40"
-            }`}
-          />
-        ))}
+        {/* Note: dot indicators map omitted for dynamic lengths to prevent layout breaking on too many videos */}
       </div>
     </motion.div>
   );
@@ -253,8 +245,26 @@ const Lightbox = ({
 
 // ─── Main Section ─────────────────────────────────────────────────────────────
 const FeaturedVideos = () => {
+  const [videos, setVideos] = useState<Video[]>(initialVideos);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const res = await fetch("/api/videos");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            setVideos(data);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch videos from server", err);
+      }
+    };
+    fetchVideos();
+  }, []);
 
   const openVideo = (index: number) => setActiveIndex(index);
   const closeVideo = () => setActiveIndex(null);
@@ -361,22 +371,6 @@ const FeaturedVideos = () => {
             </motion.div>
           ))}
 
-          {/* Add Your Video card */}
-          <div
-            className="flex-shrink-0 snap-start"
-            style={{ width: "200px" }}
-          >
-            <div
-              className="relative rounded-3xl overflow-hidden border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-3 text-center px-4"
-              style={{ aspectRatio: "9/16" }}
-            >
-              <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-                <Play className="w-6 h-6 text-white/30" />
-              </div>
-              <p className="text-white/40 text-xs font-medium">Your video here</p>
-              <p className="text-white/20 text-[10px]">Drop MP4 files in /public/videos/</p>
-            </div>
-          </div>
         </div>
       </div>
 

@@ -14,18 +14,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file type
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "video/mp4", "video/webm"];
     if (!allowedTypes.includes(file.type)) {
       return Response.json(
-        { error: "Only JPEG, PNG, WebP, and GIF images are allowed" },
+        { error: "Only JPEG, PNG, WebP, GIF images and MP4, WebM videos are allowed" },
         { status: 400 }
       );
     }
 
-    // Max 10 MB
-    const maxSize = 10 * 1024 * 1024;
+    // Max 50 MB
+    const maxSize = 50 * 1024 * 1024;
     if (file.size > maxSize) {
-      return Response.json({ error: "File size exceeds 10 MB" }, { status: 400 });
+      return Response.json({ error: "File size exceeds 50 MB" }, { status: 400 });
     }
 
     const uploadsDir = path.join(process.cwd(), "public", "uploads");

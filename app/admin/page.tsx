@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import type { ContactMessage } from "@prisma/client";
-import { Mail, Phone, Calendar, Mountain, LogOut } from "lucide-react";
+import { Mail, Phone, Calendar, Mountain, LogOut, Video } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
+import AdminVideosClient from "./AdminVideosClient";
 
 export const dynamic = "force-dynamic";
 
@@ -132,6 +133,15 @@ export default async function AdminPage() {
                 </table>
               </div>
             )}
+          </div>
+
+          <div className="mt-16 mb-8">
+            <h2 className="text-3xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <Video className="w-8 h-8 text-emerald-600" />
+              Featured Videos
+            </h2>
+            <p className="text-slate-500 mb-8">Manage the feature videos shown on the homepage</p>
+            <AdminVideosClient />
           </div>
         </div>
       </div>

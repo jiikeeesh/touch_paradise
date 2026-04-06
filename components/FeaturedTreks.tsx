@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Clock, Mountain, Signal, ArrowUpRight } from "lucide-react";
-
-const treks = [
+const fallbackTreks = [
   {
     title: "Everest Base Camp",
     description: "The ultimate trek to the base of the world's highest peak. A journey of high altitude and Sherpa culture.",
@@ -35,6 +36,34 @@ const treks = [
 ];
 
 const FeaturedTreks = () => {
+  const [displayTreks, setDisplayTreks] = useState<any[]>(fallbackTreks);
+
+  useEffect(() => {
+    const fetchTreks = async () => {
+      try {
+        const res = await fetch("/api/treks");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            // Shuffle and pick 3 random treks
+            const shuffled = [...data].sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, 3).map((trek) => ({
+              ...trek,
+              image: trek.images ? trek.images.split(",")[0].trim() : "/everest.png",
+              duration: `${trek.durationDays || 1} Days`,
+              price: `$${trek.price || 0}`,
+            }));
+            // If the backend doesn't have 3, it'll just show what it has.
+            setDisplayTreks(selected);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching treks", err);
+      }
+    };
+    fetchTreks();
+  }, []);
+
   return (
     <section id="treks" className="py-24 bg-white">
       <div className="container mx-auto px-4">
@@ -48,13 +77,13 @@ const FeaturedTreks = () => {
               offer the perfect balance of challenge, comfort, and cultural immersion.
             </p>
           </div>
-          <button className="text-emerald-600 font-bold flex items-center gap-2 border-b-2 border-emerald-600 pb-1 hover:text-emerald-700 hover:border-emerald-700 transition-all">
+          <Link href="/treks" className="text-emerald-600 font-bold flex items-center gap-2 border-b-2 border-emerald-600 pb-1 hover:text-emerald-700 hover:border-emerald-700 transition-all">
             View All Treks <ArrowUpRight className="w-5 h-5" />
-          </button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {treks.map((trek, index) => (
+          {displayTreks.map((trek, index) => (
             <motion.div
               key={trek.title}
               initial={{ opacity: 0, y: 30 }}

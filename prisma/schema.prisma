@@ -49,3 +49,13 @@ model Trek {
   region      Region   @relation(fields: [regionId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
 }
+
+model Video {
+  id        String   @id @default(uuid())
+  title     String
+  location  String
+  duration  String
+  cover     String
+  src       String
+  createdAt DateTime @default(now())
+}
