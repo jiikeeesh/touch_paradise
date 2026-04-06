@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
+import type { ContactMessage } from "@prisma/client";
 import { Mail, Phone, Calendar, User, Mountain, LogOut } from "lucide-react";
-import Link from "next/link";
 import PageLayout from "@/components/PageLayout";
+import { logout } from "@/app/actions/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -22,14 +23,16 @@ export default async function AdminPage() {
               <p className="text-slate-500">Manage your contact form requests</p>
             </div>
             
-            {/* Minimal visual "logout" hint since basic auth doesn't have an explicit logout easily */}
-            <Link 
-              href="/"
-              className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-50 transition"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Back to Site</span>
-            </Link>
+            {/* Logout button form */}
+            <form action={logout}>
+              <button 
+                type="submit"
+                className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-red-600 transition"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </button>
+            </form>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
@@ -54,7 +57,7 @@ export default async function AdminPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {messages.map((msg) => (
+                    {messages.map((msg: ContactMessage) => (
                       <tr key={msg.id} className="hover:bg-slate-50/50 transition duration-150">
                         <td className="p-5 align-top">
                           <div className="flex items-start gap-3">
