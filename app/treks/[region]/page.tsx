@@ -165,15 +165,15 @@ export default async function RegionPage({ params }: Props) {
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                       <span
-                        className={`absolute top-4 left-4 text-xs font-bold px-3 py-1 rounded-full ${
-                          difficultyColor[trek.difficulty] ?? "bg-slate-100 text-slate-700"
+                        className={`absolute top-4 left-4 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm ${
+                          difficultyColor[trek.difficulty] ?? "bg-slate-800/80 text-white"
                         }`}
                       >
                         {trek.difficulty}
                       </span>
-                      <span className="absolute bottom-4 right-4 text-white font-bold text-lg">
+                      <span className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white font-bold text-sm px-3 py-1.5 rounded-full shadow">
                         ${trek.price.toLocaleString()}
                       </span>
                     </div>
@@ -182,16 +182,16 @@ export default async function RegionPage({ params }: Props) {
                       <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-2">
                         {trek.region.name}
                       </p>
-                      <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-emerald-600 transition-colors">
+                      <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-emerald-600 transition-colors leading-snug">
                         {trek.title}
                       </h3>
-                      <p className="text-slate-500 text-sm mb-6 line-clamp-2">
+                      <p className="text-slate-600 text-sm mb-6 line-clamp-2 leading-relaxed">
                         {trek.description}
                       </p>
 
                       <div className="grid grid-cols-3 gap-3 pt-5 border-t border-slate-100 mb-6">
                         <div>
-                          <div className="flex items-center gap-1 text-slate-400 mb-1">
+                          <div className="flex items-center gap-1 text-slate-500 mb-1">
                             <Clock className="w-3 h-3" />
                             <span className="text-[10px] uppercase font-bold tracking-wider">
                               Days
@@ -203,7 +203,7 @@ export default async function RegionPage({ params }: Props) {
                         </div>
                         {trek.altitude && (
                           <div>
-                            <div className="flex items-center gap-1 text-slate-400 mb-1">
+                            <div className="flex items-center gap-1 text-slate-500 mb-1">
                               <Mountain className="w-3 h-3" />
                               <span className="text-[10px] uppercase font-bold tracking-wider">
                                 Alt.
@@ -216,7 +216,7 @@ export default async function RegionPage({ params }: Props) {
                         )}
                         {trek.season && (
                           <div>
-                            <div className="flex items-center gap-1 text-slate-400 mb-1">
+                            <div className="flex items-center gap-1 text-slate-500 mb-1">
                               <Signal className="w-3 h-3" />
                               <span className="text-[10px] uppercase font-bold tracking-wider">
                                 Season

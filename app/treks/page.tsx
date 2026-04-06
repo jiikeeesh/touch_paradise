@@ -117,15 +117,15 @@ export default async function TreksPage() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/10" />
 
                     <div className="absolute bottom-6 left-6 right-6">
-                      <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">
+                      <h3 className="text-2xl font-bold text-white mb-1.5 group-hover:text-emerald-400 transition-colors drop-shadow-lg">
                         {region.name}
                       </h3>
-                      <p className="text-slate-200 text-sm flex items-center gap-2">
-                        <span>{region._count.treks} Packages</span>
-                        <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all font-bold text-emerald-400" />
+                      <p className="text-slate-200 text-sm flex items-center gap-2 font-medium">
+                        <span>{region._count.treks} Package{region._count.treks !== 1 ? "s" : ""}</span>
+                        <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-emerald-400" />
                       </p>
                     </div>
                   </div>
