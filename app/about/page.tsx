@@ -93,6 +93,7 @@ export default function AboutPage() {
                   alt="Touch Paradise team"
                   width={700}
                   height={500}
+                  priority
                   className="object-cover"
                 />
               </div>

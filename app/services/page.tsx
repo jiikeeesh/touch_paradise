@@ -85,6 +85,7 @@ export default function ServicesPage() {
             alt="Happy trekkers in Nepal"
             fill
             sizes="100vw"
+            priority
             className="object-cover opacity-25"
           />
         </div>
