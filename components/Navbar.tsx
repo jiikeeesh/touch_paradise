@@ -2,33 +2,40 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Mountain, Menu, X, Phone } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+
+const navLinks = [
+  { name: "Home", href: "/" },
+  { name: "Treks", href: "/treks" },
+  { name: "Services", href: "/services" },
+  { name: "About", href: "/about" },
+  { name: "Contact", href: "/contact" },
+];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+
+  // On inner pages, always show the solid navbar
+  const isHome = pathname === "/";
+  const solidNav = !isHome || scrolled;
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+    if (!isHome) return;
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const navLinks = [
-    { name: "Home", href: "#" },
-    { name: "Treks", href: "#treks" },
-    { name: "Services", href: "#services" },
-    { name: "About", href: "#about" },
-    { name: "Contact", href: "#contact" },
-  ];
+  }, [isHome]);
 
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled ? "bg-white/90 backdrop-blur-md shadow-sm py-3" : "bg-transparent py-5"
+        solidNav
+          ? "bg-white/95 backdrop-blur-md shadow-sm py-3 border-b border-slate-100"
+          : "bg-transparent py-5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,26 +44,43 @@ const Navbar = () => {
             <div className="bg-emerald-600 p-2 rounded-lg group-hover:bg-emerald-700 transition-colors">
               <Mountain className="w-6 h-6 text-white" />
             </div>
-            <span className={`font-bold text-xl tracking-tight ${scrolled ? "text-slate-900" : "text-white"}`}>
+            <span
+              className={`font-bold text-xl tracking-tight ${
+                solidNav ? "text-slate-900" : "text-white"
+              }`}
+            >
               TOUCH <span className="text-emerald-500">PARADISE</span>
             </span>
           </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`text-sm font-medium transition-colors hover:text-emerald-500 ${
-                  scrolled ? "text-slate-600" : "text-white/90"
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`text-sm font-medium transition-colors relative group ${
+                    isActive
+                      ? "text-emerald-600"
+                      : solidNav
+                      ? "text-slate-600 hover:text-emerald-600"
+                      : "text-white/90 hover:text-white"
+                  }`}
+                >
+                  {link.name}
+                  {/* Active underline indicator */}
+                  <span
+                    className={`absolute -bottom-1 left-0 h-0.5 bg-emerald-500 transition-all duration-200 ${
+                      isActive ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  />
+                </Link>
+              );
+            })}
             <Link
-              href="tel:+9779841259682"
+              href="/contact"
               className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-700 transition-all shadow-md hover:shadow-emerald-200"
             >
               <Phone className="w-4 h-4" />
@@ -68,7 +92,7 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`${scrolled ? "text-slate-900" : "text-white"}`}
+              className={solidNav ? "text-slate-900" : "text-white"}
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -86,16 +110,23 @@ const Navbar = () => {
             className="md:hidden bg-white border-b border-slate-100 overflow-hidden"
           >
             <div className="px-4 pt-2 pb-6 space-y-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="block px-3 py-3 text-base font-medium text-slate-600 hover:text-emerald-600 hover:bg-slate-50 rounded-lg transition-colors"
-                >
-                  {link.name}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`block px-3 py-3 text-base font-medium rounded-lg transition-colors ${
+                      isActive
+                        ? "text-emerald-600 bg-emerald-50"
+                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
               <div className="pt-4 px-3">
                 <Link
                   href="tel:+9779841259682"
