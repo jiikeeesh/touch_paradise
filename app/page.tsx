@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import FeaturedTreks from "@/components/FeaturedTreks";
+import FeaturedVideos from "@/components/FeaturedVideos";
 import Services from "@/components/Services";
 import About from "@/components/About";
 import Footer from "@/components/Footer";
@@ -11,6 +12,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <FeaturedTreks />
+      <FeaturedVideos />
       <Services />
       <About />
       <Footer />
