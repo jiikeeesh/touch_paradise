@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronRight, Play } from "lucide-react";
 
@@ -38,18 +39,19 @@ const Hero = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="group relative flex items-center justify-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20 active:scale-95">
+              <Link href="#treks" className="group relative flex items-center justify-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20 active:scale-95">
                 Explore Our Treks
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </Link>
               
-              <button className="flex items-center justify-center gap-3 bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all active:scale-95">
+              <Link href="#videos" className="flex items-center justify-center gap-3 bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all active:scale-95">
                 <div className="w-8 h-8 flex items-center justify-center bg-white rounded-full text-emerald-600 shadow-lg">
                   <Play className="w-4 h-4 fill-current ml-1" />
                 </div>
                 Watch Film
-              </button>
+              </Link>
             </div>
+
           </motion.div>
         </div>
       </div>

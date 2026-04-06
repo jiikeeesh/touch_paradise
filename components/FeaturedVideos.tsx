@@ -282,7 +282,8 @@ const FeaturedVideos = () => {
   };
 
   return (
-    <section className="py-24 bg-slate-950 overflow-hidden">
+    <section id="videos" className="py-24 bg-slate-950 overflow-hidden">
+
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="flex items-end justify-between mb-12">
