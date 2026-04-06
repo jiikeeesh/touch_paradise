@@ -25,6 +25,14 @@ function slugify(str: string) {
     .replace(/(^-|-$)/g, "");
 }
 
+// Shared class strings so every input/textarea/select has consistent, readable styling
+const inputCls =
+  "w-full border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500";
+const selectCls =
+  "w-full border border-slate-200 bg-white text-slate-900 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500";
+const textareaCls =
+  "w-full border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none";
+
 export function RegionForm({ initial, onSuccess, onCancel }: RegionFormProps) {
   const [name, setName] = useState(initial?.name ?? "");
   const [slug, setSlug] = useState(initial?.slug ?? "");
@@ -96,7 +104,7 @@ export function RegionForm({ initial, onSuccess, onCancel }: RegionFormProps) {
             onChange={(e) => handleNameChange(e.target.value)}
             required
             placeholder="e.g. Khumbu"
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className={inputCls}
           />
         </div>
         <div>
@@ -108,7 +116,7 @@ export function RegionForm({ initial, onSuccess, onCancel }: RegionFormProps) {
             onChange={(e) => setSlug(e.target.value)}
             required
             placeholder="e.g. khumbu"
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className={inputCls + " font-mono"}
           />
         </div>
       </div>
@@ -123,7 +131,7 @@ export function RegionForm({ initial, onSuccess, onCancel }: RegionFormProps) {
           required
           rows={3}
           placeholder="A brief description of the region..."
-          className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+          className={textareaCls}
         />
       </div>
 
@@ -320,7 +328,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
             onChange={(e) => handleTitleChange(e.target.value)}
             required
             placeholder="e.g. Everest Base Camp"
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className={inputCls}
           />
         </div>
         <div>
@@ -332,7 +340,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
             onChange={(e) => setSlug(e.target.value)}
             required
             placeholder="e.g. everest-base-camp"
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className={inputCls + " font-mono"}
           />
         </div>
       </div>
@@ -347,7 +355,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
           required
           rows={3}
           placeholder="Describe the trek..."
-          className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+          className={textareaCls}
         />
       </div>
 
@@ -360,7 +368,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
             value={regionId}
             onChange={(e) => setRegionId(e.target.value)}
             required
-            className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className={selectCls}
           >
             <option value="">Select…</option>
             {regions.map((r) => (
@@ -377,7 +385,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
           <select
             value={difficulty}
             onChange={(e) => setDifficulty(e.target.value)}
-            className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className={selectCls}
           >
             {DIFFICULTIES.map((d) => (
               <option key={d}>{d}</option>
@@ -394,7 +402,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
             value={durationDays}
             onChange={(e) => setDurationDays(e.target.value)}
             placeholder="14"
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className={inputCls}
           />
         </div>
         <div>
@@ -407,7 +415,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             placeholder="1450"
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className={inputCls}
           />
         </div>
       </div>
@@ -421,7 +429,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
             value={altitude}
             onChange={(e) => setAltitude(e.target.value)}
             placeholder="e.g. 5,364m"
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className={inputCls}
           />
         </div>
         <div>
@@ -432,7 +440,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
             value={season}
             onChange={(e) => setSeason(e.target.value)}
             placeholder="e.g. Mar–May, Sep–Nov"
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className={inputCls}
           />
         </div>
       </div>
@@ -449,7 +457,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
           onChange={(e) => setItinerary(e.target.value)}
           rows={6}
           placeholder={"Day 1: Fly Kathmandu → Lukla, trek to Phakding\nDay 2: Trek to Namche Bazaar"}
-          className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+          className={textareaCls + " font-mono"}
         />
       </div>
 
