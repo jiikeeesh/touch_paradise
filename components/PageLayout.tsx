@@ -2,11 +2,16 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import FloatingSocial from "./FloatingSocial";
 
-const PageLayout = ({ children }: { children: React.ReactNode }) => {
+interface PageLayoutProps {
+  children: React.ReactNode;
+  showPadding?: boolean;
+}
+
+const PageLayout = ({ children, showPadding = true }: PageLayoutProps) => {
   return (
     <>
       <Navbar />
-      <main className="pt-20 min-h-screen">{children}</main>
+      <main className={`${showPadding ? "pt-20" : ""} relative min-h-screen`}>{children}</main>
       <Footer />
       <FloatingSocial />
     </>

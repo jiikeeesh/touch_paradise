@@ -1,21 +1,18 @@
-import Navbar from "@/components/Navbar";
+import PageLayout from "@/components/PageLayout";
 import Hero from "@/components/Hero";
 import FeaturedTreks from "@/components/FeaturedTreks";
 import FeaturedVideos from "@/components/FeaturedVideos";
 import Services from "@/components/Services";
 import About from "@/components/About";
-import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen">
-      <Navbar />
+    <PageLayout showPadding={false}>
       <Hero />
       <FeaturedTreks />
       <FeaturedVideos />
       <Services />
       <About />
-      <Footer />
-    </main>
+    </PageLayout>
   );
 }
