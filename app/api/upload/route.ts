@@ -1,5 +1,4 @@
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 import type { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -28,20 +27,24 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: "File size exceeds 50 MB" }, { status: 400 });
     }
 
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadsDir, { recursive: true });
+    // Vercel Blob upload
+    const blob = await put(file.name, file, {
+      access: "public",
+    });
 
-    const ext = file.name.split(".").pop() ?? "jpg";
-    const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const filepath = path.join(uploadsDir, filename);
-
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(filepath, buffer);
-
-    return Response.json({ url: `/uploads/${filename}` }, { status: 201 });
+    return Response.json({ url: blob.url }, { status: 201 });
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : "Upload failed";
     console.error("[POST /api/upload]", error);
+    
+    // Check if token is missing
+    if (errorMsg.includes("BLOB_READ_WRITE_TOKEN")) {
+      return Response.json(
+        { error: "Vercel Blob token is missing. Please add it to your environment variables." },
+        { status: 500 }
+      );
+    }
+
     return Response.json({ error: errorMsg }, { status: 500 });
   }
 }
