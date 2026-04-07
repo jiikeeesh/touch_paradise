@@ -16,10 +16,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         body,
         request,
         onBeforeGenerateToken: async (pathname: string) => {
+          console.log("Generating token for pathname:", pathname);
           return {
-            allowedContentTypes: ["image/jpeg", "image/png", "image/webp", "image/gif", "video/mp4", "video/webm"],
+            allowedContentTypes: [
+              "image/jpeg", 
+              "image/png", 
+              "image/webp", 
+              "image/gif", 
+              "video/mp4", 
+              "video/webm",
+              "video/quicktime", // MOV support
+            ],
             tokenPayload: JSON.stringify({ pathname }),
-            maximumSizeInBytes: 100 * 1024 * 1024, // 100MB limit to prevent 400/CORS errors on large uploads
+            maximumSizeInBytes: 100 * 1024 * 1024, // 100MB limit
           };
         },
         onUploadCompleted: async ({ blob, tokenPayload }) => {
