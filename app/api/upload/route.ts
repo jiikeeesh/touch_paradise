@@ -1,4 +1,4 @@
-import { handleUpload, type HandleUploadBody } from "@vercel/blob/next";
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { NextResponse, type NextRequest } from "next/server";
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             tokenPayload: JSON.stringify({ pathname }),
           };
         },
-        onUploadCompleted: async ({ blob, tokenPayload }: { blob: { url: string }, tokenPayload?: string }) => {
+        onUploadCompleted: async ({ blob, tokenPayload }) => {
           console.log("Blob upload completed:", blob.url);
         },
       });

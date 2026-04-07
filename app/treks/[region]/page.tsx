@@ -4,33 +4,9 @@ import { Clock, Mountain, Signal, ArrowRight, ArrowLeft } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
-
-interface TrekFromAPI {
-  id: string;
-  title: string;
-  slug: string;
-  description: string;
-  difficulty: string;
-  durationDays: number;
-  price: number;
-  altitude: string;
-  season: string;
-  images: string;
-  region: { id: string; name: string; slug: string };
-}
-
-interface RegionFromAPI {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  image: string;
-  _count: { treks: number };
-}
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
 const difficultyColor: Record<string, string> = {
   Easy: "bg-green-100 text-green-700",
@@ -47,23 +23,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { region: regionSlug } = await params;
 
   try {
-    const res = await fetch(`${BASE_URL}/api/regions`, { cache: "no-store" });
-    if (res.ok) {
-      const regions: RegionFromAPI[] = await res.json();
-      const region = regions.find((r) => r.slug === regionSlug);
-      if (region) {
-        return {
-          title: `${region.name} Region Treks | Touch Paradise`,
-          description: `Browse all our trekking packages in the ${region.name} region of Nepal.`,
-        };
-      }
+    const region = await prisma.region.findUnique({
+      where: { slug: regionSlug }
+    });
+    if (region) {
+      return {
+        title: `${region.name} Region Treks | Touch Paradise`,
+        description: `Browse all our trekking packages in the ${region.name} region of Nepal.`,
+      };
     }
   } catch {
     // fallback metadata
   }
 
-  const regionName =
-    regionSlug.charAt(0).toUpperCase() + regionSlug.slice(1);
+  const regionName = regionSlug.charAt(0).toUpperCase() + regionSlug.slice(1);
   return {
     title: `${regionName} Region Treks | Touch Paradise`,
     description: `Browse all our trekking packages in the ${regionName} region of Nepal.`,
@@ -73,21 +46,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function RegionPage({ params }: Props) {
   const { region: regionSlug } = await params;
 
-  let regions: RegionFromAPI[] = [];
-  let treks: TrekFromAPI[] = [];
+  let regionData: any = null;
+  let treks: any[] = [];
 
   try {
-    const [regRes, trekRes] = await Promise.all([
-      fetch(`${BASE_URL}/api/regions`, { cache: "no-store" }),
-      fetch(`${BASE_URL}/api/treks?regionSlug=${regionSlug}`, { cache: "no-store" }),
-    ]);
-    if (regRes.ok) regions = await regRes.json();
-    if (trekRes.ok) treks = await trekRes.json();
-  } catch {
-    // handled below
+    regionData = await prisma.region.findUnique({
+      where: { slug: regionSlug }
+    });
+    
+    treks = await prisma.trek.findMany({
+      where: { region: { slug: regionSlug } },
+      orderBy: { createdAt: "desc" },
+      include: { region: { select: { id: true, name: true, slug: true } } },
+    });
+  } catch (error) {
+    console.error("Failed to load region data:", error);
   }
-
-  const regionData = regions.find((r) => r.slug === regionSlug);
 
   if (!regionData && treks.length === 0) {
     notFound();

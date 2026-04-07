@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -11,29 +12,21 @@ export const metadata: Metadata = {
     "Browse our full collection of premium trekking packages in Nepal. From beginner-friendly hikes to challenging Himalayan expeditions.",
 };
 
-interface RegionWithCount {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  image: string;
-  _count: { treks: number };
-}
-
-async function getRegions(): Promise<RegionWithCount[]> {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"}/api/regions`, {
-      cache: "no-store",
-    });
-    if (!res.ok) throw new Error("Failed to fetch regions");
-    return res.json();
-  } catch {
-    return [];
-  }
-}
-
 export default async function TreksPage() {
-  const regions = await getRegions();
+  let regions: any[] = [];
+  try {
+    regions = await prisma.region.findMany({
+      orderBy: { createdAt: "desc" },
+      include: {
+        _count: {
+          select: { treks: true },
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Failed to load regions:", error);
+  }
+
 
   return (
     <PageLayout>

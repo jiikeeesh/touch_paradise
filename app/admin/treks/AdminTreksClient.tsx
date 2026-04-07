@@ -73,9 +73,10 @@ export default function AdminTreksClient() {
     setLoading(true);
     setError("");
     try {
+      const ts = Date.now();
       const [regRes, trekRes] = await Promise.all([
-        fetch("/api/regions"),
-        fetch("/api/treks"),
+        fetch(`/api/regions?t=${ts}`),
+        fetch(`/api/treks?t=${ts}`),
       ]);
       if (!regRes.ok || !trekRes.ok) throw new Error("Failed to load data");
       const [regData, trekData] = await Promise.all([
