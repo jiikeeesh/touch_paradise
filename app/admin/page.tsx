@@ -4,6 +4,7 @@ import { Mail, Phone, Calendar, Mountain, LogOut, Video } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
 import AdminVideosClient from "./AdminVideosClient";
+import DeleteMessageButton from "./DeleteMessageButton";
 
 export const dynamic = "force-dynamic";
 
@@ -66,10 +67,10 @@ export default async function AdminPage() {
                   <thead>
                     <tr className="bg-slate-50 border-b border-slate-100 uppercase text-xs font-semibold text-slate-500 tracking-wider">
                       <th className="p-5 w-1/4">User Info</th>
-                      <th className="p-5 w-1/5">Contact Details</th>
+                      <th className="p-5 w-1/5 whitespace-nowrap">Actions</th>
                       <th className="p-5 w-1/6">Desired Trek</th>
                       <th className="p-5 w-1/3">Message</th>
-                      <th className="p-5 whitespace-nowrap">Submitted</th>
+                      <th className="p-5 whitespace-nowrap text-right pr-8">Submitted</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -89,21 +90,29 @@ export default async function AdminPage() {
                             </div>
                           </div>
                         </td>
-                        <td className="p-5 align-top space-y-2">
-                          <div className="flex items-center gap-2 text-sm text-slate-700">
-                            <Mail className="w-4 h-4 text-slate-400" />
-                            <a href={`mailto:${msg.email}`} className="hover:text-emerald-600 transition break-all">
-                              {msg.email}
+                        <td className="p-5 align-top">
+                          <div className="flex flex-col gap-2">
+                            <a 
+                              href={`mailto:${msg.email}`} 
+                              className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg hover:bg-emerald-100 transition shadow-sm border border-emerald-100"
+                              title="Send Email"
+                            >
+                              <Mail className="w-3.5 h-3.5" />
+                              Email User
                             </a>
-                          </div>
-                          {msg.phone && (
-                            <div className="flex items-center gap-2 text-sm text-slate-700">
-                              <Phone className="w-4 h-4 text-slate-400" />
-                              <a href={`tel:${msg.phone}`} className="hover:text-emerald-600 transition">
-                                {msg.phone}
+                            {msg.phone && (
+                              <a 
+                                href={`tel:${msg.phone}`} 
+                                className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-bold rounded-lg hover:bg-blue-100 transition shadow-sm border border-blue-100"
+                                title="Call Number"
+                              >
+                                <Phone className="w-3.5 h-3.5" />
+                                Call Number
                               </a>
-                            </div>
-                          )}
+                            )}
+                            <hr className="border-slate-100 my-1" />
+                            <DeleteMessageButton id={msg.id} />
+                          </div>
                         </td>
                         <td className="p-5 align-top">
                           {msg.trek ? (
@@ -118,12 +127,12 @@ export default async function AdminPage() {
                         <td className="p-5 text-sm text-slate-700 align-top">
                           <p className="line-clamp-4 hover:line-clamp-none transition-all">{msg.message}</p>
                         </td>
-                        <td className="p-5 align-top text-sm text-slate-500 whitespace-nowrap">
-                          <div className="flex items-center gap-1.5 mb-1">
+                        <td className="p-5 align-top text-sm text-slate-500 whitespace-nowrap text-right pr-8">
+                          <div className="flex items-center justify-end gap-1.5 mb-1">
                             <Calendar className="w-4 h-4 text-slate-400" />
                             {new Date(msg.createdAt).toLocaleDateString()}
                           </div>
-                          <div className="text-xs ml-5.5">
+                          <div className="text-xs">
                             {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </div>
                         </td>
