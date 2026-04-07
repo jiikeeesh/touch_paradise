@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Play, ChevronLeft, ChevronRight, X, Trash2, Video as VideoIcon, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { upload } from "@vercel/blob/client";
 interface Video {
   id: string; title: string; location: string; duration: string; cover: string; src: string;
 }
@@ -44,19 +45,41 @@ export default function AdminVideosClient() {
 
     setAdding(true);
     try {
+      const isLocal = window.location.hostname === "localhost" || window.location.hostname.includes("192.168");
+
       // Upload cover image
-      const coverData = new FormData();
-      coverData.append("file", coverFile);
-      const coverRes = await fetch("/api/upload", { method: "POST", body: coverData });
-      const coverJson = await coverRes.json();
-      if (!coverRes.ok) throw new Error(coverJson.error || "Cover upload failed");
+      let coverUrl = "";
+      if (isLocal) {
+        const coverData = new FormData();
+        coverData.append("file", coverFile);
+        const coverRes = await fetch("/api/upload", { method: "POST", body: coverData });
+        const coverJson = await coverRes.json();
+        if (!coverRes.ok) throw new Error(coverJson.error || "Cover upload failed");
+        coverUrl = coverJson.url;
+      } else {
+        const blob = await upload(coverFile.name, coverFile, {
+          access: "public",
+          handleUploadUrl: "/api/upload",
+        });
+        coverUrl = blob.url;
+      }
 
       // Upload video file
-      const srcData = new FormData();
-      srcData.append("file", srcFile);
-      const srcRes = await fetch("/api/upload", { method: "POST", body: srcData });
-      const srcJson = await srcRes.json();
-      if (!srcRes.ok) throw new Error(srcJson.error || "Video upload failed");
+      let srcUrl = "";
+      if (isLocal) {
+        const srcData = new FormData();
+        srcData.append("file", srcFile);
+        const srcRes = await fetch("/api/upload", { method: "POST", body: srcData });
+        const srcJson = await srcRes.json();
+        if (!srcRes.ok) throw new Error(srcJson.error || "Video upload failed");
+        srcUrl = srcJson.url;
+      } else {
+        const blob = await upload(srcFile.name, srcFile, {
+          access: "public",
+          handleUploadUrl: "/api/upload",
+        });
+        srcUrl = blob.url;
+      }
 
       const res = await fetch("/api/videos", {
         method: "POST",
@@ -65,8 +88,8 @@ export default function AdminVideosClient() {
           title,
           location,
           duration,
-          cover: coverJson.url,
-          src: srcJson.url,
+          cover: coverUrl,
+          src: srcUrl,
         }),
       });
 

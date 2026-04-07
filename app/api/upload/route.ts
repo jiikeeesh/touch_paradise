@@ -1,36 +1,44 @@
-import { put } from "@vercel/blob";
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/next";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  const contentType = request.headers.get("content-type") || "";
+
+  // If it's a JSON request, it's likely handleUpload (client-side upload handshake) 
+  if (contentType.includes("application/json")) {
+    try {
+      const body = (await request.json()) as HandleUploadBody;
+      const jsonResponse = await handleUpload({
+        body,
+        request,
+        onBeforeGenerateToken: async (pathname: string) => {
+          return {
+            allowedContentTypes: ["image/jpeg", "image/png", "image/webp", "image/gif", "video/mp4", "video/webm"],
+            tokenPayload: JSON.stringify({ pathname }),
+          };
+        },
+        onUploadCompleted: async ({ blob, tokenPayload }: { blob: { url: string }, tokenPayload?: string }) => {
+          console.log("Blob upload completed:", blob.url);
+        },
+      });
+      return NextResponse.json(jsonResponse);
+    } catch (error) {
+      return NextResponse.json({ error: (error as Error).message }, { status: 400 });
+    }
+  }
+
+  // Handle FormData for direct server-side upload (useful for local development fallback)
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
-
-    if (!file) {
-      return Response.json({ error: "No file provided" }, { status: 400 });
-    }
-
-    // Validate file type
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "video/mp4", "video/webm"];
-    if (!allowedTypes.includes(file.type)) {
-      return Response.json(
-        { error: "Only JPEG, PNG, WebP, GIF images and MP4, WebM videos are allowed" },
-        { status: 400 }
-      );
-    }
-
-    // Max 50 MB
-    const maxSize = 50 * 1024 * 1024;
-    if (file.size > maxSize) {
-      return Response.json({ error: "File size exceeds 50 MB" }, { status: 400 });
-    }
+    if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
 
     // Local Storage Fallback for Development
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === "development" || !process.env.BLOB_READ_WRITE_TOKEN) {
       const uploadsDir = path.join(process.cwd(), "public", "uploads");
       await mkdir(uploadsDir, { recursive: true });
 
@@ -41,27 +49,15 @@ export async function POST(request: NextRequest) {
       const buffer = Buffer.from(await file.arrayBuffer());
       await writeFile(filepath, buffer);
 
-      return Response.json({ url: `/uploads/${filename}` }, { status: 201 });
+      return NextResponse.json({ url: `/uploads/${filename}` }, { status: 201 });
     }
 
-    // Vercel Blob upload (Production)
-    const blob = await put(file.name, file, {
-      access: "public",
-    });
+    // Fallback to direct server-side put if token exists but client didn't use handleUpload
+    const { put } = await import("@vercel/blob");
+    const blob = await put(file.name, file, { access: "public" });
+    return NextResponse.json({ url: blob.url }, { status: 201 });
 
-    return Response.json({ url: blob.url }, { status: 201 });
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : "Upload failed";
-    console.error("[POST /api/upload]", error);
-    
-    // Check if token is missing (only in production)
-    if (errorMsg.includes("BLOB_READ_WRITE_TOKEN") && process.env.NODE_ENV !== "development") {
-      return Response.json(
-        { error: "Vercel Blob token is missing. Please add it to your environment variables on Vercel." },
-        { status: 500 }
-      );
-    }
-
-    return Response.json({ error: errorMsg }, { status: 500 });
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }
 }

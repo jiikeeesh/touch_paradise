@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { X, Upload, Loader2, Plus } from "lucide-react";
+import { upload } from "@vercel/blob/client";
 
 interface Region {
   id: string;
@@ -51,12 +52,26 @@ export function RegionForm({ initial, onSuccess, onCancel }: RegionFormProps) {
   const handleUpload = async (file: File) => {
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Upload failed");
-      setImage(data.url);
+      // Logic: if we're in development without a token, use the proxy fallback.
+      // In production, use client-side direct upload.
+      const isLocal = window.location.hostname === "localhost" || window.location.hostname.includes("192.168");
+      
+      let url = "";
+      if (isLocal) {
+        const fd = new FormData();
+        fd.append("file", file);
+        const res = await fetch("/api/upload", { method: "POST", body: fd });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error ?? "Upload failed");
+        url = data.url;
+      } else {
+        const blob = await upload(file.name, file, {
+          access: "public",
+          handleUploadUrl: "/api/upload",
+        });
+        url = blob.url;
+      }
+      setImage(url);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Upload failed");
     } finally {
@@ -255,12 +270,24 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
   const handleImageUpload = useCallback(async (file: File) => {
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Upload failed");
-      setImages((prev) => [...prev, data.url]);
+      const isLocal = window.location.hostname === "localhost" || window.location.hostname.includes("192.168");
+      
+      let url = "";
+      if (isLocal) {
+        const fd = new FormData();
+        fd.append("file", file);
+        const res = await fetch("/api/upload", { method: "POST", body: fd });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error ?? "Upload failed");
+        url = data.url;
+      } else {
+        const blob = await upload(file.name, file, {
+          access: "public",
+          handleUploadUrl: "/api/upload",
+        });
+        url = blob.url;
+      }
+      setImages((prev) => [...prev, url]);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Upload failed");
     } finally {
