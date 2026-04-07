@@ -19,6 +19,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           return {
             allowedContentTypes: ["image/jpeg", "image/png", "image/webp", "image/gif", "video/mp4", "video/webm"],
             tokenPayload: JSON.stringify({ pathname }),
+            maximumSizeInBytes: 100 * 1024 * 1024, // 100MB limit to prevent 400/CORS errors on large uploads
           };
         },
         onUploadCompleted: async ({ blob, tokenPayload }) => {
