@@ -3,7 +3,6 @@
 import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { X, Upload, Loader2, Plus } from "lucide-react";
-import { upload } from "@vercel/blob/client";
 
 interface Region {
   id: string;
@@ -52,11 +51,21 @@ export function RegionForm({ initial, onSuccess, onCancel }: RegionFormProps) {
   const handleUpload = async (file: File) => {
     setUploading(true);
     try {
-      // Unified logic: always use client-side upload handshake via /api/upload
-      const blob = await upload(file.name, file, {
-        access: "public",
-        handleUploadUrl: "/api/upload",
+      // PROXY LOGIC: Send file to our own API route to avoid CORS
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
       });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Upload failed");
+      }
+
+      const blob = await res.json();
       const url = blob.url;
       setImage(url);
     } catch (e: unknown) {
@@ -257,11 +266,21 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
   const handleImageUpload = useCallback(async (file: File) => {
     setUploading(true);
     try {
-      // Unified logic: always use client-side upload handshake via /api/upload
-      const blob = await upload(file.name, file, {
-        access: "public",
-        handleUploadUrl: "/api/upload",
+      // PROXY LOGIC: Send file to our own API route to avoid CORS
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
       });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Upload failed");
+      }
+
+      const blob = await res.json();
       const url = blob.url;
       setImages((prev) => [...prev, url]);
     } catch (e: unknown) {

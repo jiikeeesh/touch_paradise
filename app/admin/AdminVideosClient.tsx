@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Play, ChevronLeft, ChevronRight, X, Trash2, Video as VideoIcon, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { upload } from "@vercel/blob/client";
 interface Video {
   id: string; title: string; location: string; duration: string; cover: string; src: string;
 }
@@ -45,18 +44,36 @@ export default function AdminVideosClient() {
 
     setAdding(true);
     try {
-      // Unified cover upload: always use client-side upload handshake via /api/upload
-      const coverBlob = await upload(coverFile.name, coverFile, {
-        access: "public",
-        handleUploadUrl: "/api/upload",
+      // PROXY LOGIC (Cover): Send file to our own API route to avoid CORS
+      const coverFormData = new FormData();
+      coverFormData.append("file", coverFile);
+
+      const coverRes = await fetch("/api/upload", {
+        method: "POST",
+        body: coverFormData,
       });
+
+      if (!coverRes.ok) {
+        const data = await coverRes.json();
+        throw new Error(data.error || "Cover upload failed");
+      }
+      const coverBlob = await coverRes.json();
       const coverUrl = coverBlob.url;
 
-      // Unified video upload: always use client-side upload handshake via /api/upload
-      const srcBlob = await upload(srcFile.name, srcFile, {
-        access: "public",
-        handleUploadUrl: "/api/upload",
+      // PROXY LOGIC (Video): Send file to our own API route to avoid CORS
+      const srcFormData = new FormData();
+      srcFormData.append("file", srcFile);
+
+      const srcRes = await fetch("/api/upload", {
+        method: "POST",
+        body: srcFormData,
       });
+
+      if (!srcRes.ok) {
+        const data = await srcRes.json();
+        throw new Error(data.error || "Video upload failed");
+      }
+      const srcBlob = await srcRes.json();
       const srcUrl = srcBlob.url;
 
       const res = await fetch("/api/videos", {
