@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 // PUT /api/service-categories/[id] — update a category
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
@@ -28,7 +28,7 @@ export async function PUT(
 // DELETE /api/service-categories/[id] — delete a category
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;

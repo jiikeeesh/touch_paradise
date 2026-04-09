@@ -18,7 +18,7 @@ import { notFound } from "next/navigation";
 export const dynamic = "force-dynamic";
 
 interface Props {
-  params: { category: string; slug: string };
+  params: Promise<{ category: string; slug: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
