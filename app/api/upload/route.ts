@@ -41,28 +41,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
   }
 
-  // Handle FormData for direct server-side upload (useful for local development fallback)
+  // Handle FormData for direct server-side upload
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
     if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
 
-    // Local Storage Fallback for Development
-    if (process.env.NODE_ENV === "development" || !process.env.BLOB_READ_WRITE_TOKEN) {
-      const uploadsDir = path.join(process.cwd(), "public", "uploads");
-      await mkdir(uploadsDir, { recursive: true });
-
-      const ext = file.name.split(".").pop() ?? "jpg";
-      const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const filepath = path.join(uploadsDir, filename);
-
-      const buffer = Buffer.from(await file.arrayBuffer());
-      await writeFile(filepath, buffer);
-
-      return NextResponse.json({ url: `/uploads/${filename}` }, { status: 201 });
+    // Enforce Vercel Blob usage. No more local storage fallback ("second database").
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      return NextResponse.json({ 
+        error: "Photo upload requires a Vercel Blob Token. Please add BLOB_READ_WRITE_TOKEN to your .env file." 
+      }, { status: 500 });
     }
 
-    // Fallback to direct server-side put if token exists but client didn't use handleUpload
     const { put } = await import("@vercel/blob");
     const blob = await put(file.name, file, { access: "public" });
     return NextResponse.json({ url: blob.url }, { status: 201 });

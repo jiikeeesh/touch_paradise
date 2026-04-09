@@ -45,41 +45,19 @@ export default function AdminVideosClient() {
 
     setAdding(true);
     try {
-      const isLocal = window.location.hostname === "localhost" || window.location.hostname.includes("192.168");
+      // Unified cover upload: always use client-side upload handshake via /api/upload
+      const coverBlob = await upload(coverFile.name, coverFile, {
+        access: "public",
+        handleUploadUrl: "/api/upload",
+      });
+      const coverUrl = coverBlob.url;
 
-      // Upload cover image
-      let coverUrl = "";
-      if (isLocal) {
-        const coverData = new FormData();
-        coverData.append("file", coverFile);
-        const coverRes = await fetch("/api/upload", { method: "POST", body: coverData });
-        const coverJson = await coverRes.json();
-        if (!coverRes.ok) throw new Error(coverJson.error || "Cover upload failed");
-        coverUrl = coverJson.url;
-      } else {
-        const blob = await upload(coverFile.name, coverFile, {
-          access: "public",
-          handleUploadUrl: "/api/upload",
-        });
-        coverUrl = blob.url;
-      }
-
-      // Upload video file
-      let srcUrl = "";
-      if (isLocal) {
-        const srcData = new FormData();
-        srcData.append("file", srcFile);
-        const srcRes = await fetch("/api/upload", { method: "POST", body: srcData });
-        const srcJson = await srcRes.json();
-        if (!srcRes.ok) throw new Error(srcJson.error || "Video upload failed");
-        srcUrl = srcJson.url;
-      } else {
-        const blob = await upload(srcFile.name, srcFile, {
-          access: "public",
-          handleUploadUrl: "/api/upload",
-        });
-        srcUrl = blob.url;
-      }
+      // Unified video upload: always use client-side upload handshake via /api/upload
+      const srcBlob = await upload(srcFile.name, srcFile, {
+        access: "public",
+        handleUploadUrl: "/api/upload",
+      });
+      const srcUrl = srcBlob.url;
 
       const res = await fetch("/api/videos", {
         method: "POST",
