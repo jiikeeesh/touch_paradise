@@ -4,6 +4,15 @@ import { NextResponse, type NextRequest } from "next/server";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  // Check for token existence before anything else
+  if (!process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_READ_WRITE_TOKEN.includes("PLACEHOLDER")) {
+    console.error("Vercel Blob Token is missing or invalid.");
+    return NextResponse.json(
+      { error: "Configuration Error: BLOB_READ_WRITE_TOKEN is missing. Please check your Vercel environment variables." },
+      { status: 500 }
+    );
+  }
+
   const body = await request.json().catch(() => null);
 
   if (body) {
