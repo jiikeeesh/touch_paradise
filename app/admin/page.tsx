@@ -4,6 +4,7 @@ import { Mail, Phone, Calendar, Mountain, LogOut, Video, Briefcase } from "lucid
 import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
 import AdminVideosClient from "./AdminVideosClient";
+import Link from "next/link";
 import DeleteMessageButton from "./DeleteMessageButton";
 
 export const dynamic = "force-dynamic";
@@ -43,20 +44,20 @@ export default async function AdminPage() {
               <Mail className="w-4 h-4" />
               Messages
             </span>
-            <a
+            <Link
               href="/admin/treks"
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
             >
               <Mountain className="w-4 h-4" />
               Treks
-            </a>
-            <a
+            </Link>
+            <Link
               href="/admin/services"
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
             >
               <Briefcase className="w-4 h-4" />
               Services
-            </a>
+            </Link>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">

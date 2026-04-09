@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
-import { LogOut, Briefcase, Mail, Mountain, Video } from "lucide-react";
+import { LogOut, Briefcase, Mail, Mountain } from "lucide-react";
 import AdminServicesClient from "./AdminServicesClient";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Services Management | Admin — Touch Paradise",
@@ -36,20 +37,20 @@ export default function AdminServicesPage() {
 
           {/* Admin Nav */}
           <div className="flex flex-wrap gap-2 mb-8">
-            <a
+            <Link
               href="/admin"
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
             >
               <Mail className="w-4 h-4" />
               Messages
-            </a>
-            <a
+            </Link>
+            <Link
               href="/admin/treks"
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
             >
               <Mountain className="w-4 h-4" />
               Treks
-            </a>
+            </Link>
             <span className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white shadow-sm border border-slate-200 text-emerald-700">
               <Briefcase className="w-4 h-4" />
               Services

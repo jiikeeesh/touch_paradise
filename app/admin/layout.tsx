@@ -1,5 +1,3 @@
-import SessionManager from "./SessionManager";
-
 export default function AdminLayout({
   children,
 }: {
@@ -7,7 +5,6 @@ export default function AdminLayout({
 }) {
   return (
     <>
-      <SessionManager />
       {children}
     </>
   );
