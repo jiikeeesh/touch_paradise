@@ -5,19 +5,14 @@ export function proxy(req: NextRequest) {
   const url = req.nextUrl;
 
   if (url.pathname.startsWith('/admin')) {
-    // Exclude the login page itself from authentication
-    if (url.pathname === '/admin/login') {
-      return NextResponse.next();
-    }
-
     const token = req.cookies.get('admin-token')?.value;
 
     if (token === 'authenticated') {
       return NextResponse.next();
     }
 
-    // Redirect to custom login page
-    return NextResponse.redirect(new URL('/admin/login', req.url));
+    // Redirect to root login page
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 
   return NextResponse.next();
