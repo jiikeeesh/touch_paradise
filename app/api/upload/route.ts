@@ -13,14 +13,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
+  console.log("POST /api/upload - Incoming request");
+
   try {
     // 2. Extract file from FormData
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
 
     if (!file) {
+      console.warn("POST /api/upload - No file provided in FormData");
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
+
+    console.log(`POST /api/upload - Uploading file: ${file.name} (${file.size} bytes)`);
 
     // 3. Upload to Vercel Blob (Server-side)
     // We use a timestamped filename or keep original name. 
