@@ -59,3 +59,27 @@ model Video {
   src       String
   createdAt DateTime @default(now())
 }
+
+model ServiceCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String
+  image       String   @default("")
+  createdAt   DateTime @default(now())
+  services    Service[]
+}
+
+model Service {
+  id           String   @id @default(uuid())
+  title        String
+  slug         String   @unique
+  description  String
+  durationDays Int?
+  price        Float
+  itinerary    String   @default("") // pipe-separated day entries
+  images       String   @default("") // pipe-separated image URLs
+  categoryId   String
+  category     ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+}
