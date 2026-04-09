@@ -1,20 +1,17 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
 import { NextResponse, type NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const contentType = request.headers.get("content-type") || "";
+  const body = await request.json().catch(() => null);
 
-  // If it's a JSON request, it's likely handleUpload (client-side upload handshake) 
-  if (contentType.includes("application/json")) {
+  if (body) {
     try {
-      const body = (await request.json()) as HandleUploadBody;
       const jsonResponse = await handleUpload({
-        body,
+        body: body as HandleUploadBody,
         request,
+        token: process.env.BLOB_READ_WRITE_TOKEN, // Explicitly pass token
         onBeforeGenerateToken: async (pathname: string) => {
           console.log("Generating token for pathname:", pathname);
           return {
@@ -25,10 +22,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
               "image/gif", 
               "video/mp4", 
               "video/webm",
-              "video/quicktime", // MOV support
+              "video/quicktime",
             ],
             tokenPayload: JSON.stringify({ pathname }),
-            maximumSizeInBytes: 100 * 1024 * 1024, // 100MB limit
+            maximumSizeInBytes: 100 * 1024 * 1024, // 100MB
           };
         },
         onUploadCompleted: async ({ blob, tokenPayload }) => {
@@ -37,27 +34,32 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       });
       return NextResponse.json(jsonResponse);
     } catch (error) {
-      return NextResponse.json({ error: (error as Error).message }, { status: 400 });
+      console.error("handshake error:", error);
+      return NextResponse.json(
+        { error: (error as Error).message }, 
+        { status: 400 }
+      );
     }
   }
 
-  // Handle FormData for direct server-side upload
+  // Fallback for direct server-side upload via put() if needed by other components
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
     if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
 
-    // Enforce Vercel Blob usage. No more local storage fallback ("second database").
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
       return NextResponse.json({ 
-        error: "Photo upload requires a Vercel Blob Token. Please add BLOB_READ_WRITE_TOKEN to your .env file." 
+        error: "Photo upload requires a Vercel Blob Token." 
       }, { status: 500 });
     }
 
     const { put } = await import("@vercel/blob");
-    const blob = await put(file.name, file, { access: "public" });
+    const blob = await put(file.name, file, { 
+      access: "public",
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+    });
     return NextResponse.json({ url: blob.url }, { status: 201 });
-
   } catch (error) {
     return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }
