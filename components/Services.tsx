@@ -4,19 +4,15 @@ import ServicesClient from "./ServicesClient";
 export const revalidate = 0;
 
 export default async function Services() {
-  let services: any[] = [];
+  let categories: any[] = [];
   try {
-    const allServices = await prisma.service.findMany({
-      include: {
-        category: true,
-      },
-    });
+    const allCategories = await prisma.serviceCategory.findMany();
     
-    // Shuffle and pick 9 random services
-    services = [...allServices].sort(() => 0.5 - Math.random()).slice(0, 9);
+    // Shuffle the categories
+    categories = [...allCategories].sort(() => 0.5 - Math.random());
   } catch (error) {
-    console.error("Failed to fetch services for homepage:", error);
+    console.error("Failed to fetch service categories for homepage:", error);
   }
 
-  return <ServicesClient services={services} />;
+  return <ServicesClient categories={categories} />;
 }
