@@ -1,4 +1,5 @@
 import PageLayout from "@/components/PageLayout";
+export const dynamic = 'force-dynamic';
 import Hero from "@/components/Hero";
 import FeaturedTreks from "@/components/FeaturedTreks";
 import FeaturedVideos from "@/components/FeaturedVideos";

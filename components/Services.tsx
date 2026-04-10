@@ -14,10 +14,13 @@ export default async function Services() {
       cat => !cat.name.toLowerCase().includes("trekking")
     );
     
-    // Pick 2 random categories from the remaining
-    categories = otherCategories
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 2);
+    // Pick 2 random categories from the remaining using a more robust shuffle
+    const shuffled = [...otherCategories];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    categories = shuffled.slice(0, 2);
   } catch (error) {
     console.error("Failed to fetch service categories for homepage:", error);
   }
