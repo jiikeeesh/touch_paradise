@@ -33,6 +33,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const blob = await put(file.name, file, {
       access: "public",
       token: token,
+      addRandomSuffix: true, // Prevents "already exists" error
     });
 
     return NextResponse.json(blob);
