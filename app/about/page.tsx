@@ -226,6 +226,33 @@ export default async function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Associations */}
+      <section className="py-20 bg-slate-50 border-t border-slate-100">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-2xl font-bold text-slate-800 mb-12">We are associated with</h2>
+          <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24">
+            <div className="group relative">
+               <Image
+                  src="/logos/nma-logo.png"
+                  alt="Nepal Mountaineering Association Logo"
+                  width={180}
+                  height={100}
+                  className="h-20 w-auto object-contain transition-all duration-300 transform group-hover:scale-110"
+                />
+            </div>
+            <div className="group relative">
+               <Image
+                  src="/logos/taan-logo.jpg"
+                  alt="Trekking Agencies' Association of Nepal Logo"
+                  width={180}
+                  height={100}
+                  className="h-20 w-auto object-contain transition-all duration-300 transform group-hover:scale-110"
+                />
+            </div>
+          </div>
+        </div>
+      </section>
     </PageLayout>
   );
 }
