@@ -189,7 +189,7 @@ export default function AdminServicesClient() {
           {categories.map(cat => (
             <div key={cat.id} className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition">
               <div className="relative w-14 h-12 rounded-xl overflow-hidden bg-slate-100">
-                {cat.image && <Image src={cat.image} alt={cat.name} fill className="object-cover" />}
+                {cat.image && <Image src={cat.image} alt={cat.name} fill sizes="60px" className="object-cover" />}
               </div>
               <div className="flex-1">
                 <p className="font-semibold">{cat.name}</p>
@@ -245,7 +245,7 @@ export default function AdminServicesClient() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="relative w-12 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
-                        {svc.images?.split("|")[0] && <Image src={svc.images.split("|")[0]} alt="" fill className="object-cover" />}
+                        {svc.images?.split("|")[0] && <Image src={svc.images.split("|")[0]} alt="" fill sizes="50px" className="object-cover" />}
                       </div>
                       <div>
                         <p className="font-semibold">{svc.title}</p>

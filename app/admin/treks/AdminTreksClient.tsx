@@ -287,6 +287,7 @@ export default function AdminTreksClient() {
                           src={region.image}
                           alt={region.name}
                           fill
+                          sizes="60px"
                           className="object-cover"
                         />
                       ) : (
@@ -432,6 +433,7 @@ export default function AdminTreksClient() {
                                     src={firstImg}
                                     alt={trek.title}
                                     fill
+                                    sizes="50px"
                                     className="object-cover"
                                   />
                                 )}

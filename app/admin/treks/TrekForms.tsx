@@ -153,7 +153,7 @@ export function RegionForm({ initial, onSuccess, onCancel }: RegionFormProps) {
         <div className="flex items-start gap-3">
           {image && (
             <div className="relative w-24 h-20 rounded-xl overflow-hidden flex-shrink-0 border border-slate-200">
-              <Image src={image} alt="Cover" fill className="object-cover" />
+              <Image src={image} alt="Cover" fill sizes="96px" className="object-cover" />
               <button
                 type="button"
                 onClick={() => setImage("")}
@@ -494,7 +494,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
               key={idx}
               className="relative w-24 h-20 rounded-xl overflow-hidden border border-slate-200"
             >
-              <Image src={img} alt={`Image ${idx + 1}`} fill className="object-cover" />
+              <Image src={img} alt={`Image ${idx + 1}`} fill sizes="96px" className="object-cover" />
               <button
                 type="button"
                 onClick={() => removeImage(idx)}

@@ -15,6 +15,7 @@ const Hero = () => {
           alt="Himalayan Mountains"
           fill
           priority
+          sizes="100vw"
           className="object-cover brightness-75 scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />

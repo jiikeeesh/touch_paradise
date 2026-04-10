@@ -106,7 +106,7 @@ export function CategoryForm({ initial, onSuccess, onCancel }: CategoryFormProps
         <div className="flex items-start gap-3">
           {image && (
             <div className="relative w-24 h-20 rounded-xl overflow-hidden border">
-              <Image src={image} alt="Cover" fill className="object-cover" />
+              <Image src={image} alt="Cover" fill sizes="96px" className="object-cover" />
               <button type="button" onClick={() => setImage("")} className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-0.5">
                 <X className="w-3 h-3" />
               </button>
@@ -260,7 +260,7 @@ export function ServiceForm({ initial, categories, onSuccess, onCancel }: Servic
         <div className="flex flex-wrap gap-3">
           {images.map((img, idx) => (
             <div key={idx} className="relative w-24 h-20 rounded-xl overflow-hidden border">
-              <Image src={img} alt={`Img ${idx}`} fill className="object-cover" />
+              <Image src={img} alt={`Img ${idx}`} fill sizes="96px" className="object-cover" />
               <button type="button" onClick={() => setImages(prev => prev.filter((_, i) => i !== idx))} className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-0.5">
                 <X className="w-3 h-3" />
               </button>

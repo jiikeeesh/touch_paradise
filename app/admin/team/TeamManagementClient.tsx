@@ -221,7 +221,7 @@ export default function TeamManagementClient({ initialMembers }: { initialMember
                 <div className="flex items-start gap-4">
                   {image && (
                     <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 border border-slate-200">
-                      <Image src={image} alt="Profile" fill className="object-cover" />
+                      <Image src={image} alt="Profile" fill sizes="96px" className="object-cover" />
                       <button
                         type="button"
                         onClick={() => setImage("")}
@@ -313,7 +313,7 @@ export default function TeamManagementClient({ initialMembers }: { initialMember
               .map((member) => (
                 <div key={member.id} className="p-6 flex items-start gap-6 hover:bg-slate-50/50 transition group">
                   <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0 ring-4 ring-slate-100 group-hover:ring-emerald-100 transition">
-                    <Image src={member.image || "/trekkers.png"} alt={member.name} fill className="object-cover" />
+                    <Image src={member.image || "/trekkers.png"} alt={member.name} fill sizes="80px" className="object-cover" />
                   </div>
                   <div className="flex-grow min-w-0">
                     <div className="flex justify-between items-start mb-1">
