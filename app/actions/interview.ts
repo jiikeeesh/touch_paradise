@@ -3,6 +3,17 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+interface InterviewApplication {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  position: string;
+  experience: string;
+  message: string;
+  createdAt: Date;
+}
+
 export async function submitInterviewApplication(formData: FormData) {
   try {
     const name = formData.get("name") as string;

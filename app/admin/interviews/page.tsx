@@ -7,12 +7,23 @@ import DeleteInterviewButton from "./DeleteInterviewButton";
 
 export const dynamic = "force-dynamic";
 
+interface InterviewApplication {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  position: string;
+  experience: string;
+  message: string;
+  createdAt: Date;
+}
+
 export default async function AdminInterviewsPage() {
-  const applications = await (prisma as any).interviewApplication.findMany({
+  const applications = (await (prisma as any).interviewApplication.findMany({
     orderBy: {
       createdAt: "desc",
     },
-  });
+  })) as InterviewApplication[];
 
   return (
     <PageLayout hideSocial={true}>
