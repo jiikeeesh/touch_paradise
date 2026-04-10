@@ -7,15 +7,15 @@ const TrekIncludesExcludes: React.FC = () => {
     "Meals are on a full-board basis (Breakfast, lunch, and dinner/ the main course) during the trek in the mountain.",
     "Touch Paradise's experienced, government-licensed, English-speaking trekking guide",
     "All salary, food, drinks, accommodation, transport, and insurance for the guide.",
-    "All necessary papers, including the Langtang National Park permit and TIMS card (Trekking Information Management System)",
+    "All necessary papers, including the All National Park permit and TIMS card (Trekking Information Management System)",
     "Trekking equipment, such as a Sleeping bag and down jacket, on request (optional)",
     "Trekking lodges (Tea House) throughout the trek",
-    "All the ground transportation including from Kathmandu- Dhunche- Kathmandu",
+    "All the ground transportation included",
     "All government, Local taxes/VAT, and official Expenses",
   ];
 
   const excludes = [
-    "Nepal entry visa fees (you can easily issue the visa on arrival at Tribhuwan International Airport, Kathmandu). $25 USD for 15 days Visa.",
+    "Nepal entry visa fees (you can easily issue the visa on arrival at Tribhuwan International Airport, Kathmandu).",
     "Extra accommodation and meals behind schedule (Foods and accommodations before and after the trek)",
     "All kinds of beverages coke, beers, water, etc). Additional cost by out of management control due to the landscape, weather condition, illness, change of government policies, strikes, and physical condition, etc.",
     "Personal expenses such as snacks, laundry, telephone, WIFI, hot shower, etc at tea houses on a trek.",
