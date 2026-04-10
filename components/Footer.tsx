@@ -1,7 +1,6 @@
-"use client";
-
 import Link from "next/link";
 import { Mail, Phone, MapPin, ArrowRight } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
 const SocialIcon = ({ d, label, href = "#", fill = false }: { d: string; label: string; href?: string; fill?: boolean }) => (
   <a 
@@ -25,7 +24,26 @@ const SocialIcon = ({ d, label, href = "#", fill = false }: { d: string; label: 
   </a>
 );
 
-const Footer = () => {
+export const dynamic = "force-dynamic";
+
+const Footer = async () => {
+  // Fetch popular treks from the database
+  let popularTreks: any[] = [];
+  try {
+    const allTreks = await prisma.trek.findMany({
+      include: { region: { select: { slug: true } } },
+    });
+    
+    if (allTreks.length > 0) {
+      // Shuffle and pick 5 random treks
+      popularTreks = [...allTreks]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 5);
+    }
+  } catch (error) {
+    console.error("Error fetching popular treks for footer:", error);
+  }
+
   // Using simple paths for Instagram since complex ones are hard to embed as single path
   const instagramPath = "M17 2H7C4.24 2 2 4.24 2 7V17C2 19.76 4.24 22 7 22H17C19.76 22 22 19.76 22 17V7C22 4.24 19.76 2 17 2ZM12 18C8.69 18 6 15.31 6 12C6 8.69 8.69 6 12 6C15.31 6 18 8.69 18 12C18 15.31 15.31 18 12 18ZM17 7.5C16.45 7.5 16 7.05 16 6.5C16 5.95 16.45 5.5 17 5.5C17.55 5.5 18 5.95 18 6.5C18 7.05 17.55 7.5 17 7.5Z";
 
@@ -58,28 +76,47 @@ const Footer = () => {
           <div className="space-y-8">
             <h4 className="text-lg font-bold">Quick Links</h4>
             <ul className="space-y-4">
-              {["Treks", "Tours", "About Us", "Our Guides", "Contact"].map((link) => (
-                <li key={link}>
-                  <Link href={`#${link.toLowerCase().replace(" ", "")}`} className="text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-2 group">
+              {[
+                { name: "Treks", href: "/treks" },
+                { name: "Services", href: "/services" },
+                { name: "About Us", href: "/about" },
+                { name: "Our Guides", href: "/team" },
+                { name: "Contact", href: "/contact" },
+              ].map((link) => (
+                <li key={link.name}>
+                  <Link href={link.href} className="text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-2 group">
                     <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                    {link}
+                    {link.name}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Popular Locations */}
+          {/* Popular Treks */}
           <div className="space-y-8">
             <h4 className="text-lg font-bold">Popular Treks</h4>
             <ul className="space-y-4">
-              {["Everest Base Camp", "Annapurna Circuit", "Mardi Himal", "Gosaikunda Lake", "Langtang Valley"].map((trek) => (
-                <li key={trek}>
-                  <Link href="#" className="text-slate-400 hover:text-emerald-400 transition-colors">
-                    {trek}
-                  </Link>
-                </li>
-              ))}
+              {popularTreks.length > 0 ? (
+                popularTreks.map((trek) => (
+                  <li key={trek.id}>
+                    <Link 
+                      href={`/treks/${trek.region.slug}/${trek.slug}`} 
+                      className="text-slate-400 hover:text-emerald-400 transition-colors"
+                    >
+                      {trek.title}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                ["Everest Base Camp", "Annapurna Circuit", "Mardi Himal", "Gosaikunda Lake", "Langtang Valley"].map((trek) => (
+                  <li key={trek}>
+                    <Link href="/treks" className="text-slate-400 hover:text-emerald-400 transition-colors">
+                      {trek}
+                    </Link>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
 
