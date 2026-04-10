@@ -65,6 +65,13 @@ export default async function AdminPage() {
               <Users className="w-4 h-4" />
               Team
             </Link>
+            <Link
+              href="/admin/interviews"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
+            >
+              <Users className="w-4 h-4" />
+              Interviews
+            </Link>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">

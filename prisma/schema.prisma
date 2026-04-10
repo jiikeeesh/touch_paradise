@@ -93,3 +93,14 @@ model TeamMember {
   order     Int      @default(0)
   createdAt DateTime @default(now())
 }
+
+model InterviewApplication {
+  id         String   @id @default(uuid())
+  name       String
+  email      String
+  phone      String
+  position   String   // Lead Guide, Assistant Guide, Office Staff, etc.
+  experience String   // Years of experience
+  message    String   @db.Text
+  createdAt  DateTime @default(now())
+}

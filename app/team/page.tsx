@@ -3,6 +3,7 @@ import Image from "next/image";
 import PageLayout from "@/components/PageLayout";
 import { getTeamMembers } from "@/app/actions/team";
 import { Mountain, Award, Heart, Shield, Users } from "lucide-react";
+import InterviewForm from "@/components/InterviewForm";
 
 export const metadata: Metadata = {
   title: "Our Team | Touch Paradise — Experts in Nepal Trekking",
@@ -122,19 +123,23 @@ export default async function TeamPage() {
         </div>
       </section>
 
-      {/* Join the Team CTA */}
-      <section className="py-24 bg-emerald-600">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">Want to join the family?</h2>
-          <p className="text-emerald-100 max-w-xl mx-auto mb-10 text-lg">
-            We are always looking for passionate, certified guides and hospitality experts who love the Himalayas as much as we do.
-          </p>
-          <a
-            href="/contact"
-            className="inline-flex items-center gap-2 bg-white text-emerald-700 font-bold px-10 py-4 rounded-full hover:bg-emerald-50 transition-all shadow-xl shadow-emerald-900/20"
-          >
-            Work With Us
-          </a>
+      {/* Join the Team Section */}
+      <section className="py-24 bg-emerald-600 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute -top-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-400/20 rounded-full blur-3xl" />
+        </div>
+
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <div className="max-w-3xl mx-auto mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">Want to join the family?</h2>
+            <p className="text-emerald-100 mb-10 text-lg leading-relaxed">
+              We are always looking for passionate, certified guides and hospitality experts who love the Himalayas as much as we do. Fill out the application form below and we&apos;ll get in touch for an interview.
+            </p>
+          </div>
+
+          <InterviewForm />
         </div>
       </section>
     </PageLayout>
