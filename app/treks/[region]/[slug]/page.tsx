@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Clock, Mountain, Signal, MapPin, ArrowLeft, CheckCircle2 } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import TrekBookingForm from "@/components/TrekBookingForm";
+import TrekIncludesExcludes from "@/components/TrekIncludesExcludes";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -153,6 +154,9 @@ export default async function TrekPage({ params }: Props) {
                   </div>
                 </div>
               )}
+
+              {/* Includes / Excludes */}
+              <TrekIncludesExcludes />
 
               {/* Gallery */}
               {galleryImages.length > 0 && (
