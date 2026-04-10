@@ -83,3 +83,13 @@ model Service {
   category     ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   createdAt    DateTime @default(now())
 }
+
+model TeamMember {
+  id        String   @id @default(uuid())
+  name      String
+  role      String
+  bio       String
+  image     String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}

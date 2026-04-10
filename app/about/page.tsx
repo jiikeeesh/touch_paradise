@@ -2,26 +2,32 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { ShieldCheck, HeartPulse, UserCheck, CheckCircle2, ArrowRight, Mountain } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
+import { getTeamMembers } from "@/app/actions/team";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "About Us | Touch Paradise — Nepal Trekking",
   description: "Learn about Touch Paradise Trekking and Expeditions — Nepal's trusted Himalayan adventure agency based in Kathmandu.",
 };
 
-const team = [
+// Initial team placeholders (only used if DB is empty)
+const teamPlaceholder = [
   {
+    id: "1",
     name: "Pemba Sherpa",
     role: "Lead Guide & Founder",
     bio: "Born in the Khumbu region, Pemba has summited Everest 7 times and led over 300 successful expeditions.",
     image: "/trekkers.png",
   },
   {
+    id: "2",
     name: "Hari Tamang",
     role: "Annapurna Specialist",
     bio: "With 12 years on Annapurna trails, Hari is known for his local knowledge and warm hospitality.",
     image: "/trekkers.png",
   },
   {
+    id: "3",
     name: "Sita Gurung",
     role: "Operations Manager",
     bio: "Sita ensures every trip runs flawlessly — from permits to porters, nothing is left to chance.",
@@ -52,14 +58,22 @@ const values = [
   },
 ];
 
-const stats = [
+// Static stats part, transformed into a function or dynamic inside component
+const staticStats = [
   { label: "Years in Business", value: "15+" },
   { label: "Treks Completed", value: "2,500+" },
   { label: "Happy Clients", value: "10,000+" },
-  { label: "Certified Guides", value: "40+" },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const dbMembers = await getTeamMembers();
+  const team = dbMembers.length > 0 ? dbMembers.slice(0, 3) : teamPlaceholder;
+
+  const stats = [
+    ...staticStats,
+    { label: "Certified Guides", value: `${dbMembers.length > 0 ? dbMembers.length : "40"}+` },
+  ];
+
   return (
     <PageLayout>
       {/* Header */}
@@ -183,12 +197,12 @@ export default function AboutPage() {
               Every guide on our team is a trained, certified, and passionate Nepali mountain expert.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-16">
             {team.map((member) => (
-              <div key={member.name} className="group text-center bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-all">
+              <div key={member.id} className="group text-center bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-all">
                 <div className="relative w-28 h-28 mx-auto mb-6 rounded-full overflow-hidden ring-4 ring-emerald-500/30">
-                  <Image
-                    src={member.image}
+                   <Image
+                    src={member.image || "/trekkers.png"}
                     alt={member.name}
                     fill
                     sizes="112px"
@@ -200,6 +214,15 @@ export default function AboutPage() {
                 <p className="text-slate-400 text-sm leading-relaxed">{member.bio}</p>
               </div>
             ))}
+          </div>
+
+          <div className="text-center">
+            <Link
+              href="/team"
+              className="inline-flex items-center gap-2 bg-emerald-600 text-white font-bold px-10 py-4 rounded-full hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
+            >
+              See More Team Members <ArrowRight className="w-5 h-5" />
+            </Link>
           </div>
         </div>
       </section>

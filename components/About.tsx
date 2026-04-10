@@ -4,14 +4,18 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { CheckCircle2, ShieldCheck, HeartPulse, UserCheck } from "lucide-react";
 
-const stats = [
-  { label: "Years Experience", value: "17+" },
-  { label: "Successful Treks", value: "2,500+" },
-  { label: "Professional Guides", value: "40+" },
-  { label: "Happy Clients", value: "10k+" },
-];
+interface AboutProps {
+  guideCount?: number;
+}
 
-const About = () => {
+const About = ({ guideCount = 0 }: AboutProps) => {
+  const stats = [
+    { label: "Years Experience", value: "17+" },
+    { label: "Successful Treks", value: "2,500+" },
+    { label: "Professional Guides", value: `${guideCount > 0 ? guideCount : "40"}+` },
+    { label: "Happy Clients", value: "10k+" },
+  ];
+
   return (
     <section id="about" className="py-24 bg-white overflow-hidden">
       <div className="container mx-auto px-4">

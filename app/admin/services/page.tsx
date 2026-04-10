@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
-import { LogOut, Briefcase, Mail, Mountain } from "lucide-react";
+import { LogOut, Briefcase, Mail, Mountain, Users } from "lucide-react";
 import AdminServicesClient from "./AdminServicesClient";
 import Link from "next/link";
 
@@ -55,6 +55,13 @@ export default function AdminServicesPage() {
               <Briefcase className="w-4 h-4" />
               Services
             </span>
+            <Link
+              href="/admin/team"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
+            >
+              <Users className="w-4 h-4" />
+              Team
+            </Link>
           </div>
 
           <AdminServicesClient />

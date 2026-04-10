@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
-import { LogOut, Mountain, Mail, Briefcase, Users } from "lucide-react";
-import AdminTreksClient from "./AdminTreksClient";
+import { LogOut, Users, Mail, Mountain, Briefcase } from "lucide-react";
+import TeamManagementClient from "./TeamManagementClient";
 import Link from "next/link";
+import { getTeamMembers } from "@/app/actions/team";
 
 export const metadata: Metadata = {
-  title: "Treks Management | Admin — Touch Paradise",
+  title: "Team Management | Admin — Touch Paradise",
 };
 
-export default function AdminTreksPage() {
+export default async function AdminTeamPage() {
+  const members = await getTeamMembers();
+
   return (
     <PageLayout hideSocial={true}>
       <div className="bg-slate-50 min-h-screen py-24">
@@ -18,10 +21,10 @@ export default function AdminTreksPage() {
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
             <div>
               <h1 className="text-4xl font-bold text-slate-900 mb-1">
-                Treks Management
+                Team Management
               </h1>
               <p className="text-slate-500">
-                Create and manage trekking regions and packages
+                Add and manage your guides and office staff
               </p>
             </div>
             <form action={logout}>
@@ -35,8 +38,8 @@ export default function AdminTreksPage() {
             </form>
           </div>
 
-          {/* Nav between admin sections */}
-          <div className="flex gap-2 mb-8">
+          {/* Admin Nav */}
+          <div className="flex flex-wrap gap-2 mb-8">
             <Link
               href="/admin"
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
@@ -44,10 +47,13 @@ export default function AdminTreksPage() {
               <Mail className="w-4 h-4" />
               Messages
             </Link>
-            <span className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white shadow-sm border border-slate-200 text-emerald-700">
+            <Link
+              href="/admin/treks"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
+            >
               <Mountain className="w-4 h-4" />
               Treks
-            </span>
+            </Link>
             <Link
               href="/admin/services"
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
@@ -55,16 +61,13 @@ export default function AdminTreksPage() {
               <Briefcase className="w-4 h-4" />
               Services
             </Link>
-            <Link
-              href="/admin/team"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
+            <span className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white shadow-sm border border-slate-200 text-emerald-700">
               <Users className="w-4 h-4" />
               Team
-            </Link>
+            </span>
           </div>
 
-          <AdminTreksClient />
+          <TeamManagementClient initialMembers={members} />
         </div>
       </div>
     </PageLayout>

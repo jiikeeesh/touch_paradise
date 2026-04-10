@@ -15,8 +15,9 @@ export const metadata: Metadata = {
 export default async function TreksPage() {
   let regions: any[] = [];
   let trekCount = 0;
+  let guideCount = 0;
   try {
-    const [fetchedRegions, totalTreks] = await Promise.all([
+    const [fetchedRegions, totalTreks, totalGuides] = await Promise.all([
       prisma.region.findMany({
         orderBy: { createdAt: "desc" },
         include: {
@@ -26,9 +27,11 @@ export default async function TreksPage() {
         },
       }),
       prisma.trek.count(),
+      prisma.teamMember.count(),
     ]);
     regions = fetchedRegions;
     trekCount = totalTreks;
+    guideCount = totalGuides;
   } catch (error) {
     console.error("Failed to load regions or trek count:", error);
   }
@@ -70,7 +73,7 @@ export default async function TreksPage() {
             {[
               { label: "Trek Packages", value: `${trekCount > 0 ? trekCount : "0"}+` },
               { label: "Regions Covered", value: `${regionCount > 0 ? regionCount : "0"}` },
-              { label: "Certified Guides", value: "40+" },
+              { label: "Certified Guides", value: `${guideCount > 0 ? guideCount : "40"}+` },
               { label: "Years Running", value: "17+" },
             ].map((stat) => (
               <div key={stat.label} className="py-6 px-8 text-center">
