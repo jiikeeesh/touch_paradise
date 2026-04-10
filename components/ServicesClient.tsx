@@ -4,12 +4,15 @@ import { motion } from "framer-motion";
 import { Compass, Trophy, Map, Tent, Helicopter, Camera, Briefcase, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-interface Category {
+interface Service {
   id: string;
-  name: string;
+  title: string;
   slug: string;
   description: string;
-  image: string;
+  category: {
+    name: string;
+    slug: string;
+  };
 }
 
 const iconMap: any = {
@@ -21,10 +24,7 @@ const iconMap: any = {
   "Photography Tours": Camera,
 };
 
-const ServicesClient = ({ categories }: { categories: Category[] }) => {
-  // We'll insert Trekking & Hiking as the first one if it's not in DB
-  // Or just combine them.
-  
+const ServicesClient = ({ services }: { services: Service[] }) => {
   return (
     <section id="services" className="py-24 bg-slate-900 text-white overflow-hidden">
       <div className="container mx-auto px-4 relative">
@@ -66,10 +66,10 @@ const ServicesClient = ({ categories }: { categories: Category[] }) => {
             </motion.div>
           </Link>
 
-          {categories.map((cat, index) => {
-            const Icon = iconMap[cat.name] || Briefcase;
+          {services.map((service, index) => {
+            const Icon = iconMap[service.category.name] || Briefcase;
             return (
-              <Link key={cat.id} href={`/services/${cat.slug}`}>
+              <Link key={service.id} href={`/services/${service.category.slug}/${service.slug}`}>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -81,13 +81,18 @@ const ServicesClient = ({ categories }: { categories: Category[] }) => {
                     <Icon className="w-7 h-7 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold mb-4 group-hover:text-emerald-400 transition-colors">
-                    {cat.name}
+                    {service.title}
                   </h3>
+                  <div className="mb-2">
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-400/60">
+                      {service.category.name}
+                    </span>
+                  </div>
                   <p className="text-slate-400 leading-relaxed line-clamp-3">
-                    {cat.description}
+                    {service.description}
                   </p>
                   <div className="mt-6 flex items-center gap-2 text-emerald-400 font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                    View Packages <ArrowRight className="w-4 h-4" />
+                    View Details <ArrowRight className="w-4 h-4" />
                   </div>
                 </motion.div>
               </Link>
