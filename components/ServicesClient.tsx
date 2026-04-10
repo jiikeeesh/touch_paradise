@@ -42,30 +42,6 @@ const ServicesClient = ({ services }: { services: Service[] }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Trekking is special as discussed */}
-          <Link href="/treks">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-              className="p-10 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group h-full"
-            >
-              <div className="w-14 h-14 rounded-2xl bg-blue-500 flex items-center justify-center mb-8 shadow-lg group-hover:scale-110 transition-transform">
-                <Compass className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4 group-hover:text-emerald-400 transition-colors">
-                Trekking & Hiking
-              </h3>
-              <p className="text-slate-400 leading-relaxed">
-                From easy day hikes to challenging multi-week expeditions across the Himalayas.
-              </p>
-              <div className="mt-6 flex items-center gap-2 text-emerald-400 font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                Explore Regions <ArrowRight className="w-4 h-4" />
-              </div>
-            </motion.div>
-          </Link>
-
           {services.map((service, index) => {
             const Icon = iconMap[service.category.name] || Briefcase;
             return (
