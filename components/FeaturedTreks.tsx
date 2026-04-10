@@ -55,7 +55,8 @@ interface Trek {
 
 
 const FeaturedTreks = () => {
-  const [displayTreks, setDisplayTreks] = useState<Trek[]>(fallbackTreks);
+  const [displayTreks, setDisplayTreks] = useState<Trek[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchTreks = async () => {
@@ -82,6 +83,8 @@ const FeaturedTreks = () => {
         }
       } catch (err) {
         console.error("Error fetching treks", err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchTreks();
@@ -105,8 +108,15 @@ const FeaturedTreks = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {displayTreks.map((trek, index) => {
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-slate-50 rounded-3xl h-[450px] animate-pulse" />
+            ))}
+          </div>
+        ) : displayTreks.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {displayTreks.map((trek, index) => {
             const trekLink = trek.slug && trek.regionSlug 
               ? `/treks/${trek.regionSlug}/${trek.slug}`
               : "/treks";
@@ -171,7 +181,13 @@ const FeaturedTreks = () => {
               </Link>
             );
           })}
-        </div>
+          </div>
+        ) : (
+          <div className="text-center py-20 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+            <Mountain className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+            <p className="text-slate-500 font-medium">No trekking packages found. Create some in the admin panel!</p>
+          </div>
+        )}
       </div>
     </section>
   );

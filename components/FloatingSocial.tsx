@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { MessageCircle, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const WHATSAPP_NUMBER = "9779841259682";
 const FACEBOOK_URL = "https://www.facebook.com/touchparadisetrekking"; // update with real page URL
@@ -33,7 +35,12 @@ const Bubble = ({ href, label, bgColor, hoverBgColor, shadowColor, pulsing = fal
   const [hovered, setHovered] = useState(false);
 
   return (
-    <div className="relative flex items-center group">
+    <motion.div 
+      initial={{ opacity: 0, y: 20, scale: 0.8 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 20, scale: 0.8 }}
+      className="relative flex items-center group mb-4"
+    >
       {/* Tooltip */}
       <div
         className={`absolute right-16 whitespace-nowrap px-3 py-1.5 rounded-lg text-white text-sm font-medium pointer-events-none
@@ -77,47 +84,95 @@ const Bubble = ({ href, label, bgColor, hoverBgColor, shadowColor, pulsing = fal
       >
         {children}
       </a>
-    </div>
+    </motion.div>
   );
 };
 
 const FloatingSocial = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <div
-      className="fixed bottom-8 right-6 z-50 flex flex-col gap-4 items-end"
-      style={{ animation: "slideInRight 0.5s ease-out both" }}
-    >
-      <style>{`
-        @keyframes slideInRight {
-          from { opacity: 0; transform: translateX(60px); }
-          to   { opacity: 1; transform: translateX(0); }
-        }
-      `}</style>
+    <div className="fixed bottom-8 right-6 z-50 flex flex-col items-end">
+      <AnimatePresence>
+        {isOpen && (
+          <div className="flex flex-col items-end mb-2">
+            {/* Facebook */}
+            <Bubble
+              href={FACEBOOK_URL}
+              label="Follow on Facebook"
+              bgColor="bg-[#1877F2]"
+              hoverBgColor="hover:bg-[#1565d8]"
+              shadowColor="rgba(24,119,242,0.45)"
+            >
+              <FacebookIcon className="w-6 h-6" />
+            </Bubble>
 
-      {/* Facebook */}
-      <Bubble
-        href={FACEBOOK_URL}
-        label="Follow on Facebook"
-        bgColor="bg-[#1877F2]"
-        hoverBgColor="hover:bg-[#1565d8]"
-        shadowColor="rgba(24,119,242,0.45)"
-      >
-        <FacebookIcon className="w-6 h-6" />
-      </Bubble>
+            {/* WhatsApp */}
+            <Bubble
+              href={`https://wa.me/${WHATSAPP_NUMBER}`}
+              label="Chat on WhatsApp"
+              bgColor="bg-[#25D366]"
+              hoverBgColor="hover:bg-[#1ebe5d]"
+              shadowColor="rgba(37,211,102,0.45)"
+              pulsing
+            >
+              <WhatsAppIcon className="w-6 h-6" />
+            </Bubble>
+          </div>
+        )}
+      </AnimatePresence>
 
-      {/* WhatsApp */}
-      <Bubble
-        href={`https://wa.me/${WHATSAPP_NUMBER}`}
-        label="Chat on WhatsApp"
-        bgColor="bg-[#25D366]"
-        hoverBgColor="hover:bg-[#1ebe5d]"
-        shadowColor="rgba(37,211,102,0.45)"
-        pulsing
-      >
-        <WhatsAppIcon className="w-6 h-6" />
-      </Bubble>
+      {/* Main Trigger Button */}
+      <div className="relative flex items-center group">
+        {/* Label on Hover */}
+        <AnimatePresence>
+          {!isOpen && isHovered && (
+            <motion.div
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              className="absolute right-16 whitespace-nowrap px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-bold shadow-lg shadow-emerald-600/20"
+            >
+              Chat With Us
+              {/* Arrow */}
+              <span className="absolute right-[-6px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[6px] border-l-emerald-600" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <motion.button
+          onClick={() => setIsOpen(!isOpen)}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className={`relative w-16 h-16 rounded-full flex items-center justify-center text-white
+            ${isOpen ? "bg-slate-800 rotate-90" : "bg-emerald-500"}
+            shadow-2xl transition-all duration-300 z-10`}
+          style={{ 
+            boxShadow: isOpen 
+              ? "0 10px 30px rgba(30,41,59,0.4)" 
+              : "0 10px 30px rgba(16,185,129,0.4)" 
+          }}
+        >
+          {isOpen ? (
+            <X className="w-8 h-8" />
+          ) : (
+            <MessageCircle className="w-8 h-8" />
+          )}
+          
+          {/* Notification Badge (only when closed) */}
+          {!isOpen && (
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold">
+              1
+            </span>
+          )}
+        </motion.button>
+      </div>
     </div>
   );
 };
 
 export default FloatingSocial;
+

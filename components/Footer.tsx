@@ -134,7 +134,7 @@ const Footer = () => {
         {/* Footer Bottom */}
         <div className="pt-12 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
           <p className="text-slate-500 text-sm">
-            © {new Date().getFullYear()} Touch Paradise Trekking & Expeditions Pvt. Ltd.
+            © 2009 Touch Paradise Trekking & Expeditions Pvt. Ltd.
           </p>
           <div className="flex gap-8">
             <Link href="#" className="text-slate-500 hover:text-white text-xs transition-colors">Privacy Policy</Link>

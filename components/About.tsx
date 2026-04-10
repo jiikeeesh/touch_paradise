@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { CheckCircle2, ShieldCheck, HeartPulse, UserCheck } from "lucide-react";
 
 const stats = [
-  { label: "Years Experience", value: "15+" },
+  { label: "Years Experience", value: "17+" },
   { label: "Successful Treks", value: "2,500+" },
   { label: "Professional Guides", value: "40+" },
   { label: "Happy Clients", value: "10k+" },
@@ -57,7 +57,7 @@ const About = () => {
             </h2>
             <p className="text-lg text-slate-600 leading-relaxed mb-10">
               Founded in Kathmandu, Touch Paradise Trekking and Expeditions has been at the forefront 
-              of Himalayan exploration for over 15 years. We believe that every traveler deserves 
+              of Himalayan exploration for over 17 years. We believe that every traveler deserves 
               a safe, authentic, and unforgettable journey into the heart of Nepal.
             </p>
 

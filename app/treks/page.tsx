@@ -14,19 +14,26 @@ export const metadata: Metadata = {
 
 export default async function TreksPage() {
   let regions: any[] = [];
+  let trekCount = 0;
   try {
-    regions = await prisma.region.findMany({
-      orderBy: { createdAt: "desc" },
-      include: {
-        _count: {
-          select: { treks: true },
+    const [fetchedRegions, totalTreks] = await Promise.all([
+      prisma.region.findMany({
+        orderBy: { createdAt: "desc" },
+        include: {
+          _count: {
+            select: { treks: true },
+          },
         },
-      },
-    });
+      }),
+      prisma.trek.count(),
+    ]);
+    regions = fetchedRegions;
+    trekCount = totalTreks;
   } catch (error) {
-    console.error("Failed to load regions:", error);
+    console.error("Failed to load regions or trek count:", error);
   }
 
+  const regionCount = regions.length;
 
   return (
     <PageLayout>
@@ -61,10 +68,10 @@ export default async function TreksPage() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-slate-100">
             {[
-              { label: "Trek Packages", value: "20+" },
-              { label: "Regions Covered", value: "8" },
+              { label: "Trek Packages", value: `${trekCount > 0 ? trekCount : "0"}+` },
+              { label: "Regions Covered", value: `${regionCount > 0 ? regionCount : "0"}` },
               { label: "Certified Guides", value: "40+" },
-              { label: "Years Running", value: "15+" },
+              { label: "Years Running", value: "17+" },
             ].map((stat) => (
               <div key={stat.label} className="py-6 px-8 text-center">
                 <p className="text-3xl font-bold text-emerald-600 mb-1">
