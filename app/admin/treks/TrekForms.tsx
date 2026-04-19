@@ -225,7 +225,7 @@ interface Trek {
   price: number;
   altitude: string;
   season: string;
-  highlights: string;
+  highlights: string | null;
   itinerary: string;
   images: string;
   regionId: string;

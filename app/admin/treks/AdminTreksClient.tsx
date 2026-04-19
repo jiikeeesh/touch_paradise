@@ -35,6 +35,7 @@ interface Trek {
   altitude: string;
   season: string;
   itinerary: string;
+  highlights: string | null;
   images: string;
   regionId: string;
   region?: { id: string; name: string; slug: string };
