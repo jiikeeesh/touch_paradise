@@ -129,6 +129,38 @@ export default async function TrekPage({ params }: Props) {
                 </div>
               </div>
 
+              {/* Gallery */}
+              {images.length > 0 && (
+                <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+                  <h2 className="text-2xl font-bold text-slate-900 mb-6">Gallery</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-4">
+                    {[...images].sort(() => Math.random() - 0.5).slice(0, 6).map((src: string, i: number) => {
+                      let containerClasses = "relative rounded-2xl overflow-hidden group ";
+                      if (i === 0) {
+                        containerClasses += "sm:col-span-2 md:col-span-8 md:row-span-2 h-[300px] md:h-[400px]";
+                      } else if (i === 1 || i === 2) {
+                        containerClasses += "sm:col-span-1 md:col-span-4 h-[142px] md:h-[192px]";
+                      } else {
+                        // i === 3, 4, 5
+                        containerClasses += "sm:col-span-1 md:col-span-4 h-[200px] md:h-[250px]";
+                      }
+
+                      return (
+                        <div key={i} className={containerClasses}>
+                          <Image
+                            src={src}
+                            alt={`${trek.title} gallery ${i + 1}`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Highlights */}
               {highlightsList.length > 0 && (
                 <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
@@ -170,37 +202,7 @@ export default async function TrekPage({ params }: Props) {
                 </div>
               )}
 
-              {/* Gallery */}
-              {images.length > 0 && (
-                <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
-                  <h2 className="text-2xl font-bold text-slate-900 mb-6">Gallery</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-4">
-                    {[...images].sort(() => Math.random() - 0.5).slice(0, 6).map((src: string, i: number) => {
-                      let containerClasses = "relative rounded-2xl overflow-hidden group ";
-                      if (i === 0) {
-                        containerClasses += "sm:col-span-2 md:col-span-8 md:row-span-2 h-[300px] md:h-[400px]";
-                      } else if (i === 1 || i === 2) {
-                        containerClasses += "sm:col-span-1 md:col-span-4 h-[142px] md:h-[192px]";
-                      } else {
-                        // i === 3, 4, 5
-                        containerClasses += "sm:col-span-1 md:col-span-4 h-[200px] md:h-[250px]";
-                      }
 
-                      return (
-                        <div key={i} className={containerClasses}>
-                          <Image
-                            src={src}
-                            alt={`${trek.title} gallery ${i + 1}`}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                            className="object-cover transition-transform duration-700 group-hover:scale-110"
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
 
               {/* Includes / Excludes */}
               <TrekIncludesExcludes />
