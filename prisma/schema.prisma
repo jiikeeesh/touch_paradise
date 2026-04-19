@@ -43,6 +43,7 @@ model Trek {
   price       Float
   altitude    String   @default("")
   season      String   @default("")
+  highlights  String   @default("") // pipe-separated string
   itinerary   String   @default("") // pipe-separated day entries
   images      String   @default("") // pipe-separated image URLs
   regionId    String

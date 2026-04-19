@@ -225,6 +225,7 @@ interface Trek {
   price: number;
   altitude: string;
   season: string;
+  highlights: string;
   itinerary: string;
   images: string;
   regionId: string;
@@ -248,6 +249,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
   const [price, setPrice] = useState(String(initial?.price ?? ""));
   const [altitude, setAltitude] = useState(initial?.altitude ?? "");
   const [season, setSeason] = useState(initial?.season ?? "");
+  const [highlights, setHighlights] = useState(initial?.highlights ?? "");
   const [itinerary, setItinerary] = useState(initial?.itinerary ?? "");
   const [images, setImages] = useState<string[]>(
     initial?.images ? initial.images.split("|").filter(Boolean) : []
@@ -317,6 +319,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
           price: Number(price),
           altitude,
           season,
+          highlights,
           itinerary,
           images: images.join("|"),
           regionId,
@@ -465,6 +468,22 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
             className={inputCls}
           />
         </div>
+      </div>
+
+      <div>
+        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+          Highlights{" "}
+          <span className="text-slate-400 normal-case font-normal">
+            (one entry per line)
+          </span>
+        </label>
+        <textarea
+          value={highlights}
+          onChange={(e) => setHighlights(e.target.value)}
+          rows={4}
+          placeholder={"Scenic mountain flight\nSherpa culture"}
+          className={textareaCls + " font-mono mb-4"}
+        />
       </div>
 
       <div>
