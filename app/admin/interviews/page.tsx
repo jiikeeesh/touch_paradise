@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Mail, Phone, Calendar, Briefcase, GraduationCap, MessageSquare, LogOut, Mountain, Users, ChevronLeft } from "lucide-react";
+import { Mail, Phone, Calendar, Briefcase, GraduationCap, MessageSquare, LogOut, Mountain, Users, ChevronLeft, Star } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
 import Link from "next/link";
@@ -86,6 +86,13 @@ export default async function AdminInterviewsPage() {
               <Users className="w-4 h-4" />
               Interviews
             </span>
+            <Link
+              href="/admin/reviews"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
+            >
+              <Star className="w-4 h-4" />
+              Reviews
+            </Link>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">

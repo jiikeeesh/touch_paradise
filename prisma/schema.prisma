@@ -105,3 +105,17 @@ model InterviewApplication {
   message    String   @db.Text
   createdAt  DateTime @default(now())
 }
+
+model Review {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  country   String   @default("")
+  rating    Int      // 1 to 5 stars
+  trip      String   // trek / service name
+  title     String   @default("")
+  review    String   @db.Text
+  photoUrl  String   @default("") // optional uploaded photo
+  approved  Boolean  @default(false) // admin can approve before showing publicly
+  createdAt DateTime @default(now())
+}

@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import type { ContactMessage } from "@prisma/client";
-import { Mail, Phone, Calendar, Mountain, LogOut, Video, Briefcase, Users } from "lucide-react";
+import { Mail, Phone, Calendar, Mountain, LogOut, Video, Briefcase, Users, Star } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
 import AdminVideosClient from "./AdminVideosClient";
@@ -71,6 +71,13 @@ export default async function AdminPage() {
             >
               <Users className="w-4 h-4" />
               Interviews
+            </Link>
+            <Link
+              href="/admin/reviews"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
+            >
+              <Star className="w-4 h-4" />
+              Reviews
             </Link>
           </div>
 

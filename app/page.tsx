@@ -5,6 +5,7 @@ import FeaturedTreks from "@/components/FeaturedTreks";
 import FeaturedVideos from "@/components/FeaturedVideos";
 import Services from "@/components/Services";
 import About from "@/components/About";
+import ReviewsSection from "@/components/ReviewsSection";
 
 import { prisma } from "@/lib/prisma";
 
@@ -18,6 +19,7 @@ export default async function Home() {
       <FeaturedVideos />
       <Services />
       <About guideCount={guideCount} />
+      <ReviewsSection />
     </PageLayout>
   );
 }
