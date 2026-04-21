@@ -8,9 +8,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
-    "build:worker": "prisma generate && npx @opennextjs/cloudflare build --minify",
-    "clean-worker": "node -e \"const fs=require('fs'); ['resvg.wasm', 'index.edge.js'].forEach(f=>{try{fs.unlinkSync('.open-next/server-functions/default/node_modules/next/dist/compiled/@vercel/og/'+f)}catch(e){}})\"",
-    "deploy": "npm run build:worker && npm run clean-worker && npx @opennextjs/cloudflare deploy",
+    "build:worker": "prisma generate && node -e \"const fs=require('fs');const p='node_modules/next/dist/compiled/@vercel/og';if(fs.existsSync(p)){fs.writeFileSync(p+'/index.edge.js','module.exports={ImageResponse:class{}}');try{fs.unlinkSync(p+'/resvg.wasm')}catch(e){}}\" && npx @opennextjs/cloudflare build --minify",
+    "deploy": "npm run build:worker && npx @opennextjs/cloudflare deploy",
     "preview": "npm run build:worker && npx wrangler dev",
     "start": "next start",
     "lint": "eslint",
