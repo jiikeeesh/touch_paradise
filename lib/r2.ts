@@ -10,8 +10,8 @@ import { AwsClient } from "aws4fetch";
  *   R2_SECRET_ACCESS_KEY – R2 API token secret key
  */
 export const r2 = new AwsClient({
-  accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-  secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+  accessKeyId: process.env.R2_ACCESS_KEY_ID || "dummy-for-build",
+  secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "dummy-for-build",
   service: "s3",
   region: "auto",
 });
