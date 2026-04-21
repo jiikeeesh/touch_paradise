@@ -1,5 +1,4 @@
 import { r2 } from "@/lib/r2";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { NextResponse, type NextRequest } from "next/server";
 import crypto from "crypto";
 
@@ -7,12 +6,13 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   // 1. Validate R2 config
+  const endpoint = process.env.R2_ENDPOINT;
   const bucket = process.env.R2_BUCKET_NAME;
   const publicUrl = process.env.R2_PUBLIC_URL;
 
-  if (!bucket || !publicUrl) {
+  if (!endpoint || !bucket || !publicUrl) {
     return NextResponse.json(
-      { error: "Configuration Error: R2_BUCKET_NAME or R2_PUBLIC_URL is missing on the server." },
+      { error: "Configuration Error: R2_ENDPOINT, R2_BUCKET_NAME or R2_PUBLIC_URL is missing on the server." },
       { status: 500 }
     );
   }
@@ -40,21 +40,27 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // 4. Read file into buffer and upload to R2
     const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
 
-    await r2.send(
-      new PutObjectCommand({
-        Bucket: bucket,
-        Key: key,
-        Body: buffer,
-        ContentType: file.type,
-      })
-    );
+    // Construct full unauthenticated URL (aws4fetch calculates the authentication headers for this URL)
+    const uploadUrl = new URL(`${endpoint}/${bucket}/${key}`);
+    
+    const response = await r2.fetch(uploadUrl, {
+      method: "PUT",
+      body: arrayBuffer,
+      headers: {
+        "Content-Type": file.type || "application/octet-stream",
+      },
+    });
+
+    if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`R2 Upload failed: ${response.status} ${response.statusText} ${text}`);
+    }
 
     // 5. Construct public URL
-    const url = `${publicUrl.replace(/\/$/, "")}/${key}`;
+    const publicAssetUrl = `${publicUrl.replace(/\/$/, "")}/${key}`;
 
-    return NextResponse.json({ url, pathname: key });
+    return NextResponse.json({ url: publicAssetUrl, pathname: key });
   } catch (error) {
     console.error("Server-side upload error:", error);
     return NextResponse.json(
