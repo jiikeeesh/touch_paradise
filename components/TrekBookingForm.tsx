@@ -65,6 +65,7 @@ export default function TrekBookingForm({ trekTitle }: TrekBookingFormProps) {
               name="firstName"
               type="text"
               required
+              autoComplete="given-name"
               placeholder="John"
               className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition"
             />
@@ -76,6 +77,7 @@ export default function TrekBookingForm({ trekTitle }: TrekBookingFormProps) {
               name="lastName"
               type="text"
               required
+              autoComplete="family-name"
               placeholder="Doe"
               className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition"
             />
@@ -89,6 +91,7 @@ export default function TrekBookingForm({ trekTitle }: TrekBookingFormProps) {
             name="email"
             type="email"
             required
+            autoComplete="email"
             placeholder="you@example.com"
             className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition"
           />
@@ -100,6 +103,7 @@ export default function TrekBookingForm({ trekTitle }: TrekBookingFormProps) {
             id="phone"
             name="phone"
             type="tel"
+            autoComplete="tel"
             placeholder="+1 234 567 890"
             className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition"
           />

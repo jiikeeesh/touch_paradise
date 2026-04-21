@@ -151,6 +151,7 @@ export default function ContactForm({ treksList }: ContactFormProps) {
                           name="firstName"
                           type="text"
                           required
+                          autoComplete="given-name"
                           placeholder="John"
                           className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-slate-900 placeholder-slate-400 transition bg-slate-50/50 focus:bg-white"
                         />
@@ -162,6 +163,7 @@ export default function ContactForm({ treksList }: ContactFormProps) {
                           name="lastName"
                           type="text"
                           required
+                          autoComplete="family-name"
                           placeholder="Doe"
                           className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-slate-900 placeholder-slate-400 transition bg-slate-50/50 focus:bg-white"
                         />
@@ -175,6 +177,7 @@ export default function ContactForm({ treksList }: ContactFormProps) {
                         name="email"
                         type="email"
                         required
+                        autoComplete="email"
                         placeholder="you@example.com"
                         className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-slate-900 placeholder-slate-400 transition bg-slate-50/50 focus:bg-white"
                       />
@@ -186,6 +189,7 @@ export default function ContactForm({ treksList }: ContactFormProps) {
                         id="phone"
                         name="phone"
                         type="tel"
+                        autoComplete="tel"
                         placeholder="+1 234 567 890"
                         className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-slate-900 placeholder-slate-400 transition bg-slate-50/50 focus:bg-white"
                       />

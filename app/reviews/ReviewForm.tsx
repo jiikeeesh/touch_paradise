@@ -207,6 +207,7 @@ export default function ReviewForm() {
                     name="name"
                     type="text"
                     required
+                    autoComplete="name"
                     placeholder="John Doe"
                     className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
                   />
@@ -219,6 +220,7 @@ export default function ReviewForm() {
                     id="review-country"
                     name="country"
                     type="text"
+                    autoComplete="country-name"
                     placeholder="USA, UK, Australia…"
                     className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
                   />
@@ -235,6 +237,7 @@ export default function ReviewForm() {
                   name="email"
                   type="email"
                   required
+                  autoComplete="email"
                   placeholder="you@example.com"
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
                 />

@@ -57,6 +57,7 @@ export default function LoginForm() {
                 name="username"
                 type="text"
                 required
+                autoComplete="username"
                 className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-slate-900 transition bg-slate-50/50 focus:bg-white"
                 placeholder="Enter username"
               />
@@ -73,6 +74,7 @@ export default function LoginForm() {
                 name="password"
                 type="password"
                 required
+                autoComplete="current-password"
                 className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-slate-900 transition bg-slate-50/50 focus:bg-white"
                 placeholder="Enter password"
               />
