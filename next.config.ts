@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ['pg', 'pg-cloudflare', '@prisma/client', '.prisma/client', '@prisma/adapter-pg'],
 
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
