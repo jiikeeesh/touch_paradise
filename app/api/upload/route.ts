@@ -1,14 +1,18 @@
-import { put } from "@vercel/blob";
+import { r2 } from "@/lib/r2";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { NextResponse, type NextRequest } from "next/server";
+import crypto from "crypto";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  // 1. Validate Token
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  if (!token || token.includes("PLACEHOLDER")) {
+  // 1. Validate R2 config
+  const bucket = process.env.R2_BUCKET_NAME;
+  const publicUrl = process.env.R2_PUBLIC_URL;
+
+  if (!bucket || !publicUrl) {
     return NextResponse.json(
-      { error: "Configuration Error: BLOB_READ_WRITE_TOKEN is missing on the server." },
+      { error: "Configuration Error: R2_BUCKET_NAME or R2_PUBLIC_URL is missing on the server." },
       { status: 500 }
     );
   }
@@ -27,16 +31,30 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     console.log(`POST /api/upload - Uploading file: ${file.name} (${file.size} bytes)`);
 
-    // 3. Upload to Vercel Blob (Server-side)
-    // We use a timestamped filename or keep original name. 
-    // We use access: 'public' so it's readable by everyone.
-    const blob = await put(file.name, file, {
-      access: "public",
-      token: token,
-      addRandomSuffix: true, // Prevents "already exists" error
-    });
+    // 3. Generate unique key with random suffix
+    const ext = file.name.includes(".") ? file.name.split(".").pop() : "";
+    const randomSuffix = crypto.randomBytes(8).toString("hex");
+    const key = ext
+      ? `${file.name.replace(`.${ext}`, "")}-${randomSuffix}.${ext}`
+      : `${file.name}-${randomSuffix}`;
 
-    return NextResponse.json(blob);
+    // 4. Read file into buffer and upload to R2
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    await r2.send(
+      new PutObjectCommand({
+        Bucket: bucket,
+        Key: key,
+        Body: buffer,
+        ContentType: file.type,
+      })
+    );
+
+    // 5. Construct public URL
+    const url = `${publicUrl.replace(/\/$/, "")}/${key}`;
+
+    return NextResponse.json({ url, pathname: key });
   } catch (error) {
     console.error("Server-side upload error:", error);
     return NextResponse.json(

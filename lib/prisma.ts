@@ -1,18 +1,32 @@
-import { PrismaClient } from '@prisma/client';
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "@prisma/client";
 
 // PrismaClient is attached to the `global` object in development to prevent
 // exhausting your database connection limit.
 //
-// Learn more:
-// https://pris.ly/d/help/next-js-best-practices
+// In production on Cloudflare Workers, the HYPERDRIVE_URL env var is injected
+// by the Hyperdrive binding for optimized connection pooling.
+// In local development, it falls back to DATABASE_URL for direct Neon access.
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
+function createPrismaClient(): PrismaClient {
+  const connectionString =
+    process.env.HYPERDRIVE_URL || process.env.DATABASE_URL!;
 
-export const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  const pool = new Pool({ connectionString });
+  const adapter = new PrismaPg(pool);
+
+  return new PrismaClient({
+    adapter,
+    log:
+      process.env.NODE_ENV === "development"
+        ? ["query", "error", "warn"]
+        : ["error"],
   });
+}
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
+export const prisma = globalForPrisma.prisma || createPrismaClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

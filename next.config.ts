@@ -1,14 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
   allowedDevOrigins: ['192.168.1.83'],
-  serverExternalPackages: ["@prisma/client"],
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '*.public.blob.vercel-storage.com',
+        hostname: '*.r2.cloudflarestorage.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        // R2 public dev subdomain (pub-*.r2.dev)
+        protocol: 'https',
+        hostname: '*.r2.dev',
         port: '',
         pathname: '/**',
       },

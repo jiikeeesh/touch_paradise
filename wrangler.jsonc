@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "touch-paradise",
+  "compatibility_date": "2025-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Cloudflare R2 bucket binding
+  "r2_buckets": [
+    {
+      "binding": "R2_BUCKET",
+      "bucket_name": "touchparadise"
+    }
+  ],
+
+  // Cloudflare Hyperdrive binding (replace with your Hyperdrive config ID)
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "76e741f55d5a44ac8326962c18031375"
+    }
+  ]
+}
