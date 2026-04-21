@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
 
   // Treat pg and prisma as external so Next.js handles their file tracing
   // instead of bundling them (avoids symlink/native module issues on Workers).
-  serverExternalPackages: ['pg', 'pg-cloudflare', '@prisma/client', '@prisma/adapter-pg'],
+  serverExternalPackages: ['pg', 'pg-cloudflare', '@prisma/client', '.prisma/client', '@prisma/adapter-pg'],
 
   images: {
     remotePatterns: [
