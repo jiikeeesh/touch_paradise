@@ -23,8 +23,10 @@
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
-      "id": "76e741f55d5a44ac8326962c18031375"
+      "id": "76e741f55d5a44ac8326962c18031375",
+      "localConnectionString": "postgresql://neondb_owner:npg_Cdy94mGiXMzD@ep-falling-hat-amagx65f-pooler.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require"
     }
   ]
 }
+
 
