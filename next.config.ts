@@ -30,6 +30,13 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        // Legacy Vercel Blob images
+        protocol: 'https',
+        hostname: 'mfptivvhuxolxbrk.public.blob.vercel-storage.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
