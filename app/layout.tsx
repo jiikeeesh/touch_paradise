@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
+  preload: false,
 });
 
 export const metadata: Metadata = {
