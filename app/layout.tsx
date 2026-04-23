@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   title: "Touch Paradise | Trekking & Expeditions in Nepal",
   description: "Experience the ultimate Himalayan adventure with Touch Paradise. Professional trekking, peak climbing, and cultural tours in Nepal.",
   keywords: ["trekking nepal", "everest base camp", "touch paradise", "himalayan expeditions"],
+  icons: {
+    icon: "/touch-paradise.svg",
+  },
 };
 
 export default function RootLayout({
