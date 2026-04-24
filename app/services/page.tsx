@@ -10,6 +10,10 @@ import {
   CheckCircle2,
   ArrowRight,
   Briefcase,
+  Mountain,
+  Binoculars,
+  Globe,
+  MapPin
 } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import Link from "next/link";
@@ -27,11 +31,15 @@ export const metadata: Metadata = {
 // or let the categories have their own specific look.
 const iconMap: any = {
   "Trekking & Hiking": Compass,
-  "Peak Climbing": Trophy,
-  "Cultural Tours": Map,
-  "Wildlife Safaris": Tent,
+  "Peak Climbing": Mountain,
+  "Cultural Tours": MapPin,
+  "Kathmandu Valley Tour": Map,
+  "Wildlife Safaris": Binoculars,
+  "Wildlife Safari": Binoculars,
   "Helicopter Tours": Helicopter,
+  "Helicopter Rides": Helicopter,
   "Photography Tours": Camera,
+  "Outbounds": Globe,
 };
 
 export default async function ServicesPage() {

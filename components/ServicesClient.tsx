@@ -1,7 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Compass, Trophy, Map, Tent, Helicopter, Camera, Briefcase, ArrowRight } from "lucide-react";
+import { 
+  Compass, 
+  Trophy, 
+  Map, 
+  Tent, 
+  Helicopter, 
+  Camera, 
+  Briefcase, 
+  ArrowRight,
+  Mountain,
+  Binoculars,
+  Globe,
+  MapPin
+} from "lucide-react";
 import Link from "next/link";
 
 interface Category {
@@ -13,11 +26,15 @@ interface Category {
 
 const iconMap: any = {
   "Trekking & Hiking": Compass,
-  "Peak Climbing": Trophy,
-  "Cultural Tours": Map,
-  "Wildlife Safaris": Tent,
+  "Peak Climbing": Mountain,
+  "Cultural Tours": MapPin,
+  "Kathmandu Valley Tour": Map,
+  "Wildlife Safaris": Binoculars,
+  "Wildlife Safari": Binoculars,
   "Helicopter Tours": Helicopter,
+  "Helicopter Rides": Helicopter,
   "Photography Tours": Camera,
+  "Outbounds": Globe,
 };
 
 const ServicesClient = ({ categories }: { categories: Category[] }) => {

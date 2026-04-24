@@ -5,7 +5,7 @@ import { MessageCircle, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const WHATSAPP_NUMBER = "9779841259682";
-const FACEBOOK_URL = "https://www.facebook.com/touchparadisetrekking"; // update with real page URL
+const FACEBOOK_URL = "https://www.facebook.com/touchparadisenepal"; // update with real page URL
 
 /* ─── WhatsApp SVG ─── */
 const WhatsAppIcon = ({ className }: { className?: string }) => (

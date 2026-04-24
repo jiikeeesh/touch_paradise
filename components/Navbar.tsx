@@ -76,7 +76,7 @@ const Navbar = () => {
               );
             })}
             <Link
-              href="/contact"
+              href="tel:+9779841259682"
               className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-emerald-500 transition-all shadow-lg hover:shadow-emerald-600/30 hover:-translate-y-0.5"
             >
               <Phone className="w-4 h-4" />

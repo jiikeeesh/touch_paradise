@@ -61,7 +61,11 @@ const Footer = async () => {
               and expedition services with a focus on safety and sustainability.
             </p>
             <div className="flex gap-4">
-              <SocialIcon label="Facebook" d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+              <SocialIcon 
+                label="Facebook" 
+                href="https://www.facebook.com/touchparadisenepal"
+                d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" 
+              />
               <SocialIcon label="Instagram" d={instagramPath} />
               <SocialIcon
                 label="WhatsApp"
