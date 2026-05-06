@@ -47,6 +47,14 @@ export default async function ServicesPage() {
     orderBy: { createdAt: "asc" },
   });
 
+  // Fetch lowest trek price from the database
+  const lowestTrek = await prisma.trek.aggregate({
+    _min: { price: true },
+  });
+  const lowestPrice = lowestTrek._min.price
+    ? `From $${Math.round(lowestTrek._min.price)}`
+    : "View Prices";
+
   // Special case for Trekking as discussed
   const trekkingService = {
     title: "Trekking & Hiking",
@@ -54,7 +62,7 @@ export default async function ServicesPage() {
     icon: Compass,
     color: "bg-blue-500",
     href: "/treks",
-    price: "From $550",
+    price: lowestPrice,
     features: ["Certified local guides", "All permits included", "Porter support"],
   };
 
@@ -69,6 +77,7 @@ export default async function ServicesPage() {
             fill
             sizes="100vw"
             priority
+            loading="eager"
             className="object-cover opacity-25"
           />
         </div>

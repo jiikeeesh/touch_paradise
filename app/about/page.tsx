@@ -84,6 +84,8 @@ export default async function AboutPage() {
             alt="Annapurna mountains"
             fill
             sizes="100vw"
+            priority
+            loading="eager"
             className="object-cover opacity-30"
           />
         </div>
@@ -108,6 +110,7 @@ export default async function AboutPage() {
                   width={700}
                   height={500}
                   priority
+                  loading="eager"
                   className="object-cover"
                 />
               </div>

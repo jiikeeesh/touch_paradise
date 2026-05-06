@@ -37,6 +37,8 @@ export default async function ContactPage() {
             alt="Kathmandu Nepal"
             fill
             sizes="100vw"
+            priority
+            loading="eager"
             className="object-cover opacity-35"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60" />

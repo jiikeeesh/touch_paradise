@@ -48,6 +48,7 @@ export default async function TreksPage() {
             alt="Himalayan mountains"
             fill
             priority
+            loading="eager"
             className="object-cover opacity-30"
             sizes="100vw"
           />

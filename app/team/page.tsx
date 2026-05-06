@@ -25,6 +25,7 @@ export default async function TeamPage() {
             sizes="100vw"
             className="object-cover opacity-40"
             priority
+            loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 via-transparent to-slate-900/80" />
         </div>

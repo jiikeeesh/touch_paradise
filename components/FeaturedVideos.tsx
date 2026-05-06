@@ -345,6 +345,8 @@ const FeaturedVideos = () => {
                   fill
                   sizes="200px"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  priority={index === 0}
                 />
                 {/* Dark overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />

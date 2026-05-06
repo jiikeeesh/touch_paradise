@@ -80,6 +80,7 @@ export default async function RegionPage({ params }: Props) {
             alt={`${regionName} Region`}
             fill
             priority
+            loading="eager"
             className="object-cover opacity-30"
             sizes="100vw"
           />

@@ -47,8 +47,10 @@ export default async function ServiceCategoryPage({ params }: Props) {
               src={category.image}
               alt={category.name}
               fill
+              sizes="100vw"
               className="object-cover opacity-30"
               priority
+              loading="eager"
             />
           ) : (
             <div className="w-full h-full bg-slate-800 opacity-50" />

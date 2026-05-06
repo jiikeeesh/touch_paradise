@@ -55,6 +55,7 @@ export default async function TrekPage({ params }: Props) {
             alt={trek.title}
             fill
             priority
+            loading="eager"
             sizes="100vw"
             className="object-cover brightness-75"
           />

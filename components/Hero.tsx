@@ -15,6 +15,7 @@ const Hero = () => {
           alt="Himalayan Mountains"
           fill
           priority
+          loading="eager"
           sizes="100vw"
           className="object-cover brightness-75 scale-105"
         />

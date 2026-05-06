@@ -78,6 +78,8 @@ export default async function ServiceDetailsPage({ params }: Props) {
             alt={service.title}
             fill
             priority
+            loading="eager"
+            sizes="100vw"
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
