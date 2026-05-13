@@ -15,6 +15,7 @@ import {
   MapPin
 } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
+import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
