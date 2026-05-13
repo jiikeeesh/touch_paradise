@@ -1633,31 +1633,31 @@ const serviceCategories = [
     name: "Helicopter Tours",
     slug: "helicopter-tours",
     description: "Experience the thrill of flying over the majestic Himalayas with our premium helicopter rides.",
-    image: "/everest.png",
+    image: "/heli-tour.png",
   },
   {
     name: "Day Hiking",
     slug: "day-hiking",
     description: "Explore the beautiful hills, forests, and local villages surrounding the valleys with our guided day hikes.",
-    image: "/trekkers.png",
+    image: "/hiking.png",
   },
   {
     name: "City Sightseeing",
     slug: "city-sightseeing",
     description: "Discover the rich history, culture, and architecture of Nepal's vibrant cities.",
-    image: "/kathmandu.png",
+    image: "/city-tour.png",
   },
   {
     name: "Adventure Sports",
     slug: "adventure-sports",
     description: "Get your adrenaline pumping with our thrilling adventure sports packages.",
-    image: "/mardi.png",
+    image: "/adventure.png",
   },
   {
     name: "Cultural Experiences",
     slug: "cultural-experiences",
     description: "Immerse yourself in the local traditions, arts, and culinary delights of Nepal.",
-    image: "/kathmandu.png",
+    image: "/culture.png",
   }
 ];
 
