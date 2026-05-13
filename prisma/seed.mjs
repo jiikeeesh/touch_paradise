@@ -1633,31 +1633,31 @@ const serviceCategories = [
     name: "Helicopter Tours",
     slug: "helicopter-tours",
     description: "Experience the thrill of flying over the majestic Himalayas with our premium helicopter rides.",
-    image: "/heli-tour.png",
+    image: "/everest.png",
   },
   {
     name: "Day Hiking",
     slug: "day-hiking",
     description: "Explore the beautiful hills, forests, and local villages surrounding the valleys with our guided day hikes.",
-    image: "/hiking.png",
+    image: "/trekkers.png",
   },
   {
     name: "City Sightseeing",
     slug: "city-sightseeing",
     description: "Discover the rich history, culture, and architecture of Nepal's vibrant cities.",
-    image: "/city-tour.png",
+    image: "/kathmandu.png",
   },
   {
     name: "Adventure Sports",
     slug: "adventure-sports",
     description: "Get your adrenaline pumping with our thrilling adventure sports packages.",
-    image: "/adventure.png",
+    image: "/mardi.png",
   },
   {
     name: "Cultural Experiences",
     slug: "cultural-experiences",
     description: "Immerse yourself in the local traditions, arts, and culinary delights of Nepal.",
-    image: "/culture.png",
+    image: "/kathmandu.png",
   }
 ];
 
@@ -1670,7 +1670,7 @@ const services = [
     durationDays: 1,
     price: 1200,
     itinerary: "6:00 AM: Pick up from hotel|6:30 AM: Flight from Kathmandu to Lukla|7:30 AM: Flight to Kala Patthar and brief landing|8:30 AM: Breakfast at Everest View Hotel|10:30 AM: Return flight to Kathmandu",
-    images: "/heli1.png|/heli2.png"
+    images: "/everest.png|/hero.png"
   },
   {
     title: "Annapurna Base Camp Helicopter Tour",
@@ -1680,7 +1680,7 @@ const services = [
     durationDays: 1,
     price: 450,
     itinerary: "7:00 AM: Flight from Pokhara|7:30 AM: Landing at Annapurna Base Camp|8:00 AM: Breakfast and photo session|9:00 AM: Return flight to Pokhara",
-    images: "/abc-heli.png"
+    images: "/annapurna.png"
   },
   {
     title: "Langtang Valley Helicopter Tour",
@@ -1690,7 +1690,7 @@ const services = [
     durationDays: 1,
     price: 350,
     itinerary: "8:00 AM: Departure from Kathmandu|8:45 AM: Landing at Kyanjin Gompa|9:15 AM: Explore the valley|10:30 AM: Return flight to Kathmandu",
-    images: "/langtang-heli.png"
+    images: "/langtang.png"
   },
   {
     title: "Muktinath Helicopter Tour",
@@ -1700,7 +1700,7 @@ const services = [
     durationDays: 1,
     price: 800,
     itinerary: "7:00 AM: Flight from Pokhara/Kathmandu|8:00 AM: Landing near Muktinath|8:30 AM: Temple visit and prayers|10:30 AM: Return flight",
-    images: "/muktinath-heli.png"
+    images: "/hero.png"
   },
   {
     title: "Gosainkunda Helicopter Tour",
@@ -1710,7 +1710,7 @@ const services = [
     durationDays: 1,
     price: 300,
     itinerary: "7:30 AM: Departure from Kathmandu|8:00 AM: Landing at Gosainkunda|8:30 AM: Explore the holy lake|9:30 AM: Return flight to Kathmandu",
-    images: "/gosainkunda-heli.png"
+    images: "/gosaikunda.png"
   },
   {
     title: "Nagarjun Hill Hike",
@@ -1720,7 +1720,7 @@ const services = [
     durationDays: 1,
     price: 60,
     itinerary: "8:00 AM: Drive to Phulbari Gate|8:30 AM: Start hiking through the forest|11:00 AM: Reach Jamacho Viewpoint|1:00 PM: Hike down|2:30 PM: Drive back to hotel",
-    images: "/nagarjun-hike.png"
+    images: "/trekkers.png"
   },
   {
     title: "Champadevi Hike",
@@ -1730,7 +1730,7 @@ const services = [
     durationDays: 1,
     price: 55,
     itinerary: "8:00 AM: Drive to Pharping|9:00 AM: Start hike|12:00 PM: Reach Champadevi summit and lunch|2:00 PM: Descend to Taudaha|4:00 PM: Drive back to hotel",
-    images: "/champadevi-hike.png"
+    images: "/mardi.png"
   },
   {
     title: "Shivapuri Peak Hike",
@@ -1740,7 +1740,7 @@ const services = [
     durationDays: 1,
     price: 65,
     itinerary: "7:30 AM: Drive to Budhanilkantha|8:15 AM: Enter National Park and hike to Nagi Gompa|11:30 AM: Reach Shivapuri Peak|1:00 PM: Descend|4:30 PM: Drive back",
-    images: "/shivapuri-hike.png"
+    images: "/trekkers.png"
   },
   {
     title: "Nagarkot to Dhulikhel Hike",
@@ -1750,7 +1750,7 @@ const services = [
     durationDays: 1,
     price: 70,
     itinerary: "6:00 AM: Drive to Nagarkot for sunrise|8:30 AM: Start hike towards Dhulikhel|1:00 PM: Lunch in a village|3:30 PM: Reach Dhulikhel|4:30 PM: Drive back to Kathmandu",
-    images: "/nagarkot-hike.png"
+    images: "/langtang.png"
   },
   {
     title: "Phulchowki Hike",
@@ -1760,7 +1760,7 @@ const services = [
     durationDays: 1,
     price: 65,
     itinerary: "8:00 AM: Drive to Godawari|8:45 AM: Start ascending Phulchowki|12:30 PM: Reach the summit|2:00 PM: Descend to Godawari Botanical Garden|5:00 PM: Drive back",
-    images: "/phulchowki-hike.png"
+    images: "/mardi.png"
   },
   {
     title: "Kathmandu Valley UNESCO Heritage Tour",
@@ -1770,7 +1770,7 @@ const services = [
     durationDays: 1,
     price: 80,
     itinerary: "9:00 AM: Visit Kathmandu Durbar Square|11:00 AM: Visit Swayambhunath (Monkey Temple)|1:00 PM: Lunch|2:00 PM: Visit Pashupatinath Temple|4:00 PM: Visit Boudhanath Stupa",
-    images: "/ktm-tour.png"
+    images: "/kathmandu.png"
   },
   {
     title: "Patan and Bhaktapur Day Tour",
@@ -1780,7 +1780,7 @@ const services = [
     durationDays: 1,
     price: 85,
     itinerary: "9:30 AM: Drive to Patan Durbar Square|10:00 AM: Explore Patan museum and surrounding temples|12:30 PM: Lunch|1:30 PM: Drive to Bhaktapur|2:30 PM: Explore Bhaktapur Durbar Square, Nyatapola Temple, and Pottery Square|5:00 PM: Drive back",
-    images: "/patan-bhaktapur.png"
+    images: "/kathmandu.png"
   },
   {
     title: "Pokhara City Sightseeing Tour",
@@ -1790,7 +1790,7 @@ const services = [
     durationDays: 1,
     price: 75,
     itinerary: "9:00 AM: Boating on Phewa Lake and visit Tal Barahi Temple|11:00 AM: Visit Devi's Fall and Gupteshwor Cave|1:00 PM: Lunch|2:30 PM: Visit the International Mountain Museum|4:00 PM: Drive to World Peace Pagoda for sunset views",
-    images: "/pokhara-tour.png"
+    images: "/annapurna.png"
   },
   {
     title: "Lumbini Buddhist Pilgrimage Tour",
@@ -1800,7 +1800,7 @@ const services = [
     durationDays: 2,
     price: 250,
     itinerary: "Day 1: Fly/Drive from Kathmandu to Lumbini, visit Maya Devi Temple|Day 2: Explore the monastic zones and the World Peace Pagoda, return to Kathmandu",
-    images: "/lumbini-tour.png"
+    images: "/hero.png"
   },
   {
     title: "Bungee Jumping in Kushma",
@@ -1810,7 +1810,7 @@ const services = [
     durationDays: 1,
     price: 150,
     itinerary: "8:00 AM: Drive from Pokhara to Kushma|10:30 AM: Arrive and briefing|11:30 AM: The Bungee Jump|1:00 PM: Lunch and relax|3:00 PM: Drive back to Pokhara",
-    images: "/bungee.png"
+    images: "/mardi.png"
   },
   {
     title: "Trishuli River Rafting",
@@ -1820,7 +1820,7 @@ const services = [
     durationDays: 1,
     price: 55,
     itinerary: "7:00 AM: Drive from Kathmandu to Charaudi|10:00 AM: Safety briefing and gear up|10:30 AM: Start rafting|1:30 PM: Finish rafting and enjoy riverside lunch|3:00 PM: Drive back to Kathmandu or onward to Pokhara",
-    images: "/rafting.png"
+    images: "/langtang.png"
   },
   {
     title: "Paragliding in Pokhara",
@@ -1830,7 +1830,7 @@ const services = [
     durationDays: 1,
     price: 85,
     itinerary: "9:00 AM: Drive from Pokhara to Sarangkot|10:00 AM: Flight preparation and briefing|10:30 AM: Take-off for a 25-30 minute tandem flight|11:00 AM: Landing near Phewa Lake and return to hotel",
-    images: "/paragliding.png"
+    images: "/annapurna.png"
   },
   {
     title: "Nepali Cooking Class in Thamel",
@@ -1840,7 +1840,7 @@ const services = [
     durationDays: 1,
     price: 45,
     itinerary: "10:00 AM: Meet at the cooking school and visit local market|11:00 AM: Start cooking class|1:30 PM: Enjoy the meal you prepared|2:30 PM: Receive recipe booklet and conclude",
-    images: "/cooking.png"
+    images: "/kathmandu.png"
   },
   {
     title: "Thangka Painting Workshop",
@@ -1850,7 +1850,7 @@ const services = [
     durationDays: 1,
     price: 50,
     itinerary: "10:00 AM: Introduction to Thangka history and techniques|11:00 AM: Hands-on painting session|1:00 PM: Lunch break|2:00 PM: Continue painting|4:00 PM: Conclude session and take your art piece home",
-    images: "/thangka.png"
+    images: "/kathmandu.png"
   },
   {
     title: "Evening Aarti at Pashupatinath",
@@ -1860,7 +1860,7 @@ const services = [
     durationDays: 1,
     price: 30,
     itinerary: "4:30 PM: Pick up from hotel|5:00 PM: Arrive at Pashupatinath and explore the surroundings|6:00 PM: Take a seat on the banks of the Bagmati river|6:30 PM: Witness the Aarti ceremony|7:30 PM: Return to hotel",
-    images: "/aarti.png"
+    images: "/kathmandu.png"
   }
 ];
 

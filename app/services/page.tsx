@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import {
   Compass,
   Trophy,
@@ -40,6 +39,10 @@ const iconMap: any = {
   "Helicopter Rides": Helicopter,
   "Photography Tours": Camera,
   "Outbounds": Globe,
+  "Day Hiking": Tent,
+  "City Sightseeing": Map,
+  "Adventure Sports": Trophy,
+  "Cultural Experiences": Camera,
 };
 
 export default async function ServicesPage() {
@@ -129,13 +132,7 @@ export default async function ServicesPage() {
                 <Link key={cat.id} href={`/services/${cat.slug}`}>
                   <div className="group flex flex-col sm:flex-row gap-7 p-8 rounded-3xl border border-slate-100 hover:shadow-xl transition-all bg-white h-full">
                     <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-emerald-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                      {cat.image ? (
-                        <div className="relative w-full h-full rounded-2xl overflow-hidden">
-                          <Image src={cat.image} alt={cat.name} fill className="object-cover" />
-                        </div>
-                      ) : (
-                        <Icon className="w-8 h-8 text-white" />
-                      )}
+                      <Icon className="w-8 h-8 text-white" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-start justify-between mb-3">
