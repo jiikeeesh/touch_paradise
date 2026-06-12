@@ -2,7 +2,8 @@
 
 import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
-import { X, Upload, Loader2, Plus } from "lucide-react";
+import { X, Upload, Loader2, Plus, Images } from "lucide-react";
+import { R2PhotoPicker } from "./R2PhotoPicker";
 
 interface Region {
   id: string;
@@ -258,6 +259,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleTitleChange = (val: string) => {
@@ -523,6 +525,8 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
               </button>
             </div>
           ))}
+
+          {/* Upload new photo */}
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
@@ -534,8 +538,20 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
             ) : (
               <Upload className="w-5 h-5" />
             )}
-            {uploading ? "Uploading" : "Add Photo"}
+            {uploading ? "Uploading" : "Upload"}
           </button>
+
+          {/* Browse existing R2 photos */}
+          <button
+            type="button"
+            onClick={() => setPickerOpen(true)}
+            disabled={uploading}
+            className="flex flex-col items-center justify-center w-24 h-20 border border-dashed border-slate-300 rounded-xl text-slate-400 hover:border-emerald-400 hover:text-emerald-600 transition disabled:opacity-50 text-xs gap-1"
+          >
+            <Images className="w-5 h-5" />
+            Choose
+          </button>
+
           <input
             ref={fileRef}
             type="file"
@@ -549,6 +565,21 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
           />
         </div>
       </div>
+
+      {/* R2 photo picker modal */}
+      {pickerOpen && (
+        <R2PhotoPicker
+          attachedUrls={images}
+          onSelect={(urls) => {
+            setImages((prev) => [
+              ...prev,
+              ...urls.filter((u) => !prev.includes(u)),
+            ]);
+            setPickerOpen(false);
+          }}
+          onClose={() => setPickerOpen(false)}
+        />
+      )}
 
       <div className="flex justify-end gap-3 pt-2">
         <button
