@@ -2,7 +2,8 @@
 
 import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
-import { X, Upload, Loader2, Plus } from "lucide-react";
+import { X, Upload, Loader2, Plus, Images } from "lucide-react";
+import { R2PhotoPicker } from "@/components/R2PhotoPicker";
 
 function slugify(str: string) {
   return str
@@ -40,6 +41,7 @@ export function CategoryForm({ initial, onSuccess, onCancel }: CategoryFormProps
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleNameChange = (val: string) => {
@@ -103,7 +105,7 @@ export function CategoryForm({ initial, onSuccess, onCancel }: CategoryFormProps
       </div>
       <div>
         <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Cover Image</label>
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-3 flex-wrap">
           {image && (
             <div className="relative w-24 h-20 rounded-xl overflow-hidden border">
               <Image src={image} alt="Cover" fill sizes="96px" className="object-cover" />
@@ -112,12 +114,28 @@ export function CategoryForm({ initial, onSuccess, onCancel }: CategoryFormProps
               </button>
             </div>
           )}
+          {/* Upload new */}
           <button type="button" onClick={() => fileRef.current?.click()} className="flex items-center gap-2 border border-dashed rounded-xl px-4 py-3 text-sm hover:border-emerald-400 transition">
             {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
             {uploading ? "Uploading..." : "Upload Image"}
           </button>
+          {/* Choose existing */}
+          <button type="button" onClick={() => setPickerOpen(true)} disabled={uploading} className="flex items-center gap-2 border border-dashed rounded-xl px-4 py-3 text-sm text-slate-500 hover:border-emerald-400 hover:text-emerald-600 transition disabled:opacity-50">
+            <Images className="w-4 h-4" />
+            Choose Existing
+          </button>
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])} />
         </div>
+        {pickerOpen && (
+          <R2PhotoPicker
+            attachedUrls={image ? [image] : []}
+            onSelect={(urls) => {
+              if (urls[0]) setImage(urls[0]);
+              setPickerOpen(false);
+            }}
+            onClose={() => setPickerOpen(false)}
+          />
+        )}
       </div>
       <div className="flex justify-end gap-3 pt-2">
         <button type="button" onClick={onCancel} className="px-5 py-2 rounded-xl border text-sm">Cancel</button>
@@ -165,6 +183,7 @@ export function ServiceForm({ initial, categories, onSuccess, onCancel }: Servic
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleTitleChange = (val: string) => {
@@ -266,12 +285,28 @@ export function ServiceForm({ initial, categories, onSuccess, onCancel }: Servic
               </button>
             </div>
           ))}
+          {/* Upload new */}
           <button type="button" onClick={() => fileRef.current?.click()} className="flex flex-col items-center justify-center w-24 h-20 border border-dashed rounded-xl text-slate-400 hover:border-emerald-400 transition gap-1">
             {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
-            <span className="text-[10px]">{uploading ? "Uploading" : "Add Photo"}</span>
+            <span className="text-[10px]">{uploading ? "Uploading" : "Upload"}</span>
+          </button>
+          {/* Choose existing */}
+          <button type="button" onClick={() => setPickerOpen(true)} disabled={uploading} className="flex flex-col items-center justify-center w-24 h-20 border border-dashed rounded-xl text-slate-400 hover:border-emerald-400 hover:text-emerald-600 transition disabled:opacity-50 gap-1">
+            <Images className="w-5 h-5" />
+            <span className="text-[10px]">Choose</span>
           </button>
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0])} />
         </div>
+        {pickerOpen && (
+          <R2PhotoPicker
+            attachedUrls={images}
+            onSelect={(urls) => {
+              setImages((prev) => [...prev, ...urls.filter((u) => !prev.includes(u))]);
+              setPickerOpen(false);
+            }}
+            onClose={() => setPickerOpen(false)}
+          />
+        )}
       </div>
       <div className="flex justify-end gap-3 pt-2">
         <button type="button" onClick={onCancel} className="px-5 py-2 rounded-xl border text-sm">Cancel</button>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 import {
   X,
   Search,
@@ -189,19 +188,20 @@ export function R2PhotoPicker({
                     onClick={() => toggle(photo.url)}
                     title={photo.key}
                     className={[
-                      "relative aspect-square rounded-xl overflow-hidden border-2 transition-all group focus:outline-none focus:ring-2 focus:ring-emerald-500",
+                      "relative rounded-xl overflow-hidden border-2 transition-all group focus:outline-none focus:ring-2 focus:ring-emerald-500",
                       active
                         ? "border-emerald-500 ring-2 ring-emerald-300"
                         : "border-slate-200 hover:border-emerald-300",
                       isAttached ? "cursor-default opacity-80" : "cursor-pointer",
                     ].join(" ")}
+                    style={{ paddingBottom: "100%" }} // aspect-square via padding trick
                   >
-                    <Image
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={photo.url}
                       alt={photo.key}
-                      fill
-                      sizes="160px"
-                      className="object-cover group-hover:scale-105 transition-transform duration-200"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                      loading="lazy"
                     />
 
                     {/* Overlay */}

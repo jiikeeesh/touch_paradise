@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { Play, ChevronLeft, ChevronRight, X, Trash2, Video as VideoIcon, Plus } from "lucide-react";
+import { Play, ChevronLeft, ChevronRight, X, Trash2, Video as VideoIcon, Plus, Upload, Images } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { R2PhotoPicker } from "@/components/R2PhotoPicker";
 interface Video {
   id: string; title: string; location: string; duration: string; cover: string; src: string;
 }
@@ -20,7 +21,10 @@ export default function AdminVideosClient() {
   const [location, setLocation] = useState("");
   const [duration, setDuration] = useState("");
   const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverUrl, setCoverUrl] = useState(""); // set when choosing from R2
   const [srcFile, setSrcFile] = useState<File | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const coverFileRef = useRef<HTMLInputElement>(null);
 
   const fetchVideos = async () => {
     try {
@@ -40,25 +44,30 @@ export default function AdminVideosClient() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !location || !duration || !coverFile || !srcFile) return;
+    // Require either an uploaded file or a chosen R2 URL for cover
+    if (!title || !location || !duration || (!coverFile && !coverUrl) || !srcFile) return;
 
     setAdding(true);
     try {
-      // PROXY LOGIC (Cover): Send file to our own API route to avoid CORS
-      const coverFormData = new FormData();
-      coverFormData.append("file", coverFile);
+      let finalCoverUrl = coverUrl;
 
-      const coverRes = await fetch("/api/upload", {
-        method: "POST",
-        body: coverFormData,
-      });
+      if (coverFile && !coverUrl) {
+        // Upload the chosen file
+        const coverFormData = new FormData();
+        coverFormData.append("file", coverFile);
 
-      if (!coverRes.ok) {
-        const data = await coverRes.json();
-        throw new Error(data.error || "Cover upload failed");
+        const coverRes = await fetch("/api/upload", {
+          method: "POST",
+          body: coverFormData,
+        });
+
+        if (!coverRes.ok) {
+          const data = await coverRes.json();
+          throw new Error(data.error || "Cover upload failed");
+        }
+        const coverBlob = await coverRes.json();
+        finalCoverUrl = coverBlob.url;
       }
-      const coverBlob = await coverRes.json();
-      const coverUrl = coverBlob.url;
 
       // PROXY LOGIC (Video): Send file to our own API route to avoid CORS
       const srcFormData = new FormData();
@@ -83,7 +92,7 @@ export default function AdminVideosClient() {
           title,
           location,
           duration,
-          cover: coverUrl,
+          cover: finalCoverUrl,
           src: srcUrl,
         }),
       });
@@ -93,6 +102,7 @@ export default function AdminVideosClient() {
         setLocation("");
         setDuration("");
         setCoverFile(null);
+        setCoverUrl("");
         setSrcFile(null);
         setIsModalOpen(false);
         fetchVideos();
@@ -294,13 +304,69 @@ export default function AdminVideosClient() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">Cover Image (JPEG, PNG)</label>
+                    {/* Preview */}
+                    {(coverFile || coverUrl) && (
+                      <div className="relative w-full h-32 rounded-xl overflow-hidden border border-slate-200 mb-2">
+                        <Image
+                          src={coverUrl || URL.createObjectURL(coverFile!)}
+                          alt="Cover preview"
+                          fill
+                          className="object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => { setCoverFile(null); setCoverUrl(""); }}
+                          className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      {/* Upload new */}
+                      <button
+                        type="button"
+                        onClick={() => coverFileRef.current?.click()}
+                        className="flex items-center gap-1.5 border border-dashed border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-500 hover:border-emerald-400 hover:text-emerald-600 transition"
+                      >
+                        <Upload className="w-4 h-4" />
+                        Upload
+                      </button>
+                      {/* Choose existing */}
+                      <button
+                        type="button"
+                        onClick={() => setPickerOpen(true)}
+                        className="flex items-center gap-1.5 border border-dashed border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-500 hover:border-emerald-400 hover:text-emerald-600 transition"
+                      >
+                        <Images className="w-4 h-4" />
+                        Choose Existing
+                      </button>
+                    </div>
                     <input
+                      ref={coverFileRef}
                       type="file"
                       accept="image/*"
-                      required
-                      onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
-                      className="w-full border border-slate-300 rounded-xl px-4 py-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0] || null;
+                        setCoverFile(f);
+                        setCoverUrl(""); // clear any R2-picked URL
+                        e.target.value = "";
+                      }}
                     />
+                    {pickerOpen && (
+                      <R2PhotoPicker
+                        attachedUrls={coverUrl ? [coverUrl] : []}
+                        onSelect={(urls) => {
+                          if (urls[0]) {
+                            setCoverUrl(urls[0]);
+                            setCoverFile(null); // using R2 URL directly
+                          }
+                          setPickerOpen(false);
+                        }}
+                        onClose={() => setPickerOpen(false)}
+                      />
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">Video File (MP4, WebM)</label>

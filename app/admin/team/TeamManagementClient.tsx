@@ -2,8 +2,9 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { X, Upload, Loader2, Plus, Edit2, Trash2, Users } from "lucide-react";
+import { X, Upload, Loader2, Plus, Edit2, Trash2, Users, Images } from "lucide-react";
 import { createTeamMember, updateTeamMember, deleteTeamMember } from "@/app/actions/team";
+import { R2PhotoPicker } from "@/components/R2PhotoPicker";
 
 interface TeamMember {
   id: string;
@@ -33,6 +34,7 @@ export default function TeamManagementClient({ initialMembers }: { initialMember
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const resetForm = () => {
@@ -218,7 +220,7 @@ export default function TeamManagementClient({ initialMembers }: { initialMember
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
                   Profile Photo *
                 </label>
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-4 flex-wrap">
                   {image && (
                     <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 border border-slate-200">
                       <Image src={image} alt="Profile" fill sizes="96px" className="object-cover" />
@@ -231,6 +233,7 @@ export default function TeamManagementClient({ initialMembers }: { initialMember
                       </button>
                     </div>
                   )}
+                  {/* Upload new */}
                   <button
                     type="button"
                     onClick={() => fileRef.current?.click()}
@@ -246,6 +249,16 @@ export default function TeamManagementClient({ initialMembers }: { initialMember
                       {uploading ? "Uploading" : "Upload"}
                     </span>
                   </button>
+                  {/* Choose existing */}
+                  <button
+                    type="button"
+                    onClick={() => setPickerOpen(true)}
+                    disabled={uploading}
+                    className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 hover:border-emerald-500 hover:text-emerald-600 transition disabled:opacity-50"
+                  >
+                    <Images className="w-6 h-6" />
+                    <span className="text-[10px] mt-2 font-bold uppercase tracking-wider">Choose</span>
+                  </button>
                   <input
                     ref={fileRef}
                     type="file"
@@ -257,6 +270,16 @@ export default function TeamManagementClient({ initialMembers }: { initialMember
                     }}
                   />
                 </div>
+                {pickerOpen && (
+                  <R2PhotoPicker
+                    attachedUrls={image ? [image] : []}
+                    onSelect={(urls) => {
+                      if (urls[0]) setImage(urls[0]);
+                      setPickerOpen(false);
+                    }}
+                    onClose={() => setPickerOpen(false)}
+                  />
+                )}
               </div>
             </div>
 

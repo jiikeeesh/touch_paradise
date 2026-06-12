@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { X, Upload, Loader2, Plus, Images } from "lucide-react";
-import { R2PhotoPicker } from "./R2PhotoPicker";
+import { R2PhotoPicker } from "@/components/R2PhotoPicker";
 
 interface Region {
   id: string;
@@ -42,6 +42,7 @@ export function RegionForm({ initial, onSuccess, onCancel }: RegionFormProps) {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleNameChange = (val: string) => {
@@ -151,7 +152,7 @@ export function RegionForm({ initial, onSuccess, onCancel }: RegionFormProps) {
         <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
           Cover Image
         </label>
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-3 flex-wrap">
           {image && (
             <div className="relative w-24 h-20 rounded-xl overflow-hidden flex-shrink-0 border border-slate-200">
               <Image src={image} alt="Cover" fill sizes="96px" className="object-cover" />
@@ -164,6 +165,7 @@ export function RegionForm({ initial, onSuccess, onCancel }: RegionFormProps) {
               </button>
             </div>
           )}
+          {/* Upload new */}
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
@@ -177,6 +179,16 @@ export function RegionForm({ initial, onSuccess, onCancel }: RegionFormProps) {
             )}
             {uploading ? "Uploading..." : "Upload Image"}
           </button>
+          {/* Choose existing */}
+          <button
+            type="button"
+            onClick={() => setPickerOpen(true)}
+            disabled={uploading}
+            className="flex items-center gap-2 border border-dashed border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-500 hover:border-emerald-400 hover:text-emerald-600 transition disabled:opacity-50"
+          >
+            <Images className="w-4 h-4" />
+            Choose Existing
+          </button>
           <input
             ref={fileRef}
             type="file"
@@ -189,6 +201,17 @@ export function RegionForm({ initial, onSuccess, onCancel }: RegionFormProps) {
             }}
           />
         </div>
+        {/* R2 photo picker — single select: takes first chosen URL */}
+        {pickerOpen && (
+          <R2PhotoPicker
+            attachedUrls={image ? [image] : []}
+            onSelect={(urls) => {
+              if (urls[0]) setImage(urls[0]);
+              setPickerOpen(false);
+            }}
+            onClose={() => setPickerOpen(false)}
+          />
+        )}
       </div>
 
       <div className="flex justify-end gap-3 pt-2">
