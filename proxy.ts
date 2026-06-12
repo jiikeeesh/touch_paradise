@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Cloudflare Workers (OpenNext) only supports the Edge runtime for proxy/middleware.
-export const runtime = 'edge';
-
 export function proxy(req: NextRequest) {
   const url = req.nextUrl;
 
