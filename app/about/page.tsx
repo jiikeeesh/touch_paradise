@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 const teamPlaceholder = [
   {
     id: "1",
-    name: "Pemba Sherpa",
+    name: "Kamal Raj Sadaula",
     role: "Lead Guide & Founder",
-    bio: "Born in the Khumbu region, Pemba has summited Everest 7 times and led over 300 successful expeditions.",
+    bio: "Born in Kathmandu, Kamal proactively founded the agency and has successfully organized over 300 expeditions.",
     image: "/trekkers.png",
   },
   {
@@ -134,9 +134,8 @@ export default async function AboutPage() {
                 Born in the <span className="text-emerald-600">Mountains</span>
               </h2>
               <p className="text-slate-600 leading-relaxed mb-5 text-lg">
-                Touch Paradise Trekking and Expeditions was founded in 2009 by Pemba Sherpa, a native of 
-                the Khumbu valley who grew up guiding climbers to Everest Base Camp. Frustrated by agencies 
-                that prioritised profit over safety and culture, he set out to create something different.
+                Kamal Raj Sadaula, a native of Kathmandu, proactively founded Touch Paradise Trekking and Expeditions in 2009. 
+                Frustrated by agencies that prioritized profit over safety and culture, he set out to create something different.
               </p>
               <p className="text-slate-600 leading-relaxed mb-8">
                 Today, we operate from Balaju, Kathmandu (Reg. No: 66179/066/067) and are proud members of 

@@ -172,7 +172,7 @@ export default function TeamManagementClient({ initialMembers }: { initialMember
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Pemba Sherpa"
+                  placeholder="e.g. Kamal Raj Sadaula"
                   className={inputCls}
                 />
               </div>
