@@ -52,7 +52,72 @@ export default async function AdminPage() {
                 <p className="text-slate-500">Incoming requests will appear here once users submit the contact form.</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <div>
+                {/* Mobile View (Cards) */}
+                <div className="md:hidden divide-y divide-slate-100">
+                  {messages.map((msg: ContactMessage) => (
+                    <div key={msg.id} className="p-5 space-y-4">
+                      {/* User Info & Date */}
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold flex-shrink-0">
+                            {msg.firstName[0]}
+                            {msg.lastName[0]}
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-900">{msg.firstName} {msg.lastName}</p>
+                            <p className="text-xs text-slate-500 font-mono mt-1">
+                              ID: {msg.id.substring(0, 8)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right text-xs text-slate-500 flex-shrink-0">
+                          <div className="font-medium text-slate-700">{new Date(msg.createdAt).toLocaleDateString()}</div>
+                          <div className="mt-0.5">{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                        </div>
+                      </div>
+                      
+                      {/* Desired Trek */}
+                      {msg.trek && (
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-full border border-emerald-100">
+                          <Mountain className="w-3.5 h-3.5" />
+                          {msg.trek}
+                        </div>
+                      )}
+                      
+                      {/* Message */}
+                      <div className="text-sm text-slate-700 bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+                        {msg.message}
+                      </div>
+                      
+                      {/* Actions */}
+                      <div className="flex items-center gap-2 pt-1">
+                        <a 
+                          href={`mailto:${msg.email}`} 
+                          className="flex-1 inline-flex justify-center items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-xl border border-emerald-100 transition hover:bg-emerald-100"
+                        >
+                          <Mail className="w-3.5 h-3.5" /> Email
+                        </a>
+                        {msg.phone && (
+                          <a 
+                            href={`tel:${msg.phone}`} 
+                            className="flex-1 inline-flex justify-center items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 text-xs font-bold rounded-xl border border-blue-100 transition hover:bg-blue-100"
+                          >
+                            <Phone className="w-3.5 h-3.5" /> Call
+                          </a>
+                        )}
+                        <DeleteMessageButton 
+                          id={msg.id} 
+                          className="flex-1 justify-center rounded-xl px-3 py-2 border border-red-100 text-xs font-bold"
+                          showText={true}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop View (Table) */}
+                <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-50 border-b border-slate-100 uppercase text-xs font-semibold text-slate-500 tracking-wider">
@@ -130,6 +195,7 @@ export default async function AdminPage() {
                     ))}
                   </tbody>
                 </table>
+                </div>
               </div>
             )}
           </div>

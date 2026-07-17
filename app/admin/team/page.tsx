@@ -5,6 +5,7 @@ import { LogOut, Users, Mail, Mountain, Briefcase } from "lucide-react";
 import TeamManagementClient from "./TeamManagementClient";
 import AdminNav from "@/components/AdminNav";
 import { getTeamMembers } from "@/app/actions/team";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Team Management | Admin — Touch Paradise",
@@ -12,6 +13,9 @@ export const metadata: Metadata = {
 
 export default async function AdminTeamPage() {
   const members = await getTeamMembers();
+  const interviews = await (prisma as any).interviewApplication.findMany({
+    orderBy: { createdAt: "desc" }
+  });
 
   return (
     <PageLayout hideSocial={true}>
@@ -41,7 +45,7 @@ export default async function AdminTeamPage() {
           {/* Admin Nav */}
           <AdminNav />
 
-          <TeamManagementClient initialMembers={members} />
+          <TeamManagementClient initialMembers={members} interviews={interviews} />
         </div>
       </div>
     </PageLayout>

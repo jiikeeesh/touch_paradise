@@ -351,10 +351,7 @@ const FeaturedVideos = () => {
                 {/* Dark overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                {/* Duration badge */}
-                <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full">
-                  {video.duration}
-                </div>
+                {/* Duration badge removed */}
 
                 {/* Play Button */}
                 <div className="absolute inset-0 flex items-center justify-center">

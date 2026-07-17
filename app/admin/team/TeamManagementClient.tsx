@@ -20,7 +20,21 @@ const inputCls =
 const textareaCls =
   "w-full border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none";
 
-export default function TeamManagementClient({ initialMembers }: { initialMembers: TeamMember[] }) {
+interface InterviewApplication {
+  id: string;
+  name: string;
+  position: string;
+  experience: string;
+  message: string;
+}
+
+export default function TeamManagementClient({ 
+  initialMembers, 
+  interviews = [] 
+}: { 
+  initialMembers: TeamMember[],
+  interviews?: InterviewApplication[]
+}) {
   const [members, setMembers] = useState(initialMembers);
   const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
   const [isAdding, setIsAdding] = useState(false);
@@ -156,6 +170,34 @@ export default function TeamManagementClient({ initialMembers }: { initialMember
                 <X className="w-6 h-6" />
               </button>
             </div>
+
+            {!editingMember && interviews.length > 0 && (
+              <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl mb-6">
+                <label className="block text-sm font-bold text-blue-900 mb-2">
+                  Import from Interview Application (Optional)
+                </label>
+                <select 
+                  className="w-full border border-blue-200 bg-white text-slate-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => {
+                    const selected = interviews.find(i => i.id === e.target.value);
+                    if (selected) {
+                      setName(selected.name);
+                      setRole(selected.position);
+                      // Optional: prefill bio
+                      setBio(`Experience: ${selected.experience}\n\n${selected.message}`);
+                    }
+                  }}
+                >
+                  <option value="">-- Select a candidate --</option>
+                  {interviews.map(interview => (
+                    <option key={interview.id} value={interview.id}>
+                      {interview.name} - {interview.position}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
 
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">

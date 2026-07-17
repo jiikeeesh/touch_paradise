@@ -6,9 +6,11 @@ import { deleteMessage } from "@/app/actions/messages";
 
 interface DeleteMessageButtonProps {
   id: string;
+  className?: string;
+  showText?: boolean;
 }
 
-export default function DeleteMessageButton({ id }: DeleteMessageButtonProps) {
+export default function DeleteMessageButton({ id, className, showText }: DeleteMessageButtonProps) {
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
@@ -32,18 +34,19 @@ export default function DeleteMessageButton({ id }: DeleteMessageButtonProps) {
     <button
       onClick={handleDelete}
       disabled={loading}
-      className={`p-2 rounded-full transition ${
+      className={`inline-flex items-center gap-2 transition ${
         loading 
           ? "bg-slate-100 text-slate-400 cursor-not-allowed" 
           : "bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600"
-      }`}
+      } ${className || "p-2 rounded-full justify-center"}`}
       title="Delete Message"
     >
       {loading ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
+        <Loader2 className="w-3.5 h-3.5 animate-spin" />
       ) : (
-        <Trash2 className="w-4 h-4" />
+        <Trash2 className="w-3.5 h-3.5" />
       )}
+      {showText && <span>Delete</span>}
     </button>
   );
 }

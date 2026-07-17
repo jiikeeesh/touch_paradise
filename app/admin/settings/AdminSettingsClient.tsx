@@ -59,7 +59,7 @@ export default function AdminSettingsClient() {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 max-w-3xl">
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-8 max-w-3xl">
       <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
         <ImageIcon className="w-6 h-6 text-emerald-600" />
         Homepage Hero Image
@@ -80,7 +80,7 @@ export default function AdminSettingsClient() {
             />
             <button
               onClick={() => setShowPicker(true)}
-              className="px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200 transition"
+              className="px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200 transition shrink-0"
             >
               Browse
             </button>
@@ -104,8 +104,8 @@ export default function AdminSettingsClient() {
           </div>
         )}
 
-        <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
-          <div>
+        <div className="pt-6 border-t border-slate-100 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
+          <div className="w-full sm:w-auto flex justify-center sm:justify-start">
             {saved && (
               <span className="flex items-center gap-1.5 text-sm font-bold text-emerald-600">
                 <CheckCircle2 className="w-4 h-4" />
@@ -116,7 +116,7 @@ export default function AdminSettingsClient() {
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-emerald-700 transition disabled:opacity-50"
+            className="w-full sm:w-auto flex justify-center items-center gap-2 bg-emerald-600 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-emerald-700 transition disabled:opacity-50"
           >
             {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Save Changes

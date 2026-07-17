@@ -19,7 +19,6 @@ export default function AdminVideosClient() {
   // Form State
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
-  const [duration, setDuration] = useState("");
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverUrl, setCoverUrl] = useState(""); // set when choosing from R2
   const [srcFile, setSrcFile] = useState<File | null>(null);
@@ -44,8 +43,7 @@ export default function AdminVideosClient() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Require either an uploaded file or a chosen R2 URL for cover
-    if (!title || !location || !duration || (!coverFile && !coverUrl) || !srcFile) return;
+    if (!title || !location || (!coverFile && !coverUrl) || !srcFile) return;
 
     setAdding(true);
     try {
@@ -91,7 +89,7 @@ export default function AdminVideosClient() {
         body: JSON.stringify({
           title,
           location,
-          duration,
+          duration: "",
           cover: finalCoverUrl,
           src: srcUrl,
         }),
@@ -100,7 +98,6 @@ export default function AdminVideosClient() {
       if (res.ok) {
         setTitle("");
         setLocation("");
-        setDuration("");
         setCoverFile(null);
         setCoverUrl("");
         setSrcFile(null);
@@ -171,8 +168,7 @@ export default function AdminVideosClient() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05, duration: 0.3 }}
-              className="flex-shrink-0 snap-start group relative"
-              style={{ width: "200px" }}
+              className="flex-shrink-0 snap-start group relative w-[65vw] sm:w-[200px] max-w-[280px]"
             >
               <div
                 className="relative rounded-3xl overflow-hidden bg-slate-800 shadow-xl"
@@ -188,18 +184,15 @@ export default function AdminVideosClient() {
                 {/* Dark overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                {/* Duration badge */}
-                <div className="absolute top-3 left-3 bg-black/50 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full">
-                  {video.duration}
-                </div>
+                {/* Duration badge removed */}
 
                 {/* DELETE ICON INTERCEPT OVERLAY */}
                 <button
                   onClick={() => handleDelete(video.id, video.title)}
-                  className="absolute top-3 right-3 bg-red-500/80 hover:bg-red-600 backdrop-blur-sm text-white p-1.5 rounded-full z-10 transition shadow-lg opacity-0 group-hover:opacity-100"
+                  className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 backdrop-blur-sm text-white p-2 rounded-full z-10 transition shadow-lg sm:opacity-0 group-hover:opacity-100 opacity-100"
                   title="Delete Video"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-5 h-5 sm:w-4 sm:h-4" />
                 </button>
 
                 {/* Central Icon */}
@@ -222,8 +215,7 @@ export default function AdminVideosClient() {
 
           {/* Add Your Video card */}
           <div
-            className="flex-shrink-0 snap-start cursor-pointer group"
-            style={{ width: "200px" }}
+            className="flex-shrink-0 snap-start cursor-pointer group w-[65vw] sm:w-[200px] max-w-[280px]"
             onClick={() => setIsModalOpen(true)}
           >
             <div
@@ -289,17 +281,6 @@ export default function AdminVideosClient() {
                       onChange={(e) => setLocation(e.target.value)}
                       className="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 outline-none"
                       placeholder="e.g. Khumbu, Nepal"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Duration</label>
-                    <input
-                      type="text"
-                      required
-                      value={duration}
-                      onChange={(e) => setDuration(e.target.value)}
-                      className="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 outline-none"
-                      placeholder="e.g. 1:24"
                     />
                   </div>
                   <div>
