@@ -1,10 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import type { ContactMessage } from "@prisma/client";
-import { Mail, Phone, Calendar, Mountain, LogOut, Video, Briefcase, Users, Star } from "lucide-react";
+import { Mail, Phone, Calendar, Mountain, LogOut, Video, Briefcase, Users, Star, Settings } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
 import AdminVideosClient from "./AdminVideosClient";
 import Link from "next/link";
+import AdminNav from "@/components/AdminNav";
 import DeleteMessageButton from "./DeleteMessageButton";
 
 export const dynamic = "force-dynamic";
@@ -39,47 +40,7 @@ export default async function AdminPage() {
           </div>
 
           {/* Section nav */}
-          <div className="flex gap-2 mb-8">
-            <span className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white shadow-sm border border-slate-200 text-emerald-700">
-              <Mail className="w-4 h-4" />
-              Messages
-            </span>
-            <Link
-              href="/admin/treks"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Mountain className="w-4 h-4" />
-              Treks
-            </Link>
-            <Link
-              href="/admin/services"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Briefcase className="w-4 h-4" />
-              Services
-            </Link>
-            <Link
-              href="/admin/team"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Users className="w-4 h-4" />
-              Team
-            </Link>
-            <Link
-              href="/admin/interviews"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Users className="w-4 h-4" />
-              Interviews
-            </Link>
-            <Link
-              href="/admin/reviews"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Star className="w-4 h-4" />
-              Reviews
-            </Link>
-          </div>
+          <AdminNav />
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
             {messages.length === 0 ? (
@@ -173,14 +134,6 @@ export default async function AdminPage() {
             )}
           </div>
 
-          <div className="mt-16 mb-8">
-            <h2 className="text-3xl font-bold text-slate-900 mb-2 flex items-center gap-2">
-              <Video className="w-8 h-8 text-emerald-600" />
-              Featured Videos
-            </h2>
-            <p className="text-slate-500 mb-8">Manage the feature videos shown on the homepage</p>
-            <AdminVideosClient />
-          </div>
         </div>
       </div>
     </PageLayout>

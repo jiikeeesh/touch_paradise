@@ -3,7 +3,7 @@ import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
 import { LogOut, Users, Mail, Mountain, Briefcase } from "lucide-react";
 import TeamManagementClient from "./TeamManagementClient";
-import Link from "next/link";
+import AdminNav from "@/components/AdminNav";
 import { getTeamMembers } from "@/app/actions/team";
 
 export const metadata: Metadata = {
@@ -39,33 +39,7 @@ export default async function AdminTeamPage() {
           </div>
 
           {/* Admin Nav */}
-          <div className="flex flex-wrap gap-2 mb-8">
-            <Link
-              href="/admin"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Mail className="w-4 h-4" />
-              Messages
-            </Link>
-            <Link
-              href="/admin/treks"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Mountain className="w-4 h-4" />
-              Treks
-            </Link>
-            <Link
-              href="/admin/services"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Briefcase className="w-4 h-4" />
-              Services
-            </Link>
-            <span className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white shadow-sm border border-slate-200 text-emerald-700">
-              <Users className="w-4 h-4" />
-              Team
-            </span>
-          </div>
+          <AdminNav />
 
           <TeamManagementClient initialMembers={members} />
         </div>

@@ -3,6 +3,7 @@ import { Mail, Phone, Calendar, Briefcase, GraduationCap, MessageSquare, LogOut,
 import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
 import Link from "next/link";
+import AdminNav from "@/components/AdminNav";
 import DeleteInterviewButton from "./DeleteInterviewButton";
 
 export const dynamic = "force-dynamic";
@@ -53,47 +54,7 @@ export default async function AdminInterviewsPage() {
           </div>
 
           {/* Nav */}
-          <div className="flex gap-2 mb-8">
-            <Link
-              href="/admin"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Mail className="w-4 h-4" />
-              Messages
-            </Link>
-            <Link
-              href="/admin/treks"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Mountain className="w-4 h-4" />
-              Treks
-            </Link>
-            <Link
-              href="/admin/services"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Briefcase className="w-4 h-4" />
-              Services
-            </Link>
-            <Link
-              href="/admin/team"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Users className="w-4 h-4" />
-              Team
-            </Link>
-            <span className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white shadow-sm border border-slate-200 text-emerald-700">
-              <Users className="w-4 h-4" />
-              Interviews
-            </span>
-            <Link
-              href="/admin/reviews"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Star className="w-4 h-4" />
-              Reviews
-            </Link>
-          </div>
+          <AdminNav />
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
             {applications.length === 0 ? (

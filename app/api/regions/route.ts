@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const regions = await prisma.region.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { name: "asc" },
       include: {
         _count: { select: { treks: true } },
       },

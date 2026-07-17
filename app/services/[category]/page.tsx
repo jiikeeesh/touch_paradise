@@ -30,7 +30,7 @@ export default async function ServiceCategoryPage({ params }: Props) {
     where: { slug },
     include: {
       services: {
-        orderBy: { createdAt: "desc" },
+        orderBy: { title: "asc" },
       },
     },
   });

@@ -11,10 +11,14 @@ import { prisma } from "@/lib/prisma";
 
 export default async function Home() {
   const guideCount = await prisma.teamMember.count();
+  
+  const heroImgSetting = await prisma.siteSetting.findUnique({
+    where: { key: "hero_image" }
+  });
 
   return (
     <PageLayout showPadding={false}>
-      <Hero />
+      <Hero image={heroImgSetting?.value || undefined} />
       <FeaturedTreks />
       <FeaturedVideos />
       <Services />

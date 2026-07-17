@@ -274,7 +274,9 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
   const [altitude, setAltitude] = useState(initial?.altitude ?? "");
   const [season, setSeason] = useState(initial?.season ?? "");
   const [highlights, setHighlights] = useState(initial?.highlights ?? "");
-  const [itinerary, setItinerary] = useState(initial?.itinerary ?? "");
+  const [itineraryList, setItineraryList] = useState<string[]>(
+    initial?.itinerary ? initial.itinerary.split("\n") : [""]
+  );
   const [images, setImages] = useState<string[]>(
     initial?.images ? initial.images.split("|").filter(Boolean) : []
   );
@@ -345,7 +347,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
           altitude,
           season,
           highlights,
-          itinerary,
+          itinerary: itineraryList.filter(i => i.trim() !== "").join("\n"),
           images: images.join("|"),
           regionId,
         }),
@@ -513,18 +515,43 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
 
       <div>
         <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-          Itinerary{" "}
-          <span className="text-slate-400 normal-case font-normal">
-            (one entry per line, e.g. &quot;Day 1: Kathmandu to Lukla&quot;)
-          </span>
+          Itinerary
         </label>
-        <textarea
-          value={itinerary}
-          onChange={(e) => setItinerary(e.target.value)}
-          rows={6}
-          placeholder={"Day 1: Fly Kathmandu → Lukla, trek to Phakding\nDay 2: Trek to Namche Bazaar"}
-          className={textareaCls + " font-mono"}
-        />
+        <div className="space-y-2">
+          {itineraryList.map((item, index) => (
+            <div key={index} className="flex gap-2">
+              <input
+                value={item}
+                onChange={(e) => {
+                  const newList = [...itineraryList];
+                  newList[index] = e.target.value;
+                  setItineraryList(newList);
+                }}
+                placeholder={`Day ${index + 1}: e.g. Kathmandu to Lukla`}
+                className={inputCls + " flex-1"}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const newList = [...itineraryList];
+                  newList.splice(index, 1);
+                  setItineraryList(newList.length ? newList : [""]);
+                }}
+                className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition shrink-0 flex items-center justify-center border border-transparent hover:border-red-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => setItineraryList([...itineraryList, ""])}
+            className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 text-sm font-medium mt-2"
+          >
+            <Plus className="w-4 h-4" />
+            Add Another Day
+          </button>
+        </div>
       </div>
 
       {/* Image gallery */}

@@ -56,7 +56,7 @@ export default async function RegionPage({ params }: Props) {
     
     treks = await prisma.trek.findMany({
       where: { region: { slug: regionSlug } },
-      orderBy: { createdAt: "desc" },
+      orderBy: { title: "asc" },
       include: { region: { select: { id: true, name: true, slug: true } } },
     });
   } catch (error) {

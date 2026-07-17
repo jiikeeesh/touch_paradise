@@ -12,6 +12,7 @@ import {
 import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
 import Link from "next/link";
+import AdminNav from "@/components/AdminNav";
 import AdminReviewsClient from "./AdminReviewsClient";
 
 export const dynamic = "force-dynamic";
@@ -57,47 +58,7 @@ export default async function AdminReviewsPage() {
           </div>
 
           {/* Nav */}
-          <div className="flex gap-2 mb-8 flex-wrap">
-            <Link
-              href="/admin"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Mail className="w-4 h-4" />
-              Messages
-            </Link>
-            <Link
-              href="/admin/treks"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Mountain className="w-4 h-4" />
-              Treks
-            </Link>
-            <Link
-              href="/admin/services"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Briefcase className="w-4 h-4" />
-              Services
-            </Link>
-            <Link
-              href="/admin/team"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Users className="w-4 h-4" />
-              Team
-            </Link>
-            <Link
-              href="/admin/interviews"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition"
-            >
-              <Users className="w-4 h-4" />
-              Interviews
-            </Link>
-            <span className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white shadow-sm border border-slate-200 text-emerald-700">
-              <Star className="w-4 h-4" />
-              Reviews
-            </span>
-          </div>
+          <AdminNav />
 
           <AdminReviewsClient initialReviews={reviews} />
         </div>

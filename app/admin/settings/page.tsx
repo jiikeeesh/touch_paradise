@@ -1,28 +1,20 @@
-import type { Metadata } from "next";
 import PageLayout from "@/components/PageLayout";
-import { logout } from "@/app/actions/auth";
-import { LogOut, Briefcase, Mail, Mountain, Users } from "lucide-react";
-import AdminServicesClient from "./AdminServicesClient";
+import AdminSettingsClient from "./AdminSettingsClient";
 import AdminNav from "@/components/AdminNav";
+import { logout } from "@/app/actions/auth";
+import { LogOut } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Services Management | Admin — Touch Paradise",
-};
+export const dynamic = "force-dynamic";
 
-export default function AdminServicesPage() {
+export default function SettingsPage() {
   return (
     <PageLayout hideSocial={true}>
       <div className="bg-slate-50 min-h-screen py-24">
         <div className="container mx-auto px-4 max-w-7xl">
-          {/* Header */}
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-slate-900 mb-1">
-                Services Management
-              </h1>
-              <p className="text-slate-500">
-                Manage your adventure categories and specific service offerings
-              </p>
+              <h1 className="text-4xl font-bold text-slate-900 mb-2">Site Settings</h1>
+              <p className="text-slate-500">Manage global settings for your website</p>
             </div>
             <form action={logout}>
               <button
@@ -34,11 +26,9 @@ export default function AdminServicesPage() {
               </button>
             </form>
           </div>
-
-          {/* Admin Nav */}
+          
           <AdminNav />
-
-          <AdminServicesClient />
+          <AdminSettingsClient />
         </div>
       </div>
     </PageLayout>

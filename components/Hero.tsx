@@ -5,13 +5,19 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronRight, Play } from "lucide-react";
 
-const Hero = () => {
+interface HeroProps {
+  image?: string;
+}
+
+const Hero = ({ image }: HeroProps) => {
+  const heroImage = image || "/hero.png";
+
   return (
     <section className="relative h-screen w-full overflow-hidden flex items-center">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/hero.png"
+          src={heroImage}
           alt="Himalayan Mountains"
           fill
           priority

@@ -19,7 +19,7 @@ export default async function TreksPage() {
   try {
     const [fetchedRegions, totalTreks, totalGuides] = await Promise.all([
       prisma.region.findMany({
-        orderBy: { createdAt: "desc" },
+        orderBy: { name: "asc" },
         include: {
           _count: {
             select: { treks: true },

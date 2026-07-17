@@ -4,8 +4,10 @@ import { PrismaClient } from "@prisma/client";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 function getClient(): PrismaClient {
-  const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
-  if (globalForPrisma.prisma) return globalForPrisma.prisma;
+  const globalForPrisma = globalThis as unknown as { prisma_v2: PrismaClient };
+  if (globalForPrisma.prisma_v2) {
+    return globalForPrisma.prisma_v2;
+  }
 
   let connectionString = process.env.DATABASE_URL!;
   try {
@@ -29,7 +31,7 @@ function getClient(): PrismaClient {
         : ["error"],
   });
 
-  if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = client;
+  if (process.env.NODE_ENV !== "production") globalForPrisma.prisma_v2 = client;
   return client;
 }
 
