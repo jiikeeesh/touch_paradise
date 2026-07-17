@@ -15,6 +15,12 @@ const regions = [
     image: "/everest.png",
   },
   {
+    name: "Everest Region",
+    slug: "everest-region",
+    description: "The legendary gateway to the world's highest peak. Trek through breathtaking Himalayan landscapes, vibrant Sherpa villages, and awe-inspiring glaciers on the path to Everest Base Camp.",
+    image: "/everest.png",
+  },
+  {
     name: "Annapurna",
     slug: "annapurna",
     description: "A diverse region offering lush subtropical forests to arid Tibetan-style landscapes.",
@@ -26,6 +32,7 @@ const regions = [
     description: "The 'Valley of Glaciers' — a sacred landscape rich in Tamang culture and dramatic scenery.",
     image: "/langtang.png",
   },
+
 ];
 
 const treks = [
