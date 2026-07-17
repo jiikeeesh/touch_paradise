@@ -164,10 +164,14 @@ const Footer = async () => {
               </li>
               <li className="flex gap-4">
                 <Mail className="w-6 h-6 text-emerald-500 flex-shrink-0" />
-                <span className="text-slate-400 text-sm">
+                <a
+                  href="mailto:info@touchparadise.com.np"
+                  className="text-slate-400 text-sm hover:text-emerald-400 transition-colors"
+                >
                   info@touchparadise.com.np
-                </span>
+                </a>
               </li>
+
             </ul>
           </div>
         </div>

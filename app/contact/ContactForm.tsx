@@ -68,8 +68,8 @@ export default function ContactForm({ treksList }: ContactFormProps) {
                   </div>
                   <div>
                     <p className="font-bold text-slate-900 mb-1">Email</p>
-                    <a href="mailto:ksadaula12@hotmail.com" className="text-emerald-600 font-semibold hover:underline break-all transition-colors">
-                      ksadaula12@hotmail.com
+                    <a href="mailto:info@touchparadise.com.np" className="text-emerald-600 font-semibold hover:underline break-all transition-colors">
+                      info@touchparadise.com.np
                     </a>
                   </div>
                 </div>
