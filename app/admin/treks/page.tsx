@@ -35,10 +35,17 @@ export default function AdminTreksPage() {
             </form>
           </div>
 
-          {/* Admin Nav */}
-          <AdminNav />
+          <div className="lg:flex lg:gap-8 lg:items-start">
+            <div className="lg:sticky lg:top-24 lg:flex-shrink-0">
+              {/* Admin Nav */}
+              <AdminNav />
+            </div>
+            
+            <div className="lg:flex-1 w-full min-w-0">
 
           <AdminTreksClient />
+            </div>
+          </div>
         </div>
       </div>
     </PageLayout>

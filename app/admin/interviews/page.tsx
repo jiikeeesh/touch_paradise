@@ -53,10 +53,14 @@ export default async function AdminInterviewsPage() {
             </form>
           </div>
 
-          {/* Nav */}
-          <AdminNav />
+          <div className="lg:flex lg:gap-8 lg:items-start">
+            <div className="lg:sticky lg:top-24 lg:flex-shrink-0">
+              {/* Nav */}
+              <AdminNav />
+            </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div className="lg:flex-1 w-full min-w-0">
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
             {applications.length === 0 ? (
               <div className="p-12 text-center">
                 <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
@@ -201,6 +205,8 @@ export default async function AdminInterviewsPage() {
                 </div>
               </div>
             )}
+          </div>
+            </div>
           </div>
         </div>
       </div>

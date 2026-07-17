@@ -27,8 +27,15 @@ export default function SettingsPage() {
             </form>
           </div>
           
-          <AdminNav />
-          <AdminSettingsClient />
+          <div className="lg:flex lg:gap-8 lg:items-start">
+            <div className="lg:sticky lg:top-24 lg:flex-shrink-0">
+              <AdminNav />
+            </div>
+            
+            <div className="lg:flex-1 w-full min-w-0">
+              <AdminSettingsClient />
+            </div>
+          </div>
         </div>
       </div>
     </PageLayout>

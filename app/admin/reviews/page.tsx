@@ -57,10 +57,17 @@ export default async function AdminReviewsPage() {
             </form>
           </div>
 
-          {/* Nav */}
-          <AdminNav />
+          <div className="lg:flex lg:gap-8 lg:items-start">
+            <div className="lg:sticky lg:top-24 lg:flex-shrink-0">
+              {/* Nav */}
+              <AdminNav />
+            </div>
+
+            <div className="lg:flex-1 w-full min-w-0">
 
           <AdminReviewsClient initialReviews={reviews} />
+            </div>
+          </div>
         </div>
       </div>
     </PageLayout>

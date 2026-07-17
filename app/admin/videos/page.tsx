@@ -35,16 +35,22 @@ export default function AdminVideosPage() {
             </form>
           </div>
 
-          {/* Section nav */}
-          <AdminNav />
+          <div className="lg:flex lg:gap-8 lg:items-start">
+            <div className="lg:sticky lg:top-24 lg:flex-shrink-0">
+              {/* Section nav */}
+              <AdminNav />
+            </div>
 
-          <div className="mb-8">
+            <div className="lg:flex-1 w-full min-w-0">
+              <div className="mb-8">
             <h2 className="text-3xl font-bold text-slate-900 mb-2 flex items-center gap-2">
               <Video className="w-8 h-8 text-emerald-600" />
               Featured Videos
             </h2>
             <p className="text-slate-500 mb-8">Manage the feature videos shown on the homepage</p>
             <AdminVideosClient />
+          </div>
+              </div>
           </div>
         </div>
       </div>

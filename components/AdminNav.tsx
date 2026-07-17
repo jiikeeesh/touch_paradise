@@ -23,6 +23,7 @@ export default function AdminNav() {
       className="
         fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 px-2 flex justify-around items-center
         sm:relative sm:z-auto sm:bg-transparent sm:border-none sm:shadow-none sm:p-0 sm:gap-2 sm:mb-8 sm:flex-wrap sm:justify-start
+        lg:flex-col lg:items-stretch lg:w-64 lg:gap-2 lg:mb-0
       "
     >
       {navItems.map((item) => {
