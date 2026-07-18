@@ -28,8 +28,8 @@ export default async function AdminInterviewsPage() {
 
   return (
     <main>
-      <div className="bg-slate-50 min-h-screen py-24">
-        <div className="container mx-auto px-4 max-w-7xl">
+      <div className="bg-slate-50 min-h-screen p-4 sm:p-8">
+        <div className="w-full">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
             <div>
               <div className="flex items-center gap-2 text-emerald-600 mb-2">
