@@ -71,7 +71,7 @@ export default async function RegionPage({ params }: Props) {
   const coverImage = regionData?.image || treks[0]?.images?.split("|")[0] || "/hero.png";
 
   return (
-    <PageLayout>
+    <PageLayout showPadding={false}>
       {/* Page Header */}
       <section className="relative py-24 bg-slate-900 overflow-hidden">
         <div className="absolute inset-0">

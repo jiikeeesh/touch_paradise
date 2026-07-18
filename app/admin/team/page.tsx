@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
 import { LogOut, Users, Mail, Mountain, Briefcase } from "lucide-react";
 import TeamManagementClient from "./TeamManagementClient";
 import AdminNav from "@/components/AdminNav";
 import { getTeamMembers } from "@/app/actions/team";
 import { prisma } from "@/lib/prisma";
+import AdminHeaderActions from "@/components/AdminHeaderActions";
 
 export const metadata: Metadata = {
   title: "Team Management | Admin — Touch Paradise",
@@ -18,7 +18,7 @@ export default async function AdminTeamPage() {
   });
 
   return (
-    <PageLayout hideSocial={true}>
+    <main>
       <div className="bg-slate-50 min-h-screen py-24">
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Header */}
@@ -31,15 +31,7 @@ export default async function AdminTeamPage() {
                 Add and manage your guides and office staff
               </p>
             </div>
-            <form action={logout}>
-              <button
-                type="submit"
-                className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-red-600 transition text-sm"
-              >
-                <LogOut className="w-4 h-4" />
-                Logout
-              </button>
-            </form>
+            <AdminHeaderActions />
           </div>
 
           <div className="lg:flex lg:gap-8 lg:items-start">
@@ -55,6 +47,6 @@ export default async function AdminTeamPage() {
           </div>
         </div>
       </div>
-    </PageLayout>
+    </main>
   );
 }

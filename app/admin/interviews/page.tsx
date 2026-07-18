@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { Mail, Phone, Calendar, Briefcase, GraduationCap, MessageSquare, LogOut, Mountain, Users, ChevronLeft, Star } from "lucide-react";
-import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
 import Link from "next/link";
 import AdminNav from "@/components/AdminNav";
 import DeleteInterviewButton from "./DeleteInterviewButton";
+import AdminHeaderActions from "@/components/AdminHeaderActions";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +27,7 @@ export default async function AdminInterviewsPage() {
   })) as InterviewApplication[];
 
   return (
-    <PageLayout hideSocial={true}>
+    <main>
       <div className="bg-slate-50 min-h-screen py-24">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
@@ -42,15 +42,7 @@ export default async function AdminInterviewsPage() {
               <p className="text-slate-500">Manage potential candidates for your team</p>
             </div>
 
-            <form action={logout}>
-              <button
-                type="submit"
-                className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-red-600 transition text-sm"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Logout</span>
-              </button>
-            </form>
+            <AdminHeaderActions />
           </div>
 
           <div className="lg:flex lg:gap-8 lg:items-start">
@@ -210,6 +202,6 @@ export default async function AdminInterviewsPage() {
           </div>
         </div>
       </div>
-    </PageLayout>
+    </main>
   );
 }

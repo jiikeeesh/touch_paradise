@@ -46,7 +46,7 @@ export default async function TrekPage({ params }: Props) {
   const highlightsList = trek.highlights ? trek.highlights.split(/\r?\n/).filter(Boolean) : [];
 
   return (
-    <PageLayout>
+    <PageLayout showPadding={false}>
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[500px] w-full pt-20">
         <div className="absolute inset-0 z-0">

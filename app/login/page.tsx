@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function LoginPage() {
   return (
-    <PageLayout hideSocial={true}>
+    <PageLayout hideSocial={true} showPadding={false}>
       <LoginForm />
     </PageLayout>
   );

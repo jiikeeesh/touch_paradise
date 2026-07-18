@@ -14,6 +14,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { CategoryForm, ServiceForm } from "./ServiceForms";
+import ActionDropdown from "@/components/ActionDropdown";
 
 interface Category {
   id: string;
@@ -161,17 +162,28 @@ export default function AdminServicesClient() {
       )}
 
       {/* ─── Categories Section ───────────────────────────────────── */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100">
         <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center">
               <Settings className="w-5 h-5 text-emerald-600" />
             </div>
-            <h2 className="font-bold text-slate-900">Service Categories</h2>
+            <div>
+              <h2 className="font-bold text-slate-900">Service Categories</h2>
+              <p className="text-xs text-slate-400">{categories.length} total</p>
+            </div>
           </div>
-          <button onClick={() => setActiveForm({ type: "new-category" })} className="bg-emerald-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-emerald-700 transition flex items-center gap-1.5">
-            <Plus className="w-4 h-4" /> Add Category
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setActiveForm({ type: "new-category" })} className="bg-emerald-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-emerald-700 transition flex items-center gap-1.5">
+              <Plus className="w-4 h-4" /> Add Category
+            </button>
+            <button
+              onClick={() => setShowCategories((v) => !v)}
+              className="p-2 rounded-xl hover:bg-slate-100 transition text-slate-400"
+            >
+              {showCategories ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
 
         {activeForm?.type === "new-category" && (
@@ -185,37 +197,56 @@ export default function AdminServicesClient() {
           </div>
         )}
 
-        <div className="divide-y">
-          {categories.map(cat => (
-            <div key={cat.id} className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition">
-              <div className="relative w-14 h-12 rounded-xl overflow-hidden bg-slate-100">
-                {cat.image && <Image src={cat.image} alt={cat.name} fill sizes="60px" className="object-cover" />}
+        {showCategories && (
+          <div className="divide-y">
+            {categories.map(cat => (
+              <div key={cat.id} className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition">
+                <div className="relative w-14 h-12 rounded-xl overflow-hidden bg-slate-100">
+                  {cat.image && <Image src={cat.image} alt={cat.name} fill sizes="60px" className="object-cover" />}
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold">{cat.name}</p>
+                  <p className="text-xs text-slate-400">{cat.slug}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ActionDropdown>
+                    <button onClick={() => setActiveForm({ type: "edit-category", category: cat })} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors text-left">
+                      <Pencil className="w-4 h-4" /> Edit
+                    </button>
+                    <button onClick={() => setConfirmDelete({ type: "category", id: cat.id, name: cat.name })} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors text-left">
+                      <Trash2 className="w-4 h-4" /> Delete
+                    </button>
+                  </ActionDropdown>
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="font-semibold">{cat.name}</p>
-                <p className="text-xs text-slate-400">{cat.slug}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <button onClick={() => setActiveForm({ type: "edit-category", category: cat })} className="p-2 hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 transition"><Pencil className="w-4 h-4" /></button>
-                <button onClick={() => setConfirmDelete({ type: "category", id: cat.id, name: cat.name })} className="p-2 hover:bg-red-50 text-slate-400 hover:text-red-600 transition"><Trash2 className="w-4 h-4" /></button>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ─── Service Items Section ─────────────────────────────────────── */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100">
         <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center">
               <Briefcase className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="font-bold text-slate-900">Service Items</h2>
+            <div>
+              <h2 className="font-bold text-slate-900">Service Items</h2>
+              <p className="text-xs text-slate-400">{services.length} total</p>
+            </div>
           </div>
-          <button disabled={categories.length === 0} onClick={() => setActiveForm({ type: "new-service" })} className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-blue-700 transition flex items-center gap-1.5 disabled:opacity-50">
-            <Plus className="w-4 h-4" /> Add Service
-          </button>
+          <div className="flex items-center gap-2">
+            <button disabled={categories.length === 0} onClick={() => setActiveForm({ type: "new-service" })} className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-blue-700 transition flex items-center gap-1.5 disabled:opacity-50">
+              <Plus className="w-4 h-4" /> Add Service
+            </button>
+            <button
+              onClick={() => setShowServices((v) => !v)}
+              className="p-2 rounded-xl hover:bg-slate-100 transition text-slate-400"
+            >
+              {showServices ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
 
         {activeForm?.type === "new-service" && (
@@ -229,43 +260,51 @@ export default function AdminServicesClient() {
           </div>
         )}
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 text-xs font-semibold uppercase text-slate-500 border-b">
-              <tr>
-                <th className="px-6 py-3">Service</th>
-                <th className="px-6 py-3">Category</th>
-                <th className="px-6 py-3">Price</th>
-                <th className="px-6 py-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {services.map(svc => (
-                <tr key={svc.id} className="hover:bg-slate-50/50 transition">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="relative w-12 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
-                        {svc.images?.split("|")[0] && <Image src={svc.images.split("|")[0]} alt="" fill sizes="50px" className="object-cover" />}
-                      </div>
-                      <div>
-                        <p className="font-semibold">{svc.title}</p>
-                        <p className="text-xs text-slate-400">{svc.slug}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-slate-600">{svc.category?.name ?? "—"}</td>
-                  <td className="px-6 py-4 font-semibold">${svc.price.toLocaleString()}</td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button onClick={() => setActiveForm({ type: "edit-service", service: svc })} className="p-2 hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 transition"><Pencil className="w-4 h-4" /></button>
-                      <button onClick={() => setConfirmDelete({ type: "service", id: svc.id, name: svc.title })} className="p-2 hover:bg-red-50 text-slate-400 hover:text-red-600 transition"><Trash2 className="w-4 h-4" /></button>
-                    </div>
-                  </td>
+        {showServices && (
+          <div className="overflow-visible">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-slate-50 text-xs font-semibold uppercase text-slate-500 border-b">
+                <tr>
+                  <th className="px-6 py-3">Service</th>
+                  <th className="px-6 py-3">Category</th>
+                  <th className="px-6 py-3">Price</th>
+                  <th className="px-6 py-3 text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y">
+                {services.map(svc => (
+                  <tr key={svc.id} className="hover:bg-slate-50/50 transition">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-12 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
+                          {svc.images?.split("|")[0] && <Image src={svc.images.split("|")[0]} alt="" fill sizes="50px" className="object-cover" />}
+                        </div>
+                        <div>
+                          <p className="font-semibold">{svc.title}</p>
+                          <p className="text-xs text-slate-400">{svc.slug}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-slate-600">{svc.category?.name ?? "—"}</td>
+                    <td className="px-6 py-4 font-semibold">${svc.price.toLocaleString()}</td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <ActionDropdown>
+                          <button onClick={() => setActiveForm({ type: "edit-service", service: svc })} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors text-left">
+                            <Pencil className="w-4 h-4" /> Edit
+                          </button>
+                          <button onClick={() => setConfirmDelete({ type: "service", id: svc.id, name: svc.title })} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors text-left">
+                            <Trash2 className="w-4 h-4" /> Delete
+                          </button>
+                        </ActionDropdown>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

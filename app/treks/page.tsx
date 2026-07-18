@@ -39,7 +39,7 @@ export default async function TreksPage() {
   const regionCount = regions.length;
 
   return (
-    <PageLayout>
+    <PageLayout showPadding={false}>
       {/* Page Header */}
       <section className="relative py-24 bg-slate-900 overflow-hidden">
         <div className="absolute inset-0">

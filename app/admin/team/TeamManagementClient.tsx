@@ -2,9 +2,10 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { X, Upload, Loader2, Plus, Edit2, Trash2, Users, Images } from "lucide-react";
+import { X, Upload, Loader2, Plus, Edit2, Trash2, Users, Images, ChevronDown, ChevronUp } from "lucide-react";
 import { createTeamMember, updateTeamMember, deleteTeamMember } from "@/app/actions/team";
 import { R2PhotoPicker } from "@/components/R2PhotoPicker";
+import ActionDropdown from "@/components/ActionDropdown";
 
 interface TeamMember {
   id: string;
@@ -38,6 +39,7 @@ export default function TeamManagementClient({
   const [members, setMembers] = useState(initialMembers);
   const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [showMembers, setShowMembers] = useState(true);
 
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
@@ -356,61 +358,71 @@ export default function TeamManagementClient({
       </div>
 
       {/* Members List */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-6 border-b border-slate-100 bg-slate-50/50">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100">
+        <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
           <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             <Users className="w-5 h-5 text-emerald-600" />
             Current Team Members ({members.length})
           </h2>
+          <button
+            onClick={() => setShowMembers((v) => !v)}
+            className="p-2 rounded-xl hover:bg-slate-200 transition text-slate-400"
+          >
+            {showMembers ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
         </div>
 
-        {members.length === 0 ? (
-          <div className="p-12 text-center">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
-              <Users className="w-8 h-8" />
+        {showMembers && (
+          members.length === 0 ? (
+            <div className="p-12 text-center">
+              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                <Users className="w-8 h-8" />
+              </div>
+              <p className="text-slate-500">No team members added yet.</p>
             </div>
-            <p className="text-slate-500">No team members added yet.</p>
-          </div>
-        ) : (
-          <div className="divide-y divide-slate-100">
-            {members
-              .sort((a, b) => a.order - b.order)
-              .map((member) => (
-                <div key={member.id} className="p-6 flex items-start gap-6 hover:bg-slate-50/50 transition group">
-                  <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0 ring-4 ring-slate-100 group-hover:ring-emerald-100 transition">
-                    <Image src={member.image || "/trekkers.png"} alt={member.name} fill sizes="80px" className="object-cover" />
-                  </div>
-                  <div className="flex-grow min-w-0">
-                    <div className="flex justify-between items-start mb-1">
-                      <div>
-                        <h3 className="font-bold text-lg text-slate-900">{member.name}</h3>
-                        <p className="text-emerald-600 font-semibold text-sm">{member.role}</p>
+          ) : (
+            <div className="divide-y divide-slate-100">
+              {members
+                .sort((a, b) => a.order - b.order)
+                .map((member) => (
+                  <div key={member.id} className="p-6 flex items-start gap-6 hover:bg-slate-50/50 transition group">
+                    <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0 ring-4 ring-slate-100 group-hover:ring-emerald-100 transition">
+                      <Image src={member.image || "/trekkers.png"} alt={member.name} fill sizes="80px" className="object-cover" />
+                    </div>
+                    <div className="flex-grow min-w-0">
+                      <div className="flex justify-between items-start mb-1">
+                        <div>
+                          <h3 className="font-bold text-lg text-slate-900">{member.name}</h3>
+                          <p className="text-emerald-600 font-semibold text-sm">{member.role}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <ActionDropdown>
+                            <button
+                              onClick={() => startEdit(member)}
+                              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors text-left"
+                              title="Edit"
+                            >
+                              <Edit2 className="w-4 h-4" /> Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(member.id)}
+                              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors text-left"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-4 h-4" /> Delete
+                            </button>
+                          </ActionDropdown>
+                        </div>
                       </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => startEdit(member)}
-                          className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
-                          title="Edit"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(member.id)}
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                      <p className="text-slate-500 text-sm line-clamp-2">{member.bio}</p>
+                      <div className="mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                        Order: {member.order}
                       </div>
                     </div>
-                    <p className="text-slate-500 text-sm line-clamp-2">{member.bio}</p>
-                    <div className="mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                      Order: {member.order}
-                    </div>
                   </div>
-                </div>
-              ))}
-          </div>
+                ))}
+            </div>
+          )
         )}
       </div>
     </div>

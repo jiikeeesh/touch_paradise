@@ -18,6 +18,12 @@ export async function login(formData: FormData) {
       maxAge: 60 * 60 * 24, // 1 day
       path: "/",
     });
+    cookieStore.set("admin-username", username, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24, // 1 day
+      path: "/",
+    });
     return { success: true };
   }
 
@@ -27,5 +33,6 @@ export async function login(formData: FormData) {
 export async function logout() {
   const cookieStore = await cookies();
   cookieStore.delete("admin-token");
+  cookieStore.delete("admin-username");
   redirect("/login");
 }

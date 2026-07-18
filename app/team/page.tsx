@@ -14,7 +14,7 @@ export default async function TeamPage() {
   const members = await getTeamMembers();
 
   return (
-    <PageLayout>
+    <PageLayout showPadding={false}>
       {/* Hero Section */}
       <section className="relative py-32 bg-slate-900 overflow-hidden">
         <div className="absolute inset-0">

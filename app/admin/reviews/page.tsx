@@ -9,11 +9,11 @@ import {
   ChevronLeft,
   MessageSquare,
 } from "lucide-react";
-import PageLayout from "@/components/PageLayout";
 import { logout } from "@/app/actions/auth";
 import Link from "next/link";
 import AdminNav from "@/components/AdminNav";
 import AdminReviewsClient from "./AdminReviewsClient";
+import AdminHeaderActions from "@/components/AdminHeaderActions";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +23,7 @@ export default async function AdminReviewsPage() {
   });
 
   return (
-    <PageLayout hideSocial={true}>
+    <main>
       <div className="bg-slate-50 min-h-screen py-24">
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Header */}
@@ -46,15 +46,7 @@ export default async function AdminReviewsPage() {
               </p>
             </div>
 
-            <form action={logout}>
-              <button
-                type="submit"
-                className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-red-600 transition text-sm"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Logout</span>
-              </button>
-            </form>
+            <AdminHeaderActions />
           </div>
 
           <div className="lg:flex lg:gap-8 lg:items-start">
@@ -70,6 +62,6 @@ export default async function AdminReviewsPage() {
           </div>
         </div>
       </div>
-    </PageLayout>
+    </main>
   );
 }

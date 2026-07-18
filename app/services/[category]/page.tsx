@@ -38,7 +38,7 @@ export default async function ServiceCategoryPage({ params }: Props) {
   if (!category) notFound();
 
   return (
-    <PageLayout>
+    <PageLayout showPadding={false}>
       {/* Category Header */}
       <section className="relative py-24 bg-slate-900 border-b border-white/10 overflow-hidden">
         <div className="absolute inset-0">

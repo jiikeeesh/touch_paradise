@@ -28,7 +28,7 @@ export default async function ContactPage() {
   }
 
   return (
-    <PageLayout>
+    <PageLayout showPadding={false}>
       {/* Header */}
       <section className="relative py-24 bg-slate-900 overflow-hidden">
         <div className="absolute inset-0">

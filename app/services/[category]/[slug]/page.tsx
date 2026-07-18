@@ -54,7 +54,7 @@ export default async function ServiceDetailsPage({ params }: Props) {
     : [];
 
   return (
-    <PageLayout>
+    <PageLayout showPadding={false}>
       <div className="bg-slate-50 min-h-screen">
         {/* Breadcrumbs */}
         <div className="bg-white border-b border-slate-100">
