@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   X,
   Search,
   CheckCircle2,
   ImageIcon,
-  Loader2,
+
   AlertCircle,
   Plus,
 } from "lucide-react";
@@ -44,12 +44,11 @@ export function R2PhotoPicker({
   // Selected = URLs the user has ticked in this session (excluding already-attached)
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
-  const attachedSet = new Set(attachedUrls);
+  const attachedSet = useMemo(() => new Set(attachedUrls), [attachedUrls]);
 
   // Fetch bucket listing once on mount
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
     fetch("/api/r2-photos")
       .then((r) => {
         if (!r.ok) return r.json().then((d) => Promise.reject(new Error(d.error)));

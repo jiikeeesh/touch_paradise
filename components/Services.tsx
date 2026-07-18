@@ -17,6 +17,7 @@ export default async function Services() {
     // Pick 2 random categories from the remaining using a more robust shuffle
     const shuffled = [...otherCategories];
     for (let i = shuffled.length - 1; i > 0; i--) {
+      // eslint-disable-next-line react-hooks/purity
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }

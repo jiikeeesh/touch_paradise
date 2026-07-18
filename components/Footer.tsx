@@ -37,6 +37,7 @@ const Footer = async () => {
     if (allTreks.length > 0) {
       // Shuffle and pick 5 random treks
       popularTreks = [...allTreks]
+        // eslint-disable-next-line react-hooks/purity
         .sort(() => 0.5 - Math.random())
         .slice(0, 5);
     }

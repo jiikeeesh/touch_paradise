@@ -3,9 +3,7 @@
 import { motion } from "framer-motion";
 import { 
   Compass, 
-  Trophy, 
   Map, 
-  Tent, 
   Helicopter, 
   Camera, 
   Briefcase, 
