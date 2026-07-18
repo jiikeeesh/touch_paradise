@@ -47,7 +47,7 @@ export default function TrekBookingForm({ trekTitle }: TrekBookingFormProps) {
 
   return (
     <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-xl shadow-slate-200/50">
-      <h3 className="text-2xl font-bold text-slate-900 mb-2">Book This Trek</h3>
+      <h3 className="text-2xl font-bold text-slate-900 mb-2">Book Now</h3>
       <p className="text-slate-500 text-sm mb-6">Secure your spot for the {trekTitle}.</p>
 
       {error && (
@@ -118,7 +118,7 @@ export default function TrekBookingForm({ trekTitle }: TrekBookingFormProps) {
             name="message"
             required
             rows={4}
-            placeholder="E.g., We are a group of 4 looking to start the trek on Oct 12th..."
+            placeholder="E.g., We are a group of 4 looking to start on Oct 12th..."
             className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition resize-none"
           />
         </div>

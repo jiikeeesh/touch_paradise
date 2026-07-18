@@ -9,8 +9,10 @@ import {
   ChevronRight,
   Info,
   Camera,
+  MapPin,
 } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
+import TrekBookingForm from "@/components/TrekBookingForm";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
@@ -49,8 +51,12 @@ export default async function ServiceDetailsPage({ params }: Props) {
 
   const allImages = service.images ? service.images.split("|").filter(Boolean) : [];
   const mainImage = allImages[0] || "/hero.png";
-  const itineraryDays = service.itinerary 
-    ? service.itinerary.split("\n").filter(line => line.trim().length > 0)
+  const rawItinerary = service.itinerary || "";
+  const itineraryDays = rawItinerary
+    ? (rawItinerary.includes("|") && !rawItinerary.includes("\n")
+        ? rawItinerary.split("|")
+        : rawItinerary.split("\n")
+      ).filter(line => line.trim().length > 0)
     : [];
 
   return (
@@ -135,15 +141,40 @@ export default async function ServiceDetailsPage({ params }: Props) {
                        <Calendar className="w-6 h-6 text-emerald-500" />
                        Itinerary / Highlights
                     </h2>
-                    <div className="space-y-6">
-                      {itineraryDays.map((day, idx) => (
-                        <div key={idx} className="flex gap-4">
-                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm border border-emerald-100">
-                            {idx + 1}
+                    <div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:ml-6 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-emerald-500 before:via-emerald-300 before:to-transparent">
+                      {itineraryDays.map((dayLine: string, i: number) => {
+                        let title = "";
+                        let details = dayLine.trim();
+
+                        const dayMatch = dayLine.match(/^(Day\s*\d+)[:\-]?\s*(.*)$/i);
+                        const timeMatch = dayLine.match(/^(\d{1,2}:\d{2}\s*(?:AM|PM|am|pm)?)[:\-]?\s*(.*)$/i);
+
+                        if (dayMatch) {
+                          title = dayMatch[1].trim();
+                          details = dayMatch[2].trim();
+                        } else if (timeMatch) {
+                          title = timeMatch[1].trim();
+                          details = timeMatch[2].trim();
+                        } else {
+                           const prefixMatch = dayLine.match(/^([a-zA-Z][^:]*):\s*(.*)$/);
+                           if (prefixMatch && prefixMatch[1].length <= 25) {
+                             title = prefixMatch[1].trim();
+                             details = prefixMatch[2].trim();
+                           }
+                        }
+
+                        return (
+                          <div key={i} className="relative flex items-start gap-6">
+                            <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-white rounded-full border-4 border-emerald-100 flex items-center justify-center relative z-10 shadow-sm">
+                              <MapPin className="w-4 h-4 md:w-5 md:h-5 text-emerald-600" />
+                            </div>
+                            <div className="pt-1.5 md:pt-2.5 flex-1 pb-4 border-b border-slate-100 last:border-0 last:pb-0">
+                              {title && <h3 className="text-lg font-bold text-slate-900 mb-2">{title}</h3>}
+                              <p className="text-slate-600 leading-relaxed text-sm md:text-base">{details}</p>
+                            </div>
                           </div>
-                          <p className="text-slate-700 pt-1 leading-relaxed">{day}</p>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -173,40 +204,31 @@ export default async function ServiceDetailsPage({ params }: Props) {
 
               {/* Right Column - Sidebar */}
               <div className="space-y-8">
-                 {/* Booking Card */}
-                <div className="bg-slate-900 rounded-3xl p-8 text-white shadow-xl sticky top-8">
-                  <div className="mb-6">
-                    <p className="text-slate-400 text-sm mb-1 uppercase tracking-widest font-bold">Total Price</p>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-4xl font-bold text-white">${service.price.toLocaleString()}</span>
-                      <span className="text-slate-400 font-medium">/ person</span>
+                <div className="sticky top-8 space-y-6">
+                  {/* Booking Card */}
+                  <div className="bg-slate-900 rounded-3xl p-8 text-white shadow-xl">
+                    <div className="mb-6">
+                      <p className="text-slate-400 text-sm mb-1 uppercase tracking-widest font-bold">Total Price</p>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-4xl font-bold text-white">${service.price.toLocaleString()}</span>
+                        <span className="text-slate-400 font-medium">/ person</span>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="space-y-4 mb-8">
-                    <div className="flex items-center gap-3 text-sm text-slate-300">
-                      <Clock className="w-4 h-4 text-emerald-400" />
-                      {service.durationDays || "Custom"} Days Experience
-                    </div>
-                    <div className="flex items-center gap-3 text-sm text-slate-300">
-                      <Share2 className="w-4 h-4 text-emerald-400" />
-                      Shared or Private Groups
+                    
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 text-sm text-slate-300">
+                        <Clock className="w-4 h-4 text-emerald-400" />
+                        {service.durationDays || "Custom"} Days Experience
+                      </div>
+                      <div className="flex items-center gap-3 text-sm text-slate-300">
+                        <Share2 className="w-4 h-4 text-emerald-400" />
+                        Shared or Private Groups
+                      </div>
                     </div>
                   </div>
 
-                  <Link
-                    href={{
-                      pathname: "/contact",
-                      query: { trek: service.title }
-                    }}
-                    className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-2 group"
-                  >
-                    Inquire Now
-                    <ArrowRight className="w-4 h-4 transition group-hover:translate-x-1" />
-                  </Link>
-                  <p className="text-center text-slate-500 text-xs mt-4">
-                    Instant confirmation available after inquiry
-                  </p>
+                  {/* Booking Form Component */}
+                  <TrekBookingForm trekTitle={service.title} />
                 </div>
               </div>
             </div>

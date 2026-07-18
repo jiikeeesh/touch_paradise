@@ -177,7 +177,13 @@ export function ServiceForm({ initial, categories, onSuccess, onCancel }: Servic
   const [description, setDescription] = useState(initial?.description ?? "");
   const [durationDays, setDurationDays] = useState(String(initial?.durationDays ?? ""));
   const [price, setPrice] = useState(String(initial?.price ?? ""));
-  const [itinerary, setItinerary] = useState(initial?.itinerary ?? "");
+  const [itineraryList, setItineraryList] = useState<string[]>(
+    initial?.itinerary 
+      ? (initial.itinerary.includes("|") && !initial.itinerary.includes("\n") 
+          ? initial.itinerary.split("|") 
+          : initial.itinerary.split("\n"))
+      : [""]
+  );
   const [images, setImages] = useState<string[]>(initial?.images ? initial.images.split("|").filter(Boolean) : []);
   const [categoryId, setCategoryId] = useState(initial?.categoryId ?? "");
   const [uploading, setUploading] = useState(false);
@@ -221,7 +227,7 @@ export function ServiceForm({ initial, categories, onSuccess, onCancel }: Servic
           title, slug, description,
           durationDays: durationDays ? Number(durationDays) : null,
           price: Number(price),
-          itinerary,
+          itinerary: itineraryList.filter(i => i.trim() !== "").join("\n"),
           images: images.join("|"),
           categoryId,
         }),
@@ -271,8 +277,44 @@ export function ServiceForm({ initial, categories, onSuccess, onCancel }: Servic
         <textarea value={description} onChange={(e) => setDescription(e.target.value)} required rows={3} className={textareaCls} />
       </div>
       <div>
-        <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Itinerary</label>
-        <textarea value={itinerary} onChange={(e) => setItinerary(e.target.value)} rows={4} className={textareaCls + " font-mono"} placeholder="Day 1: ...\nDay 2: ..." />
+        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+          Itinerary
+        </label>
+        <div className="space-y-2">
+          {itineraryList.map((item, index) => (
+            <div key={index} className="flex gap-2">
+              <input
+                value={item}
+                onChange={(e) => {
+                  const newList = [...itineraryList];
+                  newList[index] = e.target.value;
+                  setItineraryList(newList);
+                }}
+                placeholder={`Day ${index + 1}: ...`}
+                className={inputCls + " flex-1"}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const newList = [...itineraryList];
+                  newList.splice(index, 1);
+                  setItineraryList(newList.length ? newList : [""]);
+                }}
+                className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition shrink-0 flex items-center justify-center border border-transparent hover:border-red-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => setItineraryList([...itineraryList, ""])}
+            className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 text-sm font-medium mt-2"
+          >
+            <Plus className="w-4 h-4" />
+            Add Another Day
+          </button>
+        </div>
       </div>
       <div>
         <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Images</label>
