@@ -12,6 +12,8 @@ import {
   AlertTriangle,
   ChevronDown,
   ChevronUp,
+  Search,
+  ArrowUpDown,
 } from "lucide-react";
 import { CategoryForm, ServiceForm } from "./ServiceForms";
 
@@ -60,6 +62,9 @@ export default function AdminServicesClient() {
   } | null>(null);
   const [showServices, setShowServices] = useState(true);
   const [showCategories, setShowCategories] = useState(true);
+  const [serviceSearchQuery, setServiceSearchQuery] = useState("");
+  const [categorySortOrder, setCategorySortOrder] = useState<"asc" | "desc">("asc");
+  const [serviceSortOrder, setServiceSortOrder] = useState<"asc" | "desc">("asc");
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -174,7 +179,7 @@ export default function AdminServicesClient() {
 
       {/* ─── Categories Section ───────────────────────────────────── */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100">
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-5 border-b border-slate-100 gap-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center">
               <Settings className="w-5 h-5 text-emerald-600" />
@@ -184,13 +189,21 @@ export default function AdminServicesClient() {
               <p className="text-xs text-slate-400">{categories.length} total</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+            <button
+              onClick={() => setCategorySortOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
+              className="p-2 rounded-xl bg-slate-50 sm:bg-transparent border border-slate-200 sm:border-transparent hover:bg-slate-100 transition text-slate-400 flex items-center gap-1.5"
+              title={`Sort ${categorySortOrder === "asc" ? "Descending" : "Ascending"}`}
+            >
+              <ArrowUpDown className="w-4 h-4" />
+              <span className="text-xs font-semibold sm:hidden inline-block">{categorySortOrder === "asc" ? "A-Z" : "Z-A"}</span>
+            </button>
             <button onClick={() => setActiveForm(activeForm?.type === "new-category" ? null : { type: "new-category" })} className="bg-emerald-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-emerald-700 transition flex items-center gap-1.5">
               <Plus className="w-4 h-4" /> Add Category
             </button>
             <button
               onClick={() => setShowCategories((v) => !v)}
-              className="p-2 rounded-xl hover:bg-slate-100 transition text-slate-400"
+              className="p-2 rounded-xl bg-slate-50 sm:bg-transparent border border-slate-200 sm:border-transparent hover:bg-slate-100 transition text-slate-400"
             >
               {showCategories ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
@@ -221,8 +234,12 @@ export default function AdminServicesClient() {
                 <Settings className="w-10 h-10 mx-auto mb-3 opacity-30" />
                 <p className="text-sm">No categories yet. Add your first one above.</p>
               </div>
-            ) : (
-              categories.map(cat => (
+            ) : (() => {
+              const sortedCategories = [...categories].sort((a, b) => {
+                const cmp = a.name.localeCompare(b.name);
+                return categorySortOrder === "asc" ? cmp : -cmp;
+              });
+              return sortedCategories.map(cat => (
                 <div key={cat.id} className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition">
                   <div className="relative w-14 h-12 rounded-xl overflow-hidden bg-slate-100">
                     {cat.image ? (
@@ -253,15 +270,15 @@ export default function AdminServicesClient() {
                     </button>
                   </div>
                 </div>
-              ))
-            )}
+              ));
+            })()}
           </div>
         )}
       </div>
 
       {/* ─── Service Items Section ─────────────────────────────────────── */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100">
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-5 border-b border-slate-100 gap-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center">
               <Briefcase className="w-5 h-5 text-blue-600" />
@@ -271,16 +288,37 @@ export default function AdminServicesClient() {
               <p className="text-xs text-slate-400">{services.length} total</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button disabled={categories.length === 0} onClick={() => setActiveForm(activeForm?.type === "new-service" ? null : { type: "new-service" })} className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-blue-700 transition flex items-center gap-1.5 disabled:opacity-50">
-              <Plus className="w-4 h-4" /> Add Service
-            </button>
-            <button
-              onClick={() => setShowServices((v) => !v)}
-              className="p-2 rounded-xl hover:bg-slate-100 transition text-slate-400"
-            >
-              {showServices ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            </button>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="relative flex-1 sm:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="Search services..."
+                  value={serviceSearchQuery}
+                  onChange={(e) => setServiceSearchQuery(e.target.value)}
+                  className="pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-full transition"
+                />
+              </div>
+              <button
+                onClick={() => setServiceSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
+                className="p-2 rounded-xl bg-slate-50 sm:bg-transparent border border-slate-200 sm:border-transparent hover:bg-slate-100 transition text-slate-400 flex-shrink-0"
+                title={`Sort ${serviceSortOrder === "asc" ? "Descending" : "Ascending"}`}
+              >
+                <ArrowUpDown className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="flex items-center gap-2 justify-between sm:justify-end">
+              <button disabled={categories.length === 0} onClick={() => setActiveForm(activeForm?.type === "new-service" ? null : { type: "new-service" })} className="flex flex-1 sm:flex-none items-center justify-center bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-blue-700 transition gap-1.5 disabled:opacity-50">
+                <Plus className="w-4 h-4" /> Add Service
+              </button>
+              <button
+                onClick={() => setShowServices((v) => !v)}
+                className="p-2 rounded-xl bg-slate-50 sm:bg-transparent border border-slate-200 sm:border-transparent hover:bg-slate-100 transition text-slate-400"
+              >
+                {showServices ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -308,56 +346,64 @@ export default function AdminServicesClient() {
                 <Briefcase className="w-10 h-10 mx-auto mb-3 opacity-30" />
                 <p className="text-sm">No services yet. Add your first one above.</p>
               </div>
-            ) : (
-              <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 text-xs font-semibold uppercase text-slate-500 border-b border-slate-100">
-                  <tr>
-                    <th className="px-6 py-3">Service</th>
-                    <th className="px-6 py-3">Category</th>
-                    <th className="px-6 py-3">Price</th>
-                    <th className="px-6 py-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {services.map(svc => (
-                    <tr key={svc.id} className="hover:bg-slate-50/50 transition">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="relative w-12 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
-                            {svc.images?.split("|")[0] && <Image src={svc.images.split("|")[0]} alt="" fill sizes="50px" className="object-cover" />}
-                          </div>
-                          <div>
-                            <p className="font-semibold">{svc.title}</p>
-                            <p className="text-xs text-slate-400 font-mono">{svc.slug}</p>
-                          </div>
+            ) : (() => {
+              const filteredServices = services.filter((s) =>
+                s.title.toLowerCase().includes(serviceSearchQuery.toLowerCase())
+              ).sort((a, b) => {
+                const cmp = a.title.localeCompare(b.title);
+                return serviceSortOrder === "asc" ? cmp : -cmp;
+              });
+              return filteredServices.length === 0 ? (
+                <div className="py-16 text-center text-slate-400">
+                  <Search className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                  <p className="text-sm">No services match &quot;{serviceSearchQuery}&quot;.</p>
+                </div>
+              ) : (
+              <div className="divide-y divide-slate-100">
+                {filteredServices.map((svc) => (
+                  <div key={svc.id} className="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-4 hover:bg-slate-50 transition">
+                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                      <div className="relative w-14 h-12 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
+                        {svc.images?.split("|")[0] ? (
+                          <Image src={svc.images.split("|")[0]} alt="" fill sizes="60px" className="object-cover" />
+                        ) : (
+                          <Briefcase className="w-5 h-5 text-slate-300 m-auto mt-3.5" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-slate-900 truncate">{svc.title}</p>
+                        <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                          <span className="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
+                            {svc.category?.name ?? "—"}
+                          </span>
+                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                            ${svc.price.toLocaleString()}
+                          </span>
                         </div>
-                      </td>
-                      <td className="px-6 py-4 text-slate-600">{svc.category?.name ?? "—"}</td>
-                      <td className="px-6 py-4 font-semibold text-slate-800">${svc.price.toLocaleString()}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => {
-                              setActiveForm({ type: "edit-service", service: svc });
-                              setTimeout(() => editServiceFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
-                            }}
-                            className="p-2 rounded-lg hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 transition"
-                          >
-                            <Pencil className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => setConfirmDelete({ type: "service", id: svc.id, name: svc.title })}
-                            className="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-600 transition"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-end gap-2 mt-2 sm:mt-0">
+                      <button
+                        onClick={() => {
+                          setActiveForm({ type: "edit-service", service: svc });
+                          setTimeout(() => editServiceFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+                        }}
+                        className="p-2 rounded-lg hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 transition"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => setConfirmDelete({ type: "service", id: svc.id, name: svc.title })}
+                        className="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-600 transition"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              );
+            })()}
           </div>
         )}
       </div>

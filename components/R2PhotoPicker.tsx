@@ -49,7 +49,7 @@ export function R2PhotoPicker({
   // Fetch bucket listing once on mount
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/r2-photos")
+    fetch("/api/r2-photos?type=image")
       .then((r) => {
         if (!r.ok) return r.json().then((d) => Promise.reject(new Error(d.error)));
         return r.json();

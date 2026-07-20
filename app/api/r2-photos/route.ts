@@ -21,7 +21,10 @@ export interface R2File {
   type: "image" | "video" | "other";
 }
 
-export async function GET(): Promise<NextResponse> {
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  const { searchParams } = new URL(request.url);
+  const typeFilter = searchParams.get("type");
+
   const endpoint = process.env.R2_ENDPOINT;
   const bucket = process.env.R2_BUCKET_NAME;
   const publicUrl = process.env.R2_PUBLIC_URL;
@@ -74,6 +77,7 @@ export async function GET(): Promise<NextResponse> {
         const type = getFileType(key);
 
         if (!key || type === "other") continue;
+        if (typeFilter && type !== typeFilter) continue;
 
         files.push({
           key,

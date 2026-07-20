@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     const treks = await prisma.trek.findMany({
       where,
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "asc" },
       include: { region: { select: { id: true, name: true, slug: true } } },
     });
     return Response.json(treks);

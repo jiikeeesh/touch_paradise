@@ -28,7 +28,7 @@ export default async function AdminInterviewsPage() {
 
   return (
     <main>
-      <div className="bg-slate-50 min-h-screen p-4 sm:p-8">
+      <div className="bg-slate-50 min-h-screen p-4 pb-24 sm:p-8">
         <div className="w-full">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
             <div>

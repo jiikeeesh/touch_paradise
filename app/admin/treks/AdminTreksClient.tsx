@@ -12,6 +12,8 @@ import {
   AlertTriangle,
   ChevronDown,
   ChevronUp,
+  Search,
+  ArrowUpDown,
 } from "lucide-react";
 import { RegionForm, TrekForm } from "./TrekForms";
 
@@ -69,8 +71,11 @@ export default function AdminTreksClient() {
     id: string;
     name: string;
   } | null>(null);
-  const [showTreks, setShowTreks] = useState(true);
   const [showRegions, setShowRegions] = useState(true);
+  const [showTreks, setShowTreks] = useState(true);
+  const [trekSearchQuery, setTrekSearchQuery] = useState("");
+  const [regionSortOrder, setRegionSortOrder] = useState<"asc" | "desc">("asc");
+  const [trekSortOrder, setTrekSortOrder] = useState<"asc" | "desc">("asc");
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -214,7 +219,7 @@ export default function AdminTreksClient() {
 
       {/* ─── Regions Section ───────────────────────────────────── */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-5 border-b border-slate-100 gap-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center">
               <MapPin className="w-5 h-5 text-emerald-600" />
@@ -224,7 +229,15 @@ export default function AdminTreksClient() {
               <p className="text-xs text-slate-400">{regions.length} total</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+            <button
+              onClick={() => setRegionSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
+              className="p-2 rounded-xl bg-slate-50 sm:bg-transparent border border-slate-200 sm:border-transparent hover:bg-slate-100 transition text-slate-400 flex items-center gap-1.5"
+              title={`Sort ${regionSortOrder === "asc" ? "Descending" : "Ascending"}`}
+            >
+              <ArrowUpDown className="w-4 h-4" />
+              <span className="text-xs font-semibold sm:hidden inline-block">{regionSortOrder === "asc" ? "A-Z" : "Z-A"}</span>
+            </button>
             <button
               onClick={() =>
                 setActiveForm(
@@ -271,15 +284,20 @@ export default function AdminTreksClient() {
         )}
 
         {showRegions && (
-          <>
+          <div className="overflow-visible">
             {regions.length === 0 ? (
               <div className="py-16 text-center text-slate-400">
                 <MapPin className="w-10 h-10 mx-auto mb-3 opacity-30" />
                 <p className="text-sm">No regions yet. Add your first one above.</p>
               </div>
-            ) : (
+            ) : (() => {
+              const sortedRegions = [...regions].sort((a, b) => {
+                const cmp = a.name.localeCompare(b.name);
+                return regionSortOrder === "asc" ? cmp : -cmp;
+              });
+              return (
               <div className="divide-y divide-slate-100">
-                {regions.map((region) => (
+                {sortedRegions.map((region) => (
                   <div
                     key={region.id}
                     className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition"
@@ -334,14 +352,15 @@ export default function AdminTreksClient() {
                   </div>
                 ))}
               </div>
-            )}
-          </>
+              );
+            })()}
+          </div>
         )}
       </div>
 
       {/* ─── Treks Section ─────────────────────────────────────── */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-5 border-b border-slate-100 gap-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center">
               <Mountain className="w-5 h-5 text-blue-600" />
@@ -351,26 +370,47 @@ export default function AdminTreksClient() {
               <p className="text-xs text-slate-400">{treks.length} total</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() =>
-                setActiveForm(
-                  activeForm?.type === "new-trek" ? null : { type: "new-trek" }
-                )
-              }
-              disabled={regions.length === 0}
-              title={regions.length === 0 ? "Create a region first" : ""}
-              className="flex items-center gap-1.5 bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-blue-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <Plus className="w-4 h-4" />
-              Add Trek
-            </button>
-            <button
-              onClick={() => setShowTreks((v) => !v)}
-              className="p-2 rounded-xl hover:bg-slate-100 transition text-slate-400"
-            >
-              {showTreks ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            </button>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="relative flex-1 sm:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="Search treks..."
+                  value={trekSearchQuery}
+                  onChange={(e) => setTrekSearchQuery(e.target.value)}
+                  className="pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-full transition"
+                />
+              </div>
+              <button
+                onClick={() => setTrekSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
+                className="p-2 rounded-xl bg-slate-50 sm:bg-transparent border border-slate-200 sm:border-transparent hover:bg-slate-100 transition text-slate-400 flex-shrink-0"
+                title={`Sort ${trekSortOrder === "asc" ? "Descending" : "Ascending"}`}
+              >
+                <ArrowUpDown className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="flex items-center gap-2 justify-between sm:justify-end">
+              <button
+                onClick={() =>
+                  setActiveForm(
+                    activeForm?.type === "new-trek" ? null : { type: "new-trek" }
+                  )
+                }
+                disabled={regions.length === 0}
+                title={regions.length === 0 ? "Create a region first" : ""}
+                className="flex flex-1 sm:flex-none items-center justify-center gap-1.5 bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-blue-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <Plus className="w-4 h-4" />
+                Add Trek
+              </button>
+              <button
+                onClick={() => setShowTreks((v) => !v)}
+                className="p-2 rounded-xl bg-slate-50 sm:bg-transparent border border-slate-200 sm:border-transparent hover:bg-slate-100 transition text-slate-400"
+              >
+                {showTreks ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -408,103 +448,95 @@ export default function AdminTreksClient() {
                 <Mountain className="w-10 h-10 mx-auto mb-3 opacity-30" />
                 <p className="text-sm">No treks yet. Add your first one above.</p>
               </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead>
-                    <tr className="bg-slate-50 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-100">
-                      <th className="px-6 py-3">Trek</th>
-                      <th className="px-6 py-3">Region</th>
-                      <th className="px-6 py-3">Difficulty</th>
-                      <th className="px-6 py-3">Duration</th>
-                      <th className="px-6 py-3">Price</th>
-                      <th className="px-6 py-3 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {treks.map((trek) => {
-                      const firstImg = trek.images?.split("|")[0];
-                      return (
-                        <tr
-                          key={trek.id}
-                          className="hover:bg-slate-50/50 transition"
-                        >
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <div className="relative w-12 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
-                                {firstImg && (
-                                  <Image
-                                    src={firstImg}
-                                    alt={trek.title}
-                                    fill
-                                    sizes="50px"
-                                    className="object-cover"
-                                  />
-                                )}
-                              </div>
-                              <div>
-                                <p className="font-semibold text-slate-900">
-                                  {trek.title}
-                                </p>
-                                <p className="text-xs text-slate-400 font-mono">
-                                  {trek.slug}
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <span className="text-slate-600">
+            ) : (() => {
+              const filteredTreks = treks.filter((t) =>
+                t.title.toLowerCase().includes(trekSearchQuery.toLowerCase())
+              ).sort((a, b) => {
+                const cmp = a.title.localeCompare(b.title);
+                return trekSortOrder === "asc" ? cmp : -cmp;
+              });
+              return filteredTreks.length === 0 ? (
+                <div className="py-16 text-center text-slate-400">
+                  <Search className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                  <p className="text-sm">No treks match &quot;{trekSearchQuery}&quot;.</p>
+                </div>
+              ) : (
+              <div className="divide-y divide-slate-100">
+                {filteredTreks.map((trek) => {
+                  const firstImg = trek.images?.split("|")[0];
+                  return (
+                    <div
+                      key={trek.id}
+                      className="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-4 hover:bg-slate-50 transition"
+                    >
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="relative w-14 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
+                          {firstImg ? (
+                            <Image
+                              src={firstImg}
+                              alt={trek.title}
+                              fill
+                              sizes="60px"
+                              className="object-cover"
+                            />
+                          ) : (
+                            <Mountain className="w-5 h-5 text-slate-300 m-auto mt-3.5" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-slate-900 truncate">
+                            {trek.title}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                            <span className="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
                               {trek.region?.name ?? "—"}
                             </span>
-                          </td>
-                          <td className="px-6 py-4">
                             <span
-                              className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                                 difficultyColor[trek.difficulty] ??
                                 "bg-slate-100 text-slate-600"
                               }`}
                             >
                               {trek.difficulty}
                             </span>
-                          </td>
-                          <td className="px-6 py-4 text-slate-600">
-                            {trek.durationDays}d
-                          </td>
-                          <td className="px-6 py-4 font-semibold text-slate-800">
-                            ${trek.price.toLocaleString()}
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex items-center justify-end gap-2">
-                              <button
-                                onClick={() => {
-                                  setActiveForm({ type: "edit-trek", trek });
-                                  setTimeout(() => editTrekFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
-                                }}
-                                className="p-2 rounded-lg hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 transition"
-                              >
-                                <Pencil className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() =>
-                                  setConfirmDelete({
-                                    type: "trek",
-                                    id: trek.id,
-                                    name: trek.title,
-                                  })
-                                }
-                                className="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-600 transition"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                            <span className="text-[10px] font-medium text-slate-500">
+                              {trek.durationDays}d
+                            </span>
+                            <span className="text-[10px] font-bold text-slate-700">
+                              ${trek.price.toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-end gap-2 mt-2 sm:mt-0">
+                        <button
+                          onClick={() => {
+                            setActiveForm({ type: "edit-trek", trek });
+                            setTimeout(() => editTrekFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+                          }}
+                          className="p-2 rounded-lg hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 transition"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() =>
+                            setConfirmDelete({
+                              type: "trek",
+                              id: trek.id,
+                              name: trek.title,
+                            })
+                          }
+                          className="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-600 transition"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            )}
+              );
+            })()}
           </>
         )}
       </div>
