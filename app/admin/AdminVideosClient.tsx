@@ -59,7 +59,7 @@ export default function AdminVideosClient() {
       // Upload video file
       const fd = new FormData();
       fd.append("file", srcFile);
-      const uploadRes = await fetch("/api/upload", { method: "POST", body: fd });
+      const uploadRes = await fetch("/api/media", { method: "POST", body: fd });
       if (!uploadRes.ok) throw new Error((await uploadRes.json()).error || "Upload failed");
       const { url: srcUrl } = await uploadRes.json();
 

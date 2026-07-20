@@ -54,7 +54,7 @@ export function CategoryForm({ initial, onSuccess, onCancel }: CategoryFormProps
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const res = await fetch("/api/media", { method: "POST", body: formData });
       if (!res.ok) throw new Error("Upload failed");
       const blob = await res.json();
       setImage(blob.url);
@@ -202,7 +202,7 @@ export function ServiceForm({ initial, categories, onSuccess, onCancel }: Servic
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const res = await fetch("/api/media", { method: "POST", body: formData });
       if (!res.ok) throw new Error("Upload failed");
       const blob = await res.json();
       setImages((prev) => [...prev, blob.url]);

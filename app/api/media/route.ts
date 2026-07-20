@@ -23,7 +23,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const file = formData.get("file") as File | null;
 
     if (!file) {
-      console.warn("POST /api/upload - No file provided in FormData");
+      console.warn("POST /api/media - No file provided in FormData");
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 

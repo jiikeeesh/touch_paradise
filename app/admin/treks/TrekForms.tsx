@@ -57,7 +57,7 @@ export function RegionForm({ initial, onSuccess, onCancel }: RegionFormProps) {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("/api/upload", {
+      const res = await fetch("/api/media", {
         method: "POST",
         body: formData,
       });
@@ -299,7 +299,7 @@ export function TrekForm({ initial, regions, onSuccess, onCancel }: TrekFormProp
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("/api/upload", {
+      const res = await fetch("/api/media", {
         method: "POST",
         body: formData,
       });
