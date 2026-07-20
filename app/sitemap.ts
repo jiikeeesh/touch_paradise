@@ -21,24 +21,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const regions = await prisma.region.findMany({
-      select: { slug: true, updatedAt: true },
+      select: { slug: true, createdAt: true },
     });
 
     regionRoutes = regions.map((region) => ({
       url: `${baseUrl}/treks/${region.slug}`,
-      lastModified: region.updatedAt ?? new Date(),
+      lastModified: region.createdAt,
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     }));
 
     const treks = await prisma.trek.findMany({
-      select: { slug: true, updatedAt: true, region: { select: { slug: true } } },
-      include: { region: true },
+      select: { slug: true, createdAt: true, region: { select: { slug: true } } },
     });
 
     trekRoutes = treks.map((trek) => ({
       url: `${baseUrl}/treks/${trek.region.slug}/${trek.slug}`,
-      lastModified: trek.updatedAt ?? new Date(),
+      lastModified: trek.createdAt,
       changeFrequency: 'weekly' as const,
       priority: 0.9,
     }));
