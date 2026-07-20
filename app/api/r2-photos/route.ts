@@ -1,20 +1,24 @@
 import { r2 } from "@/lib/r2";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 const IMAGE_EXTS = new Set(["jpg", "jpeg", "png", "gif", "webp", "avif"]);
+const VIDEO_EXTS = new Set(["mp4", "webm", "mov", "avi"]);
 
-function isImage(key: string) {
+function getFileType(key: string): "image" | "video" | "other" {
   const ext = key.split(".").pop()?.toLowerCase() ?? "";
-  return IMAGE_EXTS.has(ext);
+  if (IMAGE_EXTS.has(ext)) return "image";
+  if (VIDEO_EXTS.has(ext)) return "video";
+  return "other";
 }
 
-interface R2Photo {
+export interface R2File {
   key: string;
   url: string;
   size: number;
   lastModified: string;
+  type: "image" | "video" | "other";
 }
 
 export async function GET(): Promise<NextResponse> {
@@ -24,19 +28,15 @@ export async function GET(): Promise<NextResponse> {
 
   if (!endpoint || !bucket || !publicUrl) {
     return NextResponse.json(
-      {
-        error:
-          "Configuration Error: R2_ENDPOINT, R2_BUCKET_NAME or R2_PUBLIC_URL is missing.",
-      },
+      { error: "Configuration Error: R2_ENDPOINT, R2_BUCKET_NAME or R2_PUBLIC_URL is missing." },
       { status: 500 }
     );
   }
 
   try {
-    const photos: R2Photo[] = [];
+    const files: R2File[] = [];
     let continuationToken: string | undefined;
 
-    // Paginate through all objects (R2 returns max 1000 per page)
     do {
       const listUrl = new URL(`${endpoint}/${bucket}`);
       listUrl.searchParams.set("list-type", "2");
@@ -49,16 +49,13 @@ export async function GET(): Promise<NextResponse> {
 
       if (!res.ok) {
         const text = await res.text();
-        throw new Error(
-          `R2 ListObjects failed: ${res.status} ${res.statusText} — ${text}`
-        );
+        throw new Error(`R2 ListObjects failed: ${res.status} ${res.statusText} — ${text}`);
       }
 
       const xml = await res.text();
 
-      // --- Parse XML without a library ---
       const extractAll = (tag: string, src: string): string[] => {
-        const re = new RegExp(`<${tag}>([\\s\\S]*?)<\/${tag}>`, "g");
+        const re = new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`, "g");
         const matches: string[] = [];
         let m;
         while ((m = re.exec(src)) !== null) matches.push(m[1]);
@@ -66,27 +63,27 @@ export async function GET(): Promise<NextResponse> {
       };
 
       const extractOne = (tag: string, src: string) =>
-        new RegExp(`<${tag}>([\\s\\S]*?)<\/${tag}>`).exec(src)?.[1] ?? "";
+        new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`).exec(src)?.[1] ?? "";
 
-      // Each <Contents> block is one object
       const contentsBlocks = extractAll("Contents", xml);
 
       for (const block of contentsBlocks) {
         const key = extractOne("Key", block);
         const size = parseInt(extractOne("Size", block) || "0", 10);
         const lastModified = extractOne("LastModified", block);
+        const type = getFileType(key);
 
-        if (!key || !isImage(key)) continue;
+        if (!key || type === "other") continue;
 
-        photos.push({
+        files.push({
           key,
           url: `${publicUrl.replace(/\/$/, "")}/${key}`,
           size,
           lastModified,
+          type,
         });
       }
 
-      // Check for pagination
       const isTruncated = extractOne("IsTruncated", xml).toLowerCase();
       continuationToken =
         isTruncated === "true"
@@ -94,13 +91,11 @@ export async function GET(): Promise<NextResponse> {
           : undefined;
     } while (continuationToken);
 
-    // Newest first
-    photos.sort(
-      (a, b) =>
-        new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
+    files.sort(
+      (a, b) => new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
     );
 
-    return NextResponse.json(photos);
+    return NextResponse.json(files);
   } catch (err) {
     console.error("GET /api/r2-photos error:", err);
     return NextResponse.json(
@@ -109,3 +104,38 @@ export async function GET(): Promise<NextResponse> {
     );
   }
 }
+
+export async function DELETE(request: NextRequest): Promise<NextResponse> {
+  const endpoint = process.env.R2_ENDPOINT;
+  const bucket = process.env.R2_BUCKET_NAME;
+
+  if (!endpoint || !bucket) {
+    return NextResponse.json({ error: "R2 not configured" }, { status: 500 });
+  }
+
+  const { searchParams } = new URL(request.url);
+  const key = searchParams.get("key");
+
+  if (!key) {
+    return NextResponse.json({ error: "key is required" }, { status: 400 });
+  }
+
+  try {
+    const deleteUrl = new URL(`${endpoint}/${bucket}/${key}`);
+    const res = await r2.fetch(deleteUrl, { method: "DELETE" });
+
+    if (!res.ok && res.status !== 204) {
+      const text = await res.text();
+      throw new Error(`R2 DELETE failed: ${res.status} ${res.statusText} — ${text}`);
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("DELETE /api/r2-photos error:", err);
+    return NextResponse.json(
+      { error: (err as Error).message || "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
