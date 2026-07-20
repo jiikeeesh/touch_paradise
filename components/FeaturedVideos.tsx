@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
+import { useState, useRef, useEffect, useCallback } from "react";
 import {
   Play,
   X,
@@ -65,6 +64,66 @@ const initialVideos: Video[] = [
   },
 ];
 
+// ─── Auto-play video card (plays when scrolled into view) ─────────────────────
+function AutoPlayCard({ video, onClick }: { video: Video; onClick: () => void }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = videoRef.current;
+    const container = containerRef.current;
+    if (!el || !container) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.play().catch(() => {});
+        } else {
+          el.pause();
+        }
+      },
+      { threshold: 0.4 }
+    );
+
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative rounded-3xl overflow-hidden bg-slate-800 shadow-xl cursor-pointer group"
+      style={{ aspectRatio: "9/16" }}
+      onClick={onClick}
+    >
+      <video
+        ref={videoRef}
+        src={video.src}
+        className="absolute inset-0 w-full h-full object-cover"
+        muted
+        loop
+        playsInline
+        preload="metadata"
+      />
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+
+      {/* Play button shown on hover */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <Play className="w-7 h-7 text-white fill-white ml-1" />
+        </div>
+      </div>
+
+      {/* Bottom info */}
+      <div className="absolute bottom-0 left-0 right-0 p-4">
+        <p className="text-white font-bold text-sm leading-tight mb-1 line-clamp-2">{video.title}</p>
+        <p className="text-white/60 text-[11px] font-medium">{video.location}</p>
+      </div>
+    </div>
+  );
+}
+
 // ─── Lightbox Modal ───────────────────────────────────────────────────────────
 const Lightbox = ({
   video,
@@ -110,11 +169,7 @@ const Lightbox = ({
   const togglePlay = () => {
     const el = videoRef.current;
     if (!el) return;
-    if (playing) {
-      el.pause();
-    } else {
-      el.play();
-    }
+    if (playing) { el.pause(); } else { el.play(); }
     setPlaying(!playing);
   };
 
@@ -122,8 +177,7 @@ const Lightbox = ({
     const el = videoRef.current;
     if (!el) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    const ratio = (e.clientX - rect.left) / rect.width;
-    el.currentTime = ratio * el.duration;
+    el.currentTime = ((e.clientX - rect.left) / rect.width) * el.duration;
   };
 
   return (
@@ -238,11 +292,6 @@ const Lightbox = ({
           <ChevronRight className="w-6 h-6 text-white" />
         </button>
       )}
-
-      {/* Dot indicators */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-        {/* Note: dot indicators map omitted for dynamic lengths to prevent layout breaking on too many videos */}
-      </div>
     </motion.div>
   );
 };
@@ -270,20 +319,20 @@ const FeaturedVideos = () => {
     fetchVideos();
   }, []);
 
-  const openVideo = (index: number) => setActiveIndex(index);
-  const closeVideo = () => setActiveIndex(null);
-  const prevVideo = () => setActiveIndex((i) => (i !== null && i > 0 ? i - 1 : i));
-  const nextVideo = () =>
-    setActiveIndex((i) => (i !== null && i < videos.length - 1 ? i + 1 : i));
+  const openVideo = useCallback((index: number) => setActiveIndex(index), []);
+  const closeVideo = useCallback(() => setActiveIndex(null), []);
+  const prevVideo = useCallback(() => setActiveIndex((i) => (i !== null && i > 0 ? i - 1 : i)), []);
+  const nextVideo = useCallback(
+    () => setActiveIndex((i) => (i !== null && i < videos.length - 1 ? i + 1 : i)),
+    [videos.length]
+  );
 
   const scroll = (dir: "left" | "right") => {
-    if (!scrollRef.current) return;
-    scrollRef.current.scrollBy({ left: dir === "left" ? -300 : 300, behavior: "smooth" });
+    scrollRef.current?.scrollBy({ left: dir === "left" ? -300 : 300, behavior: "smooth" });
   };
 
   return (
     <section id="videos" className="py-24 bg-slate-950 overflow-hidden">
-
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="flex items-end justify-between mb-12">
@@ -330,51 +379,12 @@ const FeaturedVideos = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.08, duration: 0.4 }}
               viewport={{ once: true }}
-              className="flex-shrink-0 snap-start group cursor-pointer"
+              className="flex-shrink-0 snap-start"
               style={{ width: "200px" }}
-              onClick={() => openVideo(index)}
             >
-              {/* Portrait Card — 9:16 ratio */}
-              <div
-                className="relative rounded-3xl overflow-hidden bg-slate-800 shadow-xl"
-                style={{ aspectRatio: "9/16" }}
-              >
-                <Image
-                  src={video.cover}
-                  alt={video.title}
-                  fill
-                  sizes="200px"
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                  loading={index === 0 ? "eager" : "lazy"}
-                  priority={index === 0}
-                />
-                {/* Dark overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-                {/* Duration badge removed */}
-
-                {/* Play Button */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:bg-emerald-500/80 transition-colors"
-                  >
-                    <Play className="w-7 h-7 text-white fill-white ml-1" />
-                  </motion.div>
-                </div>
-
-                {/* Bottom info */}
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <p className="text-white font-bold text-sm leading-tight mb-1 line-clamp-2">
-                    {video.title}
-                  </p>
-                  <p className="text-white/60 text-[11px] font-medium">{video.location}</p>
-                </div>
-              </div>
+              <AutoPlayCard video={video} onClick={() => openVideo(index)} />
             </motion.div>
           ))}
-
         </div>
       </div>
 

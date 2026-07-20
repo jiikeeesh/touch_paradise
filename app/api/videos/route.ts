@@ -20,9 +20,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { title, location, duration, cover, src } = body;
 
-    if (!title || !location || !duration || !cover || !src) {
+    if (!title || !location || !src) {
       return Response.json(
-        { error: "title, location, duration, cover, and src are required" },
+        { error: "title, location, and src are required" },
         { status: 400 }
       );
     }

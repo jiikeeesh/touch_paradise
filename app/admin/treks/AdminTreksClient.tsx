@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   Plus,
@@ -61,6 +61,8 @@ export default function AdminTreksClient() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeForm, setActiveForm] = useState<ActiveForm>(null);
+  const editTrekFormRef = useRef<HTMLDivElement>(null);
+  const editRegionFormRef = useRef<HTMLDivElement>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<{
     type: "region" | "trek";
@@ -256,9 +258,9 @@ export default function AdminTreksClient() {
         )}
 
         {activeForm?.type === "edit-region" && (
-          <div className="px-6 py-5 border-b border-slate-100 bg-slate-50">
+          <div ref={editRegionFormRef} className="px-6 py-5 border-b border-slate-100 bg-emerald-50">
             <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-4">
-              Edit Region
+              ✏️ Edit Region
             </p>
             <RegionForm
               initial={activeForm.region}
@@ -308,9 +310,10 @@ export default function AdminTreksClient() {
                     </div>
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() =>
-                          setActiveForm({ type: "edit-region", region })
-                        }
+                        onClick={() => {
+                          setActiveForm({ type: "edit-region", region });
+                          setTimeout(() => editRegionFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+                        }}
                         className="p-2 rounded-lg hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 transition"
                       >
                         <Pencil className="w-4 h-4" />
@@ -385,9 +388,9 @@ export default function AdminTreksClient() {
         )}
 
         {activeForm?.type === "edit-trek" && (
-          <div className="px-6 py-5 border-b border-slate-100 bg-slate-50">
+          <div ref={editTrekFormRef} className="px-6 py-5 border-b border-slate-100 bg-blue-50">
             <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">
-              Edit Trek
+              ✏️ Edit Trek
             </p>
             <TrekForm
               initial={activeForm.trek}
@@ -473,9 +476,10 @@ export default function AdminTreksClient() {
                           <td className="px-6 py-4">
                             <div className="flex items-center justify-end gap-2">
                               <button
-                                onClick={() =>
-                                  setActiveForm({ type: "edit-trek", trek })
-                                }
+                                onClick={() => {
+                                  setActiveForm({ type: "edit-trek", trek });
+                                  setTimeout(() => editTrekFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+                                }}
                                 className="p-2 rounded-lg hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 transition"
                               >
                                 <Pencil className="w-4 h-4" />
