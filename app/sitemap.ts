@@ -1,34 +1,50 @@
 import { MetadataRoute } from 'next';
+import { prisma } from '@/lib/prisma';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://touchparadise.com.np';
 
-  // Add your static routes here
-  const routes = [
-    '',
-    '/about',
-    '/contact',
-    '/reviews',
-    '/services',
-    '/team',
-    '/treks',
-  ].map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly' as const,
-    priority: route === '' ? 1 : 0.8,
-  }));
+  // Static routes
+  const staticRoutes: MetadataRoute.Sitemap = [
+    { url: baseUrl, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },
+    { url: `${baseUrl}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/reviews`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${baseUrl}/services`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/team`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${baseUrl}/treks`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+  ];
 
-  // You can also fetch dynamic routes here (e.g. treks, regions) and add them to the array.
-  // Example:
-  // const treks = await fetchTreks();
-  // const trekRoutes = treks.map((trek) => ({
-  //   url: `${baseUrl}/treks/${trek.region}/${trek.slug}`,
-  //   lastModified: new Date(),
-  //   changeFrequency: 'weekly' as const,
-  //   priority: 0.6,
-  // }));
-  // return [...routes, ...trekRoutes];
+  // Dynamic region pages
+  let regionRoutes: MetadataRoute.Sitemap = [];
+  let trekRoutes: MetadataRoute.Sitemap = [];
 
-  return routes;
+  try {
+    const regions = await prisma.region.findMany({
+      select: { slug: true, updatedAt: true },
+    });
+
+    regionRoutes = regions.map((region) => ({
+      url: `${baseUrl}/treks/${region.slug}`,
+      lastModified: region.updatedAt ?? new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
+
+    const treks = await prisma.trek.findMany({
+      select: { slug: true, updatedAt: true, region: { select: { slug: true } } },
+      include: { region: true },
+    });
+
+    trekRoutes = treks.map((trek) => ({
+      url: `${baseUrl}/treks/${trek.region.slug}/${trek.slug}`,
+      lastModified: trek.updatedAt ?? new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
+    }));
+  } catch (error) {
+    console.error('Sitemap: Failed to fetch dynamic routes:', error);
+  }
+
+  return [...staticRoutes, ...regionRoutes, ...trekRoutes];
 }

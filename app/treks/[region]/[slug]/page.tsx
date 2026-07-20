@@ -16,15 +16,41 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const trek = await (prisma as any).trek.findUnique({ where: { slug } });
+  const trek = await (prisma as any).trek.findUnique({
+    where: { slug },
+    include: { region: true },
+  });
   
   if (!trek) {
     return { title: "Trek Not Found | Touch Paradise" };
   }
 
+  // Trim description to ~160 chars for search snippets
+  const rawDesc = trek.description ?? '';
+  const shortDesc = rawDesc.length > 160
+    ? rawDesc.slice(0, 157).trimEnd() + '...'
+    : rawDesc;
+
+  const coverImage = trek.images?.split('|')[0] || '/hero.png';
+  const absoluteImage = coverImage.startsWith('http')
+    ? coverImage
+    : `https://touchparadise.com.np${coverImage}`;
+
   return {
-    title: `${trek.title} | Touch Paradise`,
-    description: trek.description,
+    title: `${trek.title} Trekking Package | Touch Paradise Nepal`,
+    description: shortDesc || `Book the ${trek.title} trek in ${trek.region?.name ?? 'Nepal'} with Touch Paradise. ${trek.durationDays} days, guided tour with all permits included.`,
+    openGraph: {
+      title: `${trek.title} | Touch Paradise`,
+      description: shortDesc,
+      images: [{ url: absoluteImage, width: 1200, height: 630, alt: trek.title }],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${trek.title} | Touch Paradise`,
+      description: shortDesc,
+      images: [absoluteImage],
+    },
   };
 }
 
