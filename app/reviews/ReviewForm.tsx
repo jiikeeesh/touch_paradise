@@ -5,23 +5,8 @@ import { Star, Upload, X, CheckCircle, Camera, User, Mail, Globe, Mountain, Mess
 import { submitReview } from "@/app/actions/review";
 import Image from "next/image";
 
-const TREK_OPTIONS = [
-  "Everest Base Camp Trek",
-  "Annapurna Circuit Trek",
-  "Annapurna Base Camp Trek",
-  "Langtang Valley Trek",
-  "Manaslu Circuit Trek",
-  "Upper Mustang Trek",
-  "Gokyo Lakes Trek",
-  "Three Passes Trek",
-  "Island Peak Climbing",
-  "Mera Peak Climbing",
-  "Lobuche Peak Climbing",
-  "Cultural Tour Kathmandu",
-  "Chitwan Jungle Safari",
-  "Lumbini Pilgrimage Tour",
-  "Other",
-];
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function ReviewForm() {
   const [rating, setRating] = useState(0);
@@ -35,6 +20,34 @@ export default function ReviewForm() {
   const [isPending, startTransition] = useTransition();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const searchParams = useSearchParams();
+  const [treks, setTreks] = useState<{ id: string; title: string }[]>([]);
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userTrip, setUserTrip] = useState("");
+
+  useEffect(() => {
+    fetch("/api/treks")
+      .then((res) => res.json())
+      .then((data) => setTreks(data || []))
+      .catch((err) => console.error("Failed to fetch treks", err));
+
+    if (searchParams) {
+      const pName = searchParams.get("name");
+      const pEmail = searchParams.get("email");
+      const pTrip = searchParams.get("trip");
+      let hasParams = false;
+
+      if (pName) { setUserName(pName); hasParams = true; }
+      if (pEmail) { setUserEmail(pEmail); hasParams = true; }
+      if (pTrip) { setUserTrip(pTrip); hasParams = true; }
+
+      if (hasParams) {
+        // Clear query params from the URL bar without reloading
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+  }, [searchParams]);
 
   const handlePhotoChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -209,6 +222,8 @@ export default function ReviewForm() {
                     required
                     autoComplete="name"
                     placeholder="John Doe"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
                   />
                 </div>
@@ -239,6 +254,8 @@ export default function ReviewForm() {
                   required
                   autoComplete="email"
                   placeholder="you@example.com"
+                  value={userEmail}
+                  onChange={(e) => setUserEmail(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
                 />
                 <p className="text-xs text-slate-500 mt-1.5">Your email won&apos;t be shown publicly.</p>
@@ -249,17 +266,21 @@ export default function ReviewForm() {
                 <label htmlFor="review-trip" className="block text-sm font-semibold text-slate-300 mb-2 group-focus-within:text-emerald-400 transition-colors">
                   <span className="flex items-center gap-1.5"><Mountain className="w-3.5 h-3.5" /> Trip / Trek <span className="text-red-400">*</span></span>
                 </label>
-                <select
+                <input
                   id="review-trip"
                   name="trip"
+                  list="trek-options"
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
-                >
-                  <option value="">Select the trip you went on…</option>
-                  {TREK_OPTIONS.map((t) => (
-                    <option key={t} value={t}>{t}</option>
+                  placeholder="Select or type the trip you went on…"
+                  value={userTrip}
+                  onChange={(e) => setUserTrip(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                />
+                <datalist id="trek-options">
+                  {treks.map((t) => (
+                    <option key={t.id} value={t.title} />
                   ))}
-                </select>
+                </datalist>
               </div>
 
               {/* ── Review Title ── */}

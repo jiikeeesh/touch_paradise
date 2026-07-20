@@ -7,6 +7,12 @@ export const metadata: Metadata = {
     "Share your trekking experience with Touch Paradise. Rate your trip, tell your story, and inspire future adventurers.",
 };
 
+import { Suspense } from "react";
+
 export default function ReviewsPage() {
-  return <ReviewForm />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-900" />}>
+      <ReviewForm />
+    </Suspense>
+  );
 }

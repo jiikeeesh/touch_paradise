@@ -87,12 +87,19 @@ export default async function AdminPage() {
                       </div>
                       
                       {/* Actions */}
-                      <div className="flex items-center gap-2 pt-1">
+                      <div className="flex flex-wrap items-center gap-2 pt-1">
                         <a 
                           href={`mailto:${msg.email}`} 
                           className="flex-1 inline-flex justify-center items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-xl border border-emerald-100 transition hover:bg-emerald-100"
                         >
                           <Mail className="w-3.5 h-3.5" /> Email
+                        </a>
+                        <a 
+                          href={`mailto:${msg.email}?subject=${encodeURIComponent("We'd love to hear about your trip!")}&body=${encodeURIComponent(`Hi ${msg.firstName},\n\nWe hope you had a great time on your ${msg.trek || "trek"}! We would love it if you could leave us a review:\n\nhttps://touchparadise.com.np/reviews?name=${encodeURIComponent(msg.firstName + " " + msg.lastName)}&email=${encodeURIComponent(msg.email)}&trip=${encodeURIComponent(msg.trek || "")}\n\nThank you,\nTouch Paradise`)}`}
+                          className="flex-1 inline-flex justify-center items-center gap-2 px-3 py-2 bg-amber-50 text-amber-700 text-xs font-bold rounded-xl border border-amber-100 transition hover:bg-amber-100"
+                          title="Ask for a review"
+                        >
+                          <Star className="w-3.5 h-3.5" /> Ask Review
                         </a>
                         {msg.phone && (
                           <a 
@@ -150,6 +157,14 @@ export default async function AdminPage() {
                             >
                               <Mail className="w-3.5 h-3.5" />
                               Email User
+                            </a>
+                            <a 
+                              href={`mailto:${msg.email}?subject=${encodeURIComponent("We'd love to hear about your trip!")}&body=${encodeURIComponent(`Hi ${msg.firstName},\n\nWe hope you had a great time on your ${msg.trek || "trek"}! We would love it if you could leave us a review:\n\nhttps://touchparadise.com.np/reviews?name=${encodeURIComponent(msg.firstName + " " + msg.lastName)}&email=${encodeURIComponent(msg.email)}&trip=${encodeURIComponent(msg.trek || "")}\n\nThank you,\nTouch Paradise`)}`}
+                              className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-50 text-amber-700 text-xs font-bold rounded-lg hover:bg-amber-100 transition shadow-sm border border-amber-100"
+                              title="Ask for a review"
+                            >
+                              <Star className="w-3.5 h-3.5" />
+                              Ask Review
                             </a>
                             {msg.phone && (
                               <a 
