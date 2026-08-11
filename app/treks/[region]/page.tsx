@@ -6,7 +6,19 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
-export const dynamic = "force-dynamic";
+// generateStaticParams pre-renders all known region slugs at build time.
+// This prevents the streaming/noindex issue where notFound() mid-stream causes
+// Next.js to inject <meta name="robots" content="noindex"> on valid pages.
+export async function generateStaticParams() {
+  try {
+    const regions = await prisma.region.findMany({
+      select: { slug: true },
+    });
+    return regions.map((r) => ({ region: r.slug }));
+  } catch {
+    return [];
+  }
+}
 
 const difficultyColor: Record<string, string> = {
   Easy: "bg-green-100 text-green-700",

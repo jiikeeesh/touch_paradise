@@ -6,7 +6,18 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+// generateStaticParams pre-renders all known category slugs at build time.
+// Prevents streaming/noindex injection when notFound() fires mid-stream.
+export async function generateStaticParams() {
+  try {
+    const categories = await prisma.serviceCategory.findMany({
+      select: { slug: true },
+    });
+    return categories.map((c) => ({ category: c.slug }));
+  } catch {
+    return [];
+  }
+}
 
 interface Props {
   params: Promise<{ category: string }>;

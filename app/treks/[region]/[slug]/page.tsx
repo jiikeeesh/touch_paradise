@@ -8,7 +8,22 @@ import TrekBookingForm from "@/components/TrekBookingForm";
 import TrekIncludesExcludes from "@/components/TrekIncludesExcludes";
 import { prisma } from "@/lib/prisma";
 
-export const dynamic = "force-dynamic";
+// generateStaticParams pre-renders all known trek slugs at build time.
+// This prevents the streaming/noindex issue where notFound() mid-stream causes
+// Next.js to inject <meta name="robots" content="noindex"> on valid pages.
+export async function generateStaticParams() {
+  try {
+    const treks = await (prisma as any).trek.findMany({
+      select: { slug: true, region: { select: { slug: true } } },
+    });
+    return treks.map((t: { slug: string; region: { slug: string } }) => ({
+      region: t.region.slug,
+      slug: t.slug,
+    }));
+  } catch {
+    return [];
+  }
+}
 
 interface Props {
   params: Promise<{ region: string; slug: string }>;
