@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Mail, Mountain, Briefcase, Users, Star, Settings, Video, ClipboardList } from "lucide-react";
+import { Mail, Mountain, Briefcase, Users, Star, Settings, Video, ClipboardList, Bell } from "lucide-react";
 
 export default function AdminNav() {
   const pathname = usePathname();
@@ -14,6 +14,7 @@ export default function AdminNav() {
     { name: "Team", href: "/admin/team", icon: Users },
     { name: "Interviews", href: "/admin/interviews", icon: ClipboardList },
     { name: "Reviews", href: "/admin/reviews", icon: Star },
+    { name: "Notices", href: "/admin/notices", icon: Bell },
     { name: "Videos", href: "/admin/videos", icon: Video },
     { name: "Settings", href: "/admin/settings", icon: Settings },
   ];

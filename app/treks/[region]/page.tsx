@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Clock, Mountain, Signal, ArrowRight, ArrowLeft } from "lucide-react";
+import { Clock, Mountain, Signal, ArrowRight, ArrowLeft, AlertTriangle } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
+import TrekAdvisoryBanner from "@/components/TrekAdvisoryBanner";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { getActiveNotices, getNoticeForSlug, isSlugClosed } from "@/lib/noticeHelpers";
 
 // generateStaticParams pre-renders all known region slugs at build time.
 // This prevents the streaming/noindex issue where notFound() mid-stream causes
@@ -82,6 +84,11 @@ export default async function RegionPage({ params }: Props) {
   const regionName = regionData?.name ?? (regionSlug.charAt(0).toUpperCase() + regionSlug.slice(1));
   const coverImage = regionData?.image || treks[0]?.images?.split("|")[0] || "/hero.png";
 
+  // Fetch active notices from the database (admin-controlled)
+  const activeNotices = await getActiveNotices();
+  const regionNotice = getNoticeForSlug(activeNotices, "REGION", regionSlug);
+  const regionIsAffected = regionNotice?.severity === "CLOSURE";
+
   return (
     <PageLayout showPadding={false}>
       {/* Page Header */}
@@ -120,6 +127,94 @@ export default async function RegionPage({ params }: Props) {
         </div>
       </section>
 
+      {/* Closure Notice — shown prominently below hero for affected regions (from DB) */}
+      {regionIsAffected && regionNotice && (
+        <section className="relative z-10">
+          {/* Top banner strip */}
+          <div className="w-full py-3 px-4 flex items-center justify-center gap-3 text-sm font-semibold bg-red-600 text-white">
+            <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+            <span>{regionNotice.headline}</span>
+          </div>
+
+          {/* Detailed notice block */}
+          <div className="bg-gradient-to-br from-red-950 via-red-900 to-orange-950 py-16 px-4">
+            <div className="container mx-auto max-w-3xl text-center">
+              {/* Pulsing icon */}
+              <div className="relative inline-block mb-6">
+                <div className="absolute inset-0 bg-red-500/30 rounded-full blur-2xl animate-pulse" />
+                <div className="relative w-24 h-24 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center shadow-2xl shadow-red-950/80 mx-auto">
+                  <AlertTriangle className="w-12 h-12 text-white" strokeWidth={2.5} />
+                </div>
+              </div>
+
+              {/* Status badge */}
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <span className="w-2.5 h-2.5 bg-red-400 rounded-full animate-ping" />
+                <span className="text-red-300 text-xs font-black uppercase tracking-widest">
+                  Region Temporarily Closed
+                </span>
+              </div>
+
+              <h2 className="text-3xl md:text-4xl font-black text-white mb-4 leading-tight">
+                {regionName} — All Treks Currently Suspended
+              </h2>
+              <p className="text-red-200 text-base md:text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
+                {regionNotice.detail}
+              </p>
+
+              {/* Info grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10 text-left">
+                <div className="bg-white/10 rounded-2xl p-5 border border-white/10 backdrop-blur-sm">
+                  <p className="text-red-300 text-[10px] font-black uppercase tracking-widest mb-1">Closed Since</p>
+                  <p className="text-white font-bold">{regionNotice.actionText || "See notice below"}</p>
+                </div>
+                <div className="bg-white/10 rounded-2xl p-5 border border-white/10 backdrop-blur-sm">
+                  <p className="text-red-300 text-[10px] font-black uppercase tracking-widest mb-1">Est. Reopening</p>
+                  <p className="text-white font-bold">{regionNotice.resolveBy || "TBC"}</p>
+                </div>
+                <div className="bg-white/10 rounded-2xl p-5 border border-white/10 backdrop-blur-sm">
+                  <p className="text-red-300 text-[10px] font-black uppercase tracking-widest mb-1">Rebooking</p>
+                  <p className="text-white font-bold">Free of charge</p>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-red-700 font-bold px-8 py-4 rounded-full hover:bg-red-50 transition-colors shadow-xl text-sm"
+                >
+                  <AlertTriangle className="w-4 h-4" />
+                  Contact Us About Your Booking
+                </Link>
+                <Link
+                  href="/treks"
+                  className="inline-flex items-center justify-center gap-2 bg-red-500/30 border border-red-400/40 text-white font-bold px-8 py-4 rounded-full hover:bg-red-500/40 transition-colors text-sm"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Browse Open Regions
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Advisory Banner — soft caution notice for non-closed regions (from DB) */}
+      {!regionIsAffected && regionNotice?.severity === "ADVISORY" && (
+        <TrekAdvisoryBanner
+          advisory={{
+            level: "caution",
+            headline: regionNotice.headline,
+            detail: regionNotice.detail,
+            action: regionNotice.actionText || undefined,
+            resolveBy: regionNotice.resolveBy || undefined,
+          }}
+          variant="section"
+          dismissible
+        />
+      )}
+
       {/* Trek Grid */}
       <section className="py-20 bg-slate-50">
         <div className="container mx-auto px-4">
@@ -140,10 +235,17 @@ export default async function RegionPage({ params }: Props) {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {treks.map((trek) => {
                 const firstImage = trek.images?.split("|")[0] || "/hero.png";
+                const trekNotice = getNoticeForSlug(activeNotices, "TREK", trek.slug);
+                const trekAffected = regionIsAffected || trekNotice?.severity === "CLOSURE";
+                const trekAdvisory = !trekAffected && trekNotice?.severity === "ADVISORY" ? trekNotice : null;
                 return (
                   <div
                     key={trek.id}
-                    className="group bg-white rounded-3xl overflow-hidden border border-slate-100 hover:shadow-xl hover:shadow-slate-200 transition-all"
+                    className={`group bg-white rounded-3xl overflow-hidden border transition-all ${
+                      trekAffected
+                        ? "border-red-200 opacity-95"
+                        : "border-slate-100 hover:shadow-xl hover:shadow-slate-200"
+                    }`}
                   >
                     <div className="relative h-60 overflow-hidden">
                       <Image
@@ -151,16 +253,30 @@ export default async function RegionPage({ params }: Props) {
                         alt={trek.title}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        className={`object-cover transition-transform duration-700 ${
+                          trekAffected
+                            ? "brightness-60 saturate-50"
+                            : "group-hover:scale-110"
+                        }`}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                      <span
-                        className={`absolute top-4 left-4 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm ${
-                          difficultyColor[trek.difficulty] ?? "bg-slate-800/80 text-white"
-                        }`}
-                      >
-                        {trek.difficulty}
-                      </span>
+
+                      {/* Flood badge overlaying difficulty */}
+                      {trekAffected ? (
+                        <span className="absolute top-4 left-4 flex items-center gap-1.5 bg-red-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">
+                          <AlertTriangle className="w-3 h-3" strokeWidth={3} />
+                          Closed — Flood
+                        </span>
+                      ) : (
+                        <span
+                          className={`absolute top-4 left-4 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm ${
+                            difficultyColor[trek.difficulty] ?? "bg-slate-800/80 text-white"
+                          }`}
+                        >
+                          {trek.difficulty}
+                        </span>
+                      )}
+
                       <span className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white font-bold text-sm px-3 py-1.5 rounded-full shadow">
                         ${trek.price.toLocaleString()}
                       </span>
@@ -170,12 +286,28 @@ export default async function RegionPage({ params }: Props) {
                       <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-2">
                         {trek.region.name}
                       </p>
-                      <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-emerald-600 transition-colors leading-snug">
+                      <h3 className="text-xl font-bold text-slate-900 mb-3 leading-snug">
                         {trek.title}
                       </h3>
-                      <p className="text-slate-600 text-sm mb-6 line-clamp-2 leading-relaxed">
+                      <p className="text-slate-600 text-sm mb-4 line-clamp-2 leading-relaxed">
                         {trek.description}
                       </p>
+
+                      {/* Inline advisory badge */}
+                      {trekAdvisory && (
+                        <div className="mb-4">
+                          <TrekAdvisoryBanner
+                            advisory={{
+                              level: "caution",
+                              headline: trekAdvisory.headline,
+                              detail: trekAdvisory.detail,
+                              action: trekAdvisory.actionText || undefined,
+                              resolveBy: trekAdvisory.resolveBy || undefined,
+                            }}
+                            variant="inline"
+                          />
+                        </div>
+                      )}
 
                       <div className="grid grid-cols-3 gap-3 pt-5 border-t border-slate-100 mb-6">
                         <div>
@@ -217,13 +349,28 @@ export default async function RegionPage({ params }: Props) {
                         )}
                       </div>
 
-                      <Link
-                        href={`/treks/${trek.region.slug}/${trek.slug}`}
-                        className="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white py-3 rounded-xl font-semibold text-sm hover:bg-emerald-700 transition-colors group/btn"
-                      >
-                        View Trek & Book
-                        <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                      </Link>
+                      {trekAffected ? (
+                        <div className="w-full flex flex-col items-center gap-2">
+                          <div className="w-full flex items-center justify-center gap-2 bg-red-100 text-red-600 py-3 rounded-xl font-semibold text-sm border border-red-200 cursor-not-allowed">
+                            <AlertTriangle className="w-4 h-4" />
+                            Currently Unavailable
+                          </div>
+                          <Link
+                            href="/contact"
+                            className="text-xs text-red-500 hover:text-red-700 font-medium underline underline-offset-2 transition-colors"
+                          >
+                            Contact us to reschedule →
+                          </Link>
+                        </div>
+                      ) : (
+                        <Link
+                          href={`/treks/${trek.region.slug}/${trek.slug}`}
+                          className="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white py-3 rounded-xl font-semibold text-sm hover:bg-emerald-700 transition-colors group/btn"
+                        >
+                          View Trek &amp; Book
+                          <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                        </Link>
+                      )}
                     </div>
                   </div>
                 );

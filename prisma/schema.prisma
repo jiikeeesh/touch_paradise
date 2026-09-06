@@ -128,3 +128,26 @@ model SiteSetting {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+/// Admin-issued travel notices shown on public trek/region/service pages.
+model TravelNotice {
+  id            String   @id @default(uuid())
+  /// "CLOSURE" = hard red closure, "ADVISORY" = soft amber caution
+  severity      String   @default("ADVISORY")
+  /// "TREK" | "REGION" | "SERVICE" | "GLOBAL"
+  targetType    String
+  /// Slug of the trek/region/service, or "all" for global
+  targetSlug    String
+  /// Short title shown in badge (e.g. "Closed — Flash Flood")
+  headline      String
+  /// Full description shown in the banner body
+  detail        String   @db.Text
+  /// Optional CTA text (e.g. "Contact us to reschedule")
+  actionText    String   @default("")
+  /// Optional estimated resolution date string (e.g. "November 2026")
+  resolveBy     String   @default("")
+  /// Whether this notice is currently active
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

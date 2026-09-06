@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, AlertTriangle } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { prisma } from "@/lib/prisma";
+import { getActiveNotices, isSlugClosed, getNoticeForSlug, getGlobalNotices } from "@/lib/noticeHelpers";
 
 export const dynamic = "force-dynamic";
 
@@ -38,8 +39,23 @@ export default async function TreksPage() {
 
   const regionCount = regions.length;
 
+  // Fetch all active notices from the database (admin-controlled)
+  const activeNotices = await getActiveNotices();
+  const globalNotices = getGlobalNotices(activeNotices);
+
   return (
     <PageLayout showPadding={false}>
+      {/* Global notices — site-wide alert banners from admin panel */}
+      {globalNotices.map((n) => (
+        <div key={n.id} className={`w-full py-3 px-4 flex items-center justify-center gap-3 text-sm font-semibold ${
+          n.severity === "CLOSURE" ? "bg-red-600 text-white" : "bg-amber-500 text-white"
+        }`}>
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+          <span>{n.headline}</span>
+          {n.resolveBy && <span className="opacity-80 text-xs">— Est. {n.resolveBy}</span>}
+        </div>
+      ))}
+
       {/* Page Header */}
       <section className="relative py-24 bg-slate-900 overflow-hidden">
         <div className="absolute inset-0">
@@ -107,34 +123,84 @@ export default async function TreksPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {regions.map((region) => (
-                <a
-                  href={`/treks/${region.slug}`}
-                  key={region.id}
-                  className="group bg-white rounded-3xl overflow-hidden border border-slate-100 hover:shadow-xl hover:shadow-slate-200 transition-all block relative"
-                >
-                  <div className="relative h-72 overflow-hidden">
-                    <Image
-                      src={region.image || "/hero.png"}
-                      alt={`${region.name} Region`}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/10" />
+              {regions.map((region) => {
+                const notice = getNoticeForSlug(activeNotices, "REGION", region.slug);
+                const isClosed = notice?.severity === "CLOSURE";
+                const isAdvisory = notice?.severity === "ADVISORY";
+                return (
+                  <a
+                    href={`/treks/${region.slug}`}
+                    key={region.id}
+                    className={`group bg-white rounded-3xl overflow-hidden border transition-all block relative ${
+                      isClosed
+                        ? "border-red-200 hover:shadow-xl hover:shadow-red-100"
+                        : isAdvisory
+                        ? "border-amber-200 hover:shadow-xl hover:shadow-amber-100"
+                        : "border-slate-100 hover:shadow-xl hover:shadow-slate-200"
+                    }`}
+                  >
+                    <div className="relative h-72 overflow-hidden">
+                      <Image
+                        src={region.image || "/hero.png"}
+                        alt={`${region.name} Region`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className={`object-cover transition-transform duration-700 group-hover:scale-110 ${
+                          isClosed ? "brightness-75 saturate-50" : ""
+                        }`}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/10" />
 
-                    <div className="absolute bottom-6 left-6 right-6">
-                      <h3 className="text-2xl font-bold text-white mb-1.5 group-hover:text-emerald-400 transition-colors drop-shadow-lg">
-                        {region.name}
-                      </h3>
-                      <p className="text-slate-200 text-sm flex items-center gap-2 font-medium">
-                        <span>{region._count.treks} Package{region._count.treks !== 1 ? "s" : ""}</span>
-                        <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-emerald-400" />
-                      </p>
+                      {/* Closed badge */}
+                      {isClosed && (
+                        <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-red-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg border border-red-400/40">
+                          <AlertTriangle className="w-3 h-3" strokeWidth={3} />
+                          Temporarily Closed
+                        </div>
+                      )}
+
+                      {/* Advisory caution badge */}
+                      {isAdvisory && (
+                        <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg border border-amber-400/40">
+                          <AlertTriangle className="w-3 h-3" strokeWidth={3} />
+                          Travel Advisory
+                        </div>
+                      )}
+
+                      <div className="absolute bottom-6 left-6 right-6">
+                        <h3 className="text-2xl font-bold text-white mb-1.5 group-hover:text-emerald-400 transition-colors drop-shadow-lg">
+                          {region.name}
+                        </h3>
+                        <p className="text-slate-200 text-sm flex items-center gap-2 font-medium">
+                          <span>{region._count.treks} Package{region._count.treks !== 1 ? "s" : ""}</span>
+                          {isClosed ? (
+                            <span className="text-red-300 text-[10px] font-bold">⚠ Closed</span>
+                          ) : isAdvisory ? (
+                            <span className="text-amber-300 text-[10px] font-bold">⚠ Advisory</span>
+                          ) : (
+                            <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-emerald-400" />
+                          )}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </a>
-              ))}
+
+                    {/* Inline info strip — red for closure, amber for advisory */}
+                    {notice && (
+                      <div className={`border-t px-5 py-3 flex items-center gap-2 ${
+                        isClosed ? "bg-red-50 border-red-100" : "bg-amber-50 border-amber-100"
+                      }`}>
+                        <AlertTriangle className={`w-3.5 h-3.5 flex-shrink-0 ${isClosed ? "text-red-500" : "text-amber-500"}`} />
+                        <p className={`text-xs font-semibold leading-snug ${
+                          isClosed ? "text-red-700" : "text-amber-800"
+                        }`}>
+                          {notice.headline}
+                          {notice.resolveBy ? ` — Est. ${notice.resolveBy}` : ""}
+                        </p>
+                      </div>
+                    )}
+                  </a>
+                );
+              })}
             </div>
           )}
         </div>

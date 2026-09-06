@@ -13,9 +13,11 @@ import {
 } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import TrekBookingForm from "@/components/TrekBookingForm";
+import TrekAdvisoryBanner from "@/components/TrekAdvisoryBanner";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { getActiveNotices, getNoticeForSlug } from "@/lib/noticeHelpers";
 
 // generateStaticParams pre-renders all known service slugs at build time.
 // Prevents streaming/noindex injection when notFound() fires mid-stream.
@@ -72,6 +74,9 @@ export default async function ServiceDetailsPage({ params }: Props) {
         : rawItinerary.split("\n")
       ).filter(line => line.trim().length > 0)
     : [];
+
+  const activeNotices = await getActiveNotices();
+  const serviceNotice = getNoticeForSlug(activeNotices, "SERVICE", slug);
 
   return (
     <PageLayout showPadding={false}>
@@ -130,6 +135,21 @@ export default async function ServiceDetailsPage({ params }: Props) {
             </div>
           </div>
         </section>
+
+        {/* Advisory Banner for Services */}
+        {serviceNotice && (
+          <TrekAdvisoryBanner
+            advisory={{
+              level: serviceNotice.severity === "CLOSURE" ? "caution" : "info",
+              headline: serviceNotice.headline,
+              detail: serviceNotice.detail,
+              action: serviceNotice.actionText || undefined,
+              resolveBy: serviceNotice.resolveBy || undefined,
+            }}
+            variant="section"
+            dismissible={false}
+          />
+        )}
 
         {/* Content Section */}
         <section className="py-20">

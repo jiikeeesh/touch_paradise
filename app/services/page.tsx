@@ -18,6 +18,8 @@ import PageLayout from "@/components/PageLayout";
 import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import TrekAdvisoryBanner from "@/components/TrekAdvisoryBanner";
+import { getActiveNotices } from "@/lib/noticeHelpers";
 
 export const dynamic = "force-dynamic";
 
@@ -70,8 +72,25 @@ export default async function ServicesPage() {
     features: ["Certified local guides", "All permits included", "Porter support"],
   };
 
+  const activeNotices = await getActiveNotices();
+  const globalNotices = activeNotices.filter((n) => n.targetType === "GLOBAL");
+
   return (
     <PageLayout showPadding={false}>
+      {globalNotices.map((notice) => (
+        <TrekAdvisoryBanner
+          key={notice.id}
+          advisory={{
+            level: notice.severity === "CLOSURE" ? "caution" : "info",
+            headline: notice.headline,
+            detail: notice.detail,
+            action: notice.actionText || undefined,
+            resolveBy: notice.resolveBy || undefined,
+          }}
+          variant="section"
+          dismissible={true}
+        />
+      ))}
       {/* Header */}
       <section className="relative py-24 bg-slate-900 overflow-hidden">
         <div className="absolute inset-0">

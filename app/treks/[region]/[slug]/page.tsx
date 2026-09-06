@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Clock, Mountain, Signal, MapPin, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Clock, Mountain, Signal, MapPin, ArrowLeft, CheckCircle2, AlertTriangle, Phone } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import TrekBookingForm from "@/components/TrekBookingForm";
 import TrekIncludesExcludes from "@/components/TrekIncludesExcludes";
+import TrekAdvisoryBanner from "@/components/TrekAdvisoryBanner";
 import { prisma } from "@/lib/prisma";
+import { getActiveNotices, getNoticeForSlug } from "@/lib/noticeHelpers";
 
 // generateStaticParams pre-renders all known trek slugs at build time.
 // This prevents the streaming/noindex issue where notFound() mid-stream causes
@@ -86,6 +88,13 @@ export default async function TrekPage({ params }: Props) {
   const itineraryDays = trek.itinerary ? trek.itinerary.split(/\r?\n/).filter(Boolean) : [];
   const highlightsList = trek.highlights ? trek.highlights.split(/\r?\n/).filter(Boolean) : [];
 
+  // Fetch active notices from the database (admin-controlled)
+  const activeNotices = await getActiveNotices();
+  const trekNotice = getNoticeForSlug(activeNotices, "TREK", trek.slug)
+    ?? getNoticeForSlug(activeNotices, "REGION", trek.region.slug);
+  const trekIsAffected = trekNotice?.severity === "CLOSURE";
+  const trekAdvisory = !trekIsAffected && trekNotice?.severity === "ADVISORY" ? trekNotice : null;
+
   return (
     <PageLayout showPadding={false}>
       {/* Hero Section */}
@@ -152,6 +161,110 @@ export default async function TrekPage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      {/* Flood Alert — Full Blocking Notice for affected treks */}
+      {trekIsAffected && trekNotice && (
+        <section className="relative z-10">
+          {/* Top strip */}
+          <div className="w-full bg-gradient-to-r from-red-700 via-red-600 to-orange-600 py-4 px-4">
+            <div className="container mx-auto flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 text-white flex-shrink-0" strokeWidth={2.5} />
+              <p className="text-white font-semibold text-sm">
+                <span className="bg-white text-red-700 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full mr-2">Notice</span>
+                {trekNotice.headline}
+              </p>
+            </div>
+          </div>
+
+          {/* Main blocking notice */}
+          <div className="bg-gradient-to-br from-red-950 via-red-900 to-orange-950 py-20 px-4">
+            <div className="container mx-auto max-w-2xl text-center">
+              {/* Animated warning icon */}
+              <div className="relative inline-block mb-8">
+                <div className="absolute inset-0 bg-red-500/40 rounded-full blur-3xl animate-pulse" />
+                <div className="relative w-28 h-28 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center shadow-2xl shadow-red-950/80 mx-auto border-4 border-red-400/30">
+                  <AlertTriangle className="w-14 h-14 text-white" strokeWidth={2} />
+                </div>
+              </div>
+
+              {/* Live status badge */}
+              <div className="flex items-center justify-center gap-2.5 mb-5">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
+                </span>
+                <span className="text-red-300 text-xs font-black uppercase tracking-[0.2em]">
+                  Trek Suspended — Flash Flood
+                </span>
+              </div>
+
+              <h2 className="text-3xl md:text-5xl font-black text-white mb-5 leading-tight">
+                {trek.title}
+                <br />
+                <span className="text-red-300 text-2xl md:text-3xl font-bold">is Currently Closed</span>
+              </h2>
+
+              <p className="text-red-200 text-base md:text-lg leading-relaxed mb-10 max-w-xl mx-auto">
+                {trekNotice.detail}
+              </p>
+
+              {/* Stats grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10 text-left">
+                <div className="bg-white/10 rounded-2xl p-5 border border-white/10 backdrop-blur-sm">
+                  <p className="text-red-300 text-[10px] font-black uppercase tracking-widest mb-1">Closed Since</p>
+                  <p className="text-white font-bold text-sm">{trekNotice.actionText || "See notice below"}</p>
+                </div>
+                <div className="bg-white/10 rounded-2xl p-5 border border-white/10 backdrop-blur-sm">
+                  <p className="text-red-300 text-[10px] font-black uppercase tracking-widest mb-1">Est. Reopening</p>
+                  <p className="text-white font-bold text-sm">{trekNotice.resolveBy || "TBC"}</p>
+                </div>
+                <div className="bg-white/10 rounded-2xl p-5 border border-white/10 backdrop-blur-sm">
+                  <p className="text-red-300 text-[10px] font-black uppercase tracking-widest mb-1">Your Booking</p>
+                  <p className="text-white font-bold text-sm">Free reschedule</p>
+                </div>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center gap-2.5 bg-white text-red-700 font-bold px-8 py-4 rounded-full hover:bg-red-50 transition-all shadow-xl shadow-red-950/50 text-sm"
+                >
+                  <Phone className="w-4 h-4" />
+                  Contact Us — Rebook at No Charge
+                </Link>
+                <Link
+                  href="/treks"
+                  className="inline-flex items-center justify-center gap-2 bg-red-500/30 border border-red-400/40 text-white font-bold px-8 py-4 rounded-full hover:bg-red-500/40 transition-colors text-sm"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Browse Open Treks
+                </Link>
+              </div>
+
+              <p className="text-red-400 text-xs">
+                This page will be updated as soon as trails reopen. Last checked:{" "}
+                <strong className="text-red-300">September 2026</strong>.
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Advisory Banner — caution notice for open-but-affected treks */}
+      {!trekIsAffected && trekAdvisory && (
+        <TrekAdvisoryBanner
+          advisory={{
+            level: "caution",
+            headline: trekAdvisory.headline,
+            detail: trekAdvisory.detail,
+            action: trekAdvisory.actionText || undefined,
+            resolveBy: trekAdvisory.resolveBy || undefined,
+          }}
+          variant="section"
+          dismissible
+        />
+      )}
 
       {/* Main Layout */}
       <section className="py-20 bg-slate-50">
