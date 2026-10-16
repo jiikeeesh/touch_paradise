@@ -194,7 +194,7 @@ export default async function TrekPage({ params }: Props) {
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
                 </span>
                 <span className="text-red-300 text-xs font-black uppercase tracking-[0.2em]">
-                  Trek Suspended — Flash Flood
+                  {trekNotice.headline}
                 </span>
               </div>
 
@@ -244,7 +244,7 @@ export default async function TrekPage({ params }: Props) {
 
               <p className="text-red-400 text-xs">
                 This page will be updated as soon as trails reopen. Last checked:{" "}
-                <strong className="text-red-300">September 2026</strong>.
+                <strong className="text-red-300">{new Date(trekNotice.updatedAt).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</strong>.
               </p>
             </div>
           </div>

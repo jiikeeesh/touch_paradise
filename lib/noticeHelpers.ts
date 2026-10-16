@@ -15,6 +15,7 @@ export type DbNotice = {
   actionText: string;
   resolveBy: string;
   active: boolean;
+  updatedAt: string;
 };
 
 /**
